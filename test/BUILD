@@ -26,7 +26,7 @@ cc_test(
     ],
     copts = ["-Iexternal/gtest/include"],
     deps = [
-        "@gtest//:gtest_main",
+        "@gtest//:main",
         "@momamcts_project//ltl:rule_monitor",
     ],
 )

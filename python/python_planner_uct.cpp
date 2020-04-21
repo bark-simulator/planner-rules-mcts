@@ -3,9 +3,9 @@
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
-#include "modules/models/behavior/planner_mcts/python/python_planner_uct.hpp"
+#include "python/python_planner_uct.hpp"
 #include "mcts/random_generator.h"
-#include "modules/models/behavior/planner_mcts/behavior_mcts_multi_agent.hpp"
+#include "src/behavior_mcts_multi_agent.hpp"
 #include "python/polymorphic_conversion.hpp"
 
 namespace py = pybind11;

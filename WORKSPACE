@@ -3,9 +3,11 @@ workspace(name = "planner_uct")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
-
 load("//util:deps.bzl", "planner_uct_rules_dependencies")
 planner_uct_rules_dependencies()
+
+load("@momamcts_project//util:deps.bzl", "momamcts_dependencies")
+momamcts_dependencies()
 
 http_archive(
     name = "gtest",
@@ -94,20 +96,6 @@ cc_library(
     urls = [
         "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.bz2",
     ],
-)
-
-new_local_repository(
-    name = "python_linux",
-    path = "./python/venv/",
-    build_file_content = """
-cc_library(
-    name = "python-lib",
-    srcs = glob(["lib/libpython3.*", "libs/python3.lib", "libs/python36.lib"]),
-    hdrs = glob(["include/**/*.h", "include/*.h"]),
-    includes = ["include/python3.6m", "include", "include/python3.7m", "include/python3.5m"], 
-    visibility = ["//visibility:public"],
-)
-    """
 )
 
 # http_archive(

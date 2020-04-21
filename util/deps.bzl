@@ -24,8 +24,24 @@ def planner_uct_rules_dependencies():
     _maybe(
     git_repository,
     name = "momamcts_project", # was mcts
-    commit = "deace9238281694b1901a7178e688cfa96a0dbd2",
+    commit = "b4c2b2d5d809427e8d117f943d8ef86def91806a",
     remote = "git@github.com:cirrostratus1/momamcts.git",
+    )
+
+
+    _maybe(
+    native.new_local_repository,
+    name = "python_linux",
+    path = "./python/venv/",
+    build_file_content = """
+cc_library(
+    name = "python-lib",
+    srcs = glob(["lib/libpython3.*", "libs/python3.lib", "libs/python36.lib"]),
+    hdrs = glob(["include/**/*.h", "include/*.h"]),
+    includes = ["include/python3.6m", "include", "include/python3.7m", "include/python3.5m"], 
+    visibility = ["//visibility:public"],
+)
+    """
     )
 
     # _maybe(
