@@ -25,7 +25,7 @@ def planner_mv_mvts_dependencies():
     _maybe(
     git_repository,
     name = "momamcts_project", # was mcts
-    commit = "b4c2b2d5d809427e8d117f943d8ef86def91806a",
+    commit = "9b7c0c4e3a184628ebc2a17613c529dd8a7e5b75",
     remote = "git@github.com:cirrostratus1/momamcts.git",
     )
 
@@ -101,6 +101,7 @@ cc_library(
 
     _maybe(
     http_archive, 
+    # Need Eigen 3.4 (which is in development) for STL-compatible iterators
     name = "com_github_eigen_eigen",
     build_file_content = """
 cc_library(
@@ -110,11 +111,18 @@ cc_library(
     hdrs = glob(['Eigen/**']),
     visibility = ['//visibility:public'],
 )""",
-    sha256 = "dd254beb0bafc695d0f62ae1a222ff85b52dbaa3a16f76e781dce22d0d20a4a6",
-    strip_prefix = "eigen-eigen-5a0156e40feb",
+    sha256 = "4b1120abc5d4a63620a886dcc5d7a7a27bf5b048c8c74ac57521dd27845b1d9f",
+    strip_prefix = "eigen-git-mirror-98e54de5e25aefc6b984c168fb3009868a93e217",
     urls = [
-        "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.bz2",
+        "https://github.com/eigenteam/eigen-git-mirror/archive/98e54de5e25aefc6b984c168fb3009868a93e217.zip",
     ],
+    )
+
+    _maybe(
+    git_repository,
+    name = "com_github_nelhage_rules_boost",
+    branch = "master",
+    remote = "https://github.com/nelhage/rules_boost"
     )
 
     # _maybe(
