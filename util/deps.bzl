@@ -25,10 +25,16 @@ def planner_mv_mvts_dependencies():
     _maybe(
     git_repository,
     name = "momamcts_project", # was mcts
-    commit = "9b7c0c4e3a184628ebc2a17613c529dd8a7e5b75",
+    commit = "f918f7b98161efa8f1921aea9e0688688f7b5162",
     remote = "git@github.com:cirrostratus1/momamcts.git",
     )
 
+    _maybe(
+    git_repository,
+    name = "rule_monitor_project",
+    commit = "009421ba20121c1bbb46fbcf8d52de7ee3bcd96d",
+    remote = "git@github.com:bark-simulator/rule-monitoring.git",
+    )
 
     _maybe(
     native.new_local_repository,
@@ -134,6 +140,7 @@ cc_library(
     # strip_prefix = "spot-2.8.1",
     # urls = ["http://www.lrde.epita.fr/dload/spot/spot-2.8.1.tar.gz"],
     # )
+
 
 def _maybe(repo_rule, name, **kwargs):
     if name not in native.existing_rules():

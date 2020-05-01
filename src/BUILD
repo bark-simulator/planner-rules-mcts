@@ -36,7 +36,7 @@ cc_library(
         "@bark_project//modules:include",
         "@bark_project//modules/models/behavior/motion_primitives:motion_primitives",
         "@com_github_google_glog//:glog",
-        "@momamcts_project//ltl:rule_monitor",
+        "@rule_monitor_project//ltl:rule_monitor",
         "@momamcts_project//mcts",
     ],
 )
