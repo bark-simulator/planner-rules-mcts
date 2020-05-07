@@ -19,7 +19,7 @@ namespace behavior {
 
 using mcts::ObjectiveVec;
 
-mcts::MctsParameters make_mcts_parameters(const commons::ParamsPtr &params) {
+mcts::MctsParameters MakeMctsParameters(const commons::ParamsPtr &params) {
   mcts::MctsParameters mcts_p;
   size_t reward_vec_size =
       params->GetInt("BehaviorMCTSAgent::RewardVectorSize",

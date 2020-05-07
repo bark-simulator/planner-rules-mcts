@@ -26,10 +26,10 @@ void python_planner_uct(py::module m) {
                     const LabelEvaluators &,
                     const std::vector<std::shared_ptr<RuleMonitor>> &,
                     const MultiAgentRuleMap &>())
-      .def("add_agent_rules", &BehaviorUCTMultiAgent::add_agent_rules)
-      .def("add_common_rules", &BehaviorUCTMultiAgent::add_common_rules)
-      .def("AddLabels", &BehaviorUCTMultiAgent::add_labels)
-      .def("get_tree", &BehaviorUCTMultiAgent::get_tree)
+      .def("AddAgentRules", &BehaviorUCTMultiAgent::AddAgentRules)
+      .def("AddCommonRules", &BehaviorUCTMultiAgent::AddCommonRules)
+      .def("AddLabels", &BehaviorUCTMultiAgent::AddLabels)
+      .def("GetTree", &BehaviorUCTMultiAgent::GetTree)
       .def("__repr__",
            [](const BehaviorUCTMultiAgent& m) {
              return "bark.behavior.BehaviorUCTMultiAgent";
@@ -67,10 +67,10 @@ void python_planner_uct(py::module m) {
                     const LabelEvaluators &,
                     const std::vector<std::shared_ptr<RuleMonitor>> &,
                     const MultiAgentRuleMap &>())
-      .def("add_agent_rules", &BehaviorEGreedyMultiAgent::add_agent_rules)
-      .def("add_common_rules", &BehaviorEGreedyMultiAgent::add_common_rules)
-      .def("AddLabels", &BehaviorEGreedyMultiAgent::add_labels)
-      .def("get_tree", &BehaviorEGreedyMultiAgent::get_tree)
+      .def("AddAgentRules", &BehaviorEGreedyMultiAgent::AddAgentRules)
+      .def("AddCommonRules", &BehaviorEGreedyMultiAgent::AddCommonRules)
+      .def("AddLabels", &BehaviorEGreedyMultiAgent::AddLabels)
+      .def("GetTree", &BehaviorEGreedyMultiAgent::GetTree)
       .def("__repr__",
            [](const BehaviorEGreedyMultiAgent& m) {
              return "bark.behavior.BehaviorEGreedyMultiAgent";

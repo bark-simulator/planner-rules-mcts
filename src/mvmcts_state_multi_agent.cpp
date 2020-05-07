@@ -41,7 +41,7 @@ MvmctsStateMultiAgent::MvmctsStateMultiAgent(
       horizon_(horizon),
       observed_world_(observed_world),
       is_terminal_state_(false) {
-  is_terminal_state_ = check_terminal();
+  is_terminal_state_ = CheckTerminal();
 }
 std::shared_ptr<MvmctsStateMultiAgent> MvmctsStateMultiAgent::clone() const {
   return std::make_shared<MvmctsStateMultiAgent>(*this);
@@ -74,11 +74,11 @@ std::shared_ptr<MvmctsStateMultiAgent> MvmctsStateMultiAgent::execute(
     agent = predicted_world->GetAgent(world_agent_id);
     rewards[ai] = Reward::Zero(state_params_->REWARD_VECTOR_SIZE);
     if (agent && !agent->IsInactive()) {
-      rewards[ai] += get_action_cost(agent);
+      rewards[ai] += GetActionCost(agent);
       rewards[ai] += PotentialReward(
           world_agent_id, agent->GetCurrentState(),
           observed_world_->GetAgent(world_agent_id)->GetCurrentState());
-      rewards[ai] += next_state->evaluate_rules(agent);
+      rewards[ai] += next_state->EvaluateRules(agent);
     } else if (observed_world_->GetAgent(world_agent_id) && !agent) {
       // Agent got out of map during this time step
       // So we obtain its out-of-map-penalty
@@ -122,7 +122,7 @@ std::vector<Reward> MvmctsStateMultiAgent::get_final_reward() const {
   }
   return rewards;
 }
-Reward MvmctsStateMultiAgent::evaluate_rules(const AgentPtr &agent) {
+Reward MvmctsStateMultiAgent::EvaluateRules(const AgentPtr &agent) {
   Reward reward = Reward::Zero(state_params_->REWARD_VECTOR_SIZE);
   // Create observed world from agent perspective
   ObservedWorld agent_observed_world =
@@ -148,7 +148,7 @@ Reward MvmctsStateMultiAgent::evaluate_rules(const AgentPtr &agent) {
   }
   return reward;
 }
-JointReward MvmctsStateMultiAgent::evaluate_rules() {
+JointReward MvmctsStateMultiAgent::EvaluateRules() {
   const auto agent_ids = get_agent_idx();
   JointReward rewards = JointReward(
       agent_ids.size(), Reward::Zero(state_params_->REWARD_VECTOR_SIZE));
@@ -156,16 +156,16 @@ JointReward MvmctsStateMultiAgent::evaluate_rules() {
   AgentId agent_id;
   for (size_t ai = 0; ai < agent_ids.size(); ++ai) {
     agent_id = agent_ids[ai];
-    rewards[ai] = evaluate_rules(agent_map.at(agent_id));
+    rewards[ai] = EvaluateRules(agent_map.at(agent_id));
   }
   return rewards;
 }
-const MultiAgentRuleState &MvmctsStateMultiAgent::get_multi_agent_rule_state()
+const MultiAgentRuleState &MvmctsStateMultiAgent::GetMultiAgentRuleState()
     const {
   return multi_agent_rule_state_;
 }
 
-Eigen::VectorXf MvmctsStateMultiAgent::get_action_cost(
+Eigen::VectorXf MvmctsStateMultiAgent::GetActionCost(
     const std::shared_ptr<const world::Agent> &agent) const {
   Eigen::VectorXf reward = Reward::Zero(state_params_->REWARD_VECTOR_SIZE);
   const size_t value_pos = state_params_->REWARD_VECTOR_SIZE - 1;
@@ -222,7 +222,7 @@ inline float MvmctsStateMultiAgent::Potential(
          state_params_->PREDICTION_TIME_SPAN * dv;
 }
 
-bool MvmctsStateMultiAgent::check_terminal() const {
+bool MvmctsStateMultiAgent::CheckTerminal() const {
   bool terminal = false;
   auto ego = observed_world_->GetEgoAgent();
   if (!ego) {

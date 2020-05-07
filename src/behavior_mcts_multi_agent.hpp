@@ -73,30 +73,31 @@ class BehaviorMCTSMultiAgent : public modules::models::behavior::BehaviorModel {
 
   std::shared_ptr<BehaviorModel> Clone() const override;
 
-  void add_agent_rules(const std::vector<AgentId> &agent_ids,
-                       const std::vector<std::shared_ptr<RuleMonitor>> &rules);
-  void add_common_rules(const std::vector<std::shared_ptr<RuleMonitor>> &rules);
+  void AddAgentRules(const std::vector<AgentId> &agent_ids,
+                     const std::vector<std::shared_ptr<RuleMonitor>> &rules);
+  void AddCommonRules(const std::vector<std::shared_ptr<RuleMonitor>> &rules);
 
-  void add_labels(
+  void AddLabels(
       const std::vector<std::shared_ptr<BaseLabelEvaluator>> &label_evaluators);
 
-  ValueLinePairVector get_tree(size_t value_idx = 0);
+  ValueLinePairVector GetTree(size_t value_idx = 0);
   const std::vector<std::shared_ptr<RuleMonitor>> &GetCommonRules() const;
   const MultiAgentRuleMap &GetAgentRules() const;
   const LabelEvaluators &GetLabelEvaluators() const;
-  const MctsParameters &get_mcts_parameters() const;
+  const MctsParameters &GetMctsParameters() const;
   const PredictionSettings &GetPredictionSettings() const;
 
-  void set_mcts_parameters(const MctsParameters &mcts_parameters);
+  void SetMctsParameters(const MctsParameters &mcts_parameters);
 
  private:
   std::vector<int> GetNewAgents(const AgentMap &agent_map);
-  std::vector<AgentIdx> get_agent_id_map(
+  std::vector<AgentIdx> GetAgentIdMap(
       const world::ObservedWorld &observed_world) const;
-  void make_rule_states(const std::vector<int> &new_agent_ids);
-  void add_known_agents(const std::vector<int> &agent_ids);
-  ValueLinePairVector dfs_tree(BehaviorMCTSMultiAgent::MctsNode root,
-                               const ValueLinePair &prefix, size_t value_idx);
+  void MakeRuleStates(const std::vector<int> &new_agent_ids);
+  void AddKnownAgents
+  (const std::vector<int> &agent_ids);
+  ValueLinePairVector DfsTree(BehaviorMCTSMultiAgent::MctsNode root,
+                              const ValueLinePair &prefix, size_t value_idx);
 
   std::vector<std::shared_ptr<RuleMonitor>> common_rules_;
   MultiAgentRuleMap agent_rules_;
@@ -145,7 +146,7 @@ BehaviorMCTSMultiAgent<Stat>::BehaviorMCTSMultiAgent(
       reward_vec_size_(
           params->GetInt("BehaviorMCTSAgent::RewardVectorSize",
                          "Number of dimensions of the reward vector", 1)),
-      mcts_parameters_(modules::models::behavior::make_mcts_parameters(params)),
+      mcts_parameters_(modules::models::behavior::MakeMctsParameters(params)),
       state_params_(params),
       multi_agent_(params->GetBool("BehaviorMCTSAgent::MultiAgent",
                                    "True for multi-agent planning", true)) {
@@ -177,16 +178,16 @@ dynamic::Trajectory BehaviorMCTSMultiAgent<Stat>::Plan(
   auto ego_model = std::dynamic_pointer_cast<BehaviorMPMacroActions>(
       prediction_settings_.ego_prediction_model_);
   auto new_agents = GetNewAgents(observed_world.GetAgents());
-  make_rule_states(new_agents);
-  add_known_agents(new_agents);
-  auto agent_ids = get_agent_id_map(observed_world);
+    MakeRuleStates(new_agents);
+    AddKnownAgents(new_agents);
+  auto agent_ids = GetAgentIdMap(observed_world);
   MvmctsStateMultiAgent mcts_state(mcts_observed_world, multi_agent_rule_state_,
                                    &state_params_, agent_ids, state_params_.HORIZON);
 
   // Transit automata from last planning step to current
-  mcts_state.evaluate_rules();
+    mcts_state.EvaluateRules();
 
-  multi_agent_rule_state_ = mcts_state.get_multi_agent_rule_state();
+  multi_agent_rule_state_ = mcts_state.GetMultiAgentRuleState();
   for (const auto &rs :
        multi_agent_rule_state_[observed_world.GetEgoAgentId()]) {
     VLOG(2) << rs;
@@ -233,7 +234,7 @@ dynamic::Trajectory BehaviorMCTSMultiAgent<Stat>::Plan(
 /// \tparam Stat
 /// \param rules
 template <class Stat>
-void BehaviorMCTSMultiAgent<Stat>::add_common_rules(
+void BehaviorMCTSMultiAgent<Stat>::AddCommonRules(
     const std::vector<std::shared_ptr<RuleMonitor>> &rules) {
   common_rules_.insert(common_rules_.end(), rules.begin(), rules.end());
   // Print automata to dot file
@@ -251,7 +252,7 @@ void BehaviorMCTSMultiAgent<Stat>::add_common_rules(
 /// \param agent_ids AgentIDs of agent to add rules to
 /// \param rules
 template <class Stat>
-void BehaviorMCTSMultiAgent<Stat>::add_agent_rules(
+void BehaviorMCTSMultiAgent<Stat>::AddAgentRules(
     const std::vector<AgentId> &agent_ids,
     const std::vector<std::shared_ptr<RuleMonitor>> &rules) {
   // Need to store rules separately that if there appears a new agent, we can
@@ -267,7 +268,7 @@ void BehaviorMCTSMultiAgent<Stat>::add_agent_rules(
   }
 }
 template <class Stat>
-void BehaviorMCTSMultiAgent<Stat>::make_rule_states(
+void BehaviorMCTSMultiAgent<Stat>::MakeRuleStates(
     const std::vector<int> &new_agent_ids) {
   std::vector<int> current_agent_ids;
   std::set_union(new_agent_ids.begin(), new_agent_ids.end(),
@@ -333,18 +334,18 @@ const MultiAgentRuleMap &BehaviorMCTSMultiAgent<Stat>::GetAgentRules() const {
   return agent_rules_;
 }
 template <class Stat>
-void BehaviorMCTSMultiAgent<Stat>::add_labels(
+void BehaviorMCTSMultiAgent<Stat>::AddLabels(
     const std::vector<std::shared_ptr<BaseLabelEvaluator>> &label_evaluators) {
   label_evaluators_.insert(label_evaluators_.end(), label_evaluators.begin(),
                            label_evaluators.end());
 }
 template <class Stat>
-const MctsParameters &BehaviorMCTSMultiAgent<Stat>::get_mcts_parameters()
+const MctsParameters &BehaviorMCTSMultiAgent<Stat>::GetMctsParameters()
     const {
   return mcts_parameters_;
 }
 template <class Stat>
-void BehaviorMCTSMultiAgent<Stat>::set_mcts_parameters(
+void BehaviorMCTSMultiAgent<Stat>::SetMctsParameters(
     const MctsParameters &mcts_parameters) {
   mcts_parameters_ = mcts_parameters;
 }
@@ -371,7 +372,7 @@ std::vector<int> BehaviorMCTSMultiAgent<Stat>::GetNewAgents(
 //! \return A vector of interacting agent ids. Ego is always stored in the first
 //! entry
 template <class Stat>
-std::vector<AgentIdx> BehaviorMCTSMultiAgent<Stat>::get_agent_id_map(
+std::vector<AgentIdx> BehaviorMCTSMultiAgent<Stat>::GetAgentIdMap(
     const world::ObservedWorld &observed_world) const {
   std::vector<mcts::AgentIdx> agent_ids;
   if (multi_agent_) {
@@ -389,7 +390,7 @@ std::vector<AgentIdx> BehaviorMCTSMultiAgent<Stat>::get_agent_id_map(
   return agent_ids;
 }
 template <class Stat>
-void BehaviorMCTSMultiAgent<Stat>::add_known_agents(
+void BehaviorMCTSMultiAgent<Stat>::AddKnownAgents(
     const std::vector<int> &agent_ids) {
   known_agents_.insert(agent_ids.begin(), agent_ids.end());
 }
@@ -405,15 +406,15 @@ const PredictionSettings &BehaviorMCTSMultiAgent<Stat>::GetPredictionSettings()
 }
 
 template <class Stat>
-ValueLinePairVector BehaviorMCTSMultiAgent<Stat>::get_tree(size_t value_idx) {
+ValueLinePairVector BehaviorMCTSMultiAgent<Stat>::GetTree(size_t value_idx) {
   ValueLinePairVector lines;
   if (root_) {
-    lines = dfs_tree(root_, ValueLinePair(0.0f, geometry::Line()), value_idx);
+    lines = DfsTree(root_, ValueLinePair(0.0f, geometry::Line()), value_idx);
   }
   return lines;
 }
 template <class Stat>
-ValueLinePairVector BehaviorMCTSMultiAgent<Stat>::dfs_tree(
+ValueLinePairVector BehaviorMCTSMultiAgent<Stat>::DfsTree(
     BehaviorMCTSMultiAgent::MctsNode root, const ValueLinePair &prefix,
     size_t value_idx) {
   ValueLinePair new_prefix(prefix);
@@ -427,7 +428,7 @@ ValueLinePairVector BehaviorMCTSMultiAgent<Stat>::dfs_tree(
     for (const auto &child : child_map) {
       new_prefix.first +=
           root->get_joint_rewards().find(child.first)->second.at(0)(value_idx);
-      auto res = dfs_tree(child.second, new_prefix, value_idx);
+      auto res = DfsTree(child.second, new_prefix, value_idx);
       lines.insert(lines.end(), res.begin(), res.end());
     }
   } else {

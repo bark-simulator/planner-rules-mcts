@@ -62,20 +62,20 @@ class MvmctsStateMultiAgent
 
   std::vector<Reward> get_final_reward() const;
 
-  JointReward evaluate_rules();
+  JointReward EvaluateRules();
 
-  const MultiAgentRuleState &get_multi_agent_rule_state() const;
+  const MultiAgentRuleState &GetMultiAgentRuleState() const;
 
   const ObservedWorldPtr &GetObservedWorld() const;
 
  private:
-  Reward evaluate_rules(const AgentPtr &agent);
+  Reward EvaluateRules(const AgentPtr &agent);
 
   Reward PotentialReward(AgentId agent_id, const State &new_state,
                          const State &current_state) const;
-  Reward get_action_cost(const std::shared_ptr<const world::Agent> &agent) const;
+  Reward GetActionCost(const std::shared_ptr<const world::Agent> &agent) const;
   inline float Potential(AgentId agent_id, const State& state) const;
-  bool check_terminal() const;
+  bool CheckTerminal() const;
 
   MultiAgentRuleState multi_agent_rule_state_;
   const std::vector<AgentIdx> agent_idx_;

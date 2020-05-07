@@ -15,7 +15,7 @@ namespace modules {
 namespace models {
 namespace behavior {
 
-mcts::MctsParameters make_mcts_parameters(const commons::ParamsPtr &params);
+mcts::MctsParameters MakeMctsParameters(const commons::ParamsPtr &params);
 Eigen::VectorXf StdToEigen(const std::vector<float>& v);
 
 }  // namespace behavior
