@@ -115,8 +115,8 @@ std::vector<Reward> MvmctsStateMultiAgent::get_final_reward() const {
     // Only get final reward for agents present
     if (observed_world_->GetAgent(agent_ids[ai])) {
       for (const auto &rule : multi_agent_rule_state_.at(agent_ids[ai])) {
-        rewards[ai](rule.get_priority()) +=
-            rule.get_automaton()->get_final_reward(rule);
+        rewards[ai](rule.GetPriority()) +=
+            rule.GetAutomaton()->GetFinalReward(rule);
       }
     }
   }
@@ -138,8 +138,8 @@ Reward MvmctsStateMultiAgent::evaluate_rules(const AgentPtr &agent) {
   }
   if (!agent->IsInactive()) {
     for (auto &rule : multi_agent_rule_state_.at(agent->GetAgentId())) {
-      reward(rule.get_priority()) +=
-          rule.get_automaton()->evaluate(label_map, rule);
+      reward(rule.GetPriority()) +=
+          rule.GetAutomaton()->Evaluate(label_map, rule);
     }
     // Check if agent is in a terminal state
     if (label_map.at(Label("collision_ego"))) {
@@ -203,14 +203,6 @@ Eigen::VectorXf MvmctsStateMultiAgent::get_action_cost(
     reward(value_pos) +=
         state_params_->LANE_CENTER_WEIGHT * fabs(lane_center_dev) * dt;
   }
-
-  //    Desired lane (squared)
-  //  auto current_lane = agent->GetCurrentLane();
-  //  if(current_lane) {
-  //    const float lane_id_dev = agent->GetLocalMap()->GetGoalLaneId() ==
-  //    current_lane->GetId() ? 0.0 : 1.0; reward(value_pos) +=
-  //    state_params_->GOAL_LANE_DEVIATION_WEIGHT * lane_id_dev;
-  //  }
   return reward;
 }
 

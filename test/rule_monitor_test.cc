@@ -16,16 +16,16 @@ using ltl::Label;
 using RuleMonitorSPtr = RuleMonitor::RuleMonitorSPtr;
 
 TEST(rule_monitor_test, transit_test) {
-  RuleMonitorSPtr eval = RuleMonitor::make_rule("F (G a)", -1.0f, 0);
-  RuleState state = eval->make_rule_state()[0];
+  RuleMonitorSPtr eval = RuleMonitor::MakeRule("F (G a)", -1.0f, 0);
+  RuleState state = eval->MakeRuleState()[0];
   EvaluationMap map;
   map[Label("a")] = false;
-  ASSERT_EQ(0.0f, state.get_automaton()->evaluate(map, state));
-  ASSERT_EQ(0.0f, state.get_automaton()->evaluate(map, state));
+  ASSERT_EQ(0.0f, state.GetAutomaton()->Evaluate(map, state));
+  ASSERT_EQ(0.0f, state.GetAutomaton()->Evaluate(map, state));
   map[Label("a")] = true;
-  ASSERT_EQ(0.0f, state.get_automaton()->evaluate(map, state));
-  ASSERT_EQ(0.0f, state.get_automaton()->evaluate(map, state));
+  ASSERT_EQ(0.0f, state.GetAutomaton()->Evaluate(map, state));
+  ASSERT_EQ(0.0f, state.GetAutomaton()->Evaluate(map, state));
   map[Label("a")] = false;
-  ASSERT_EQ(0.0f, state.get_automaton()->evaluate(map, state));
-  ASSERT_EQ(-1.0f, state.get_automaton()->get_final_reward(state));
+  ASSERT_EQ(0.0f, state.GetAutomaton()->Evaluate(map, state));
+  ASSERT_EQ(-1.0f, state.GetAutomaton()->GetFinalReward(state));
 }

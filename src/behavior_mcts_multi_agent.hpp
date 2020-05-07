@@ -283,7 +283,7 @@ void BehaviorMCTSMultiAgent<Stat>::make_rule_states(
     // Default rules
     for (const auto &rule : common_rules_) {
       // All agents are new
-      auto rs = rule->make_rule_state(others, {});
+      auto rs = rule->MakeRuleState(others, {});
       it->second.insert(it->second.end(), rs.begin(), rs.end());
     }
     // Rules that have been specified for a specific agent only
@@ -291,7 +291,7 @@ void BehaviorMCTSMultiAgent<Stat>::make_rule_states(
     if (agent_rule_it != agent_rules_.end()) {
       for (const auto &rule : agent_rule_it->second) {
         // All agents are new
-        auto rs = rule->make_rule_state(others, {});
+        auto rs = rule->MakeRuleState(others, {});
         it->second.insert(it->second.end(), rs.begin(), rs.end());
       }
     }
@@ -306,8 +306,8 @@ void BehaviorMCTSMultiAgent<Stat>::make_rule_states(
     std::copy(others.begin(), others.end(), std::back_inserter(others_vec));
     // Default rules
     for (const auto &rule : common_rules_) {
-      if (rule->is_agent_specific()) {
-        auto rs = rule->make_rule_state(new_agent_ids, others_vec);
+      if (rule->IsAgentSpecific()) {
+        auto rs = rule->MakeRuleState(new_agent_ids, others_vec);
         it->second.insert(it->second.end(), rs.begin(), rs.end());
       }
     }
@@ -315,8 +315,8 @@ void BehaviorMCTSMultiAgent<Stat>::make_rule_states(
     auto agent_rule_it = agent_rules_.find(agent_id);
     if (agent_rule_it != agent_rules_.end()) {
       for (const auto &rule : agent_rule_it->second) {
-        if (rule->is_agent_specific()) {
-          auto rs = rule->make_rule_state(new_agent_ids, others_vec);
+        if (rule->IsAgentSpecific()) {
+          auto rs = rule->MakeRuleState(new_agent_ids, others_vec);
           it->second.insert(it->second.end(), rs.begin(), rs.end());
         }
       }
