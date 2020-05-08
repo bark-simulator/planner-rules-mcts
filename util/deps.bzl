@@ -12,7 +12,7 @@ def planner_mv_mvts_dependencies():
     _maybe(
     git_repository,
     name = "bark_project",
-    commit="08d98038312af11101bd868f96337292bbb5bfca",
+    commit="50ec3c88aef008982e28d7b6f6d61267c391e9a0",
     remote = "https://github.com/klemense1/mv-mamcts",
     )
 
@@ -32,7 +32,7 @@ def planner_mv_mvts_dependencies():
     _maybe(
     git_repository,
     name = "rule_monitor_project",
-    commit = "28dea3ac1574326ee5413671c352a21dacdc3040",
+    commit = "696619758310b01d3ad46fd3685368bec93b4f14",
     remote = "git@github.com:bark-simulator/rule-monitoring.git",
     )
 
