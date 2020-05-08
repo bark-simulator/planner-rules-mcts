@@ -108,13 +108,17 @@ void python_planner_uct(py::module m) {
                     t[3].cast<modules::models::behavior::MultiAgentRuleMap>());
             }));
 
-    py::class_<MvmctsStateMultiAgent, std::shared_ptr<MvmctsStateMultiAgent>>(m, 'MvmctsStateMultiAgent')
+    py::class_<MvmctsStateMultiAgent, std::shared_ptr<MvmctsStateMultiAgent>>(m, "MvmctsStateMultiAgent")
         .def(py::init<const modules::world::ObservedWorldPtr &,
                       const MultiAgentRuleState &,
                       const MvmctsStateParameters *,
                       const std::vector<AgentIdx> &,
                       unsigned int>())
-                      .def("execute", &MvmctsStateMultiAgent::execute);
+        .def("execute", &MvmctsStateMultiAgent::execute)
+        .def("__repr__",
+             [](const MvmctsStateMultiAgent &m) {
+                 return "bark.behavior.MvmctsStateMultiAgent";
+             });
 
     m.def("MakeMvmctsStateParameters", &MakeMctsParameters);
 }
