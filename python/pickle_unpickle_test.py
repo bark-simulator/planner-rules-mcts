@@ -6,7 +6,7 @@ import numpy as np
 # it uses the bark python module
 
 
-from bark.models.behavior import BehaviorUCTSingleAgent, BehaviorUCTMultiAgent
+from bark.models.behavior import BehaviorMCTSMultiAgent
 from modules.runtime.commons.parameters import ParameterServer
 
 def pickle_unpickle(object):
@@ -25,11 +25,11 @@ class PickleTests(unittest.TestCase):
         params["BehaviorMCTSAgent"]["Rules"]["common"]["weight"] = -700.0
         params["BehaviorMCTSAgent"]["Rules"]["common"]["priority"] = 0
 
-        behavior = BehaviorUCTMultiAgent(params)
+        behavior = BehaviorMCTSMultiAgent(params)
 
         behavior_after = pickle_unpickle(behavior)
 
-        self.assertTrue(isinstance(behavior_after, BehaviorUCTMultiAgent))
+        self.assertTrue(isinstance(behavior_after, BehaviorMCTSMultiAgent))
 
 
 if __name__ == '__main__':

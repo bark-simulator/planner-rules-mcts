@@ -22,6 +22,7 @@ cc_binary(
     linkstatic = 1,
     deps = [
         ":planner_mvmcts",
+        "@rule_monitor_project//python/bindings:rule_monitor",
         "@bark_project//modules/models/behavior",
         "@bark_project//modules/models/behavior/constant_velocity",
         "@bark_project//modules/models/behavior/motion_primitives",
