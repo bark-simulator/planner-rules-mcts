@@ -13,7 +13,7 @@ def planner_mv_mvts_dependencies():
     git_repository,
     name = "bark_project",
     commit="50ec3c88aef008982e28d7b6f6d61267c391e9a0",
-    remote = "https://github.com/klemense1/mv-mamcts",
+    remote = "git@github.com:klemense1/mv-mamcts.git",
     )
 
     # _maybe(
