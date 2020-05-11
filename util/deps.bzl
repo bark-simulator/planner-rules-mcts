@@ -25,14 +25,14 @@ def planner_mv_mvts_dependencies():
     _maybe(
     git_repository,
     name = "momamcts_project", # was mcts
-    commit = "f918f7b98161efa8f1921aea9e0688688f7b5162",
+    commit = "74affb31ab9cefdddd35c03843293e4bb9ddf5a2",
     remote = "git@github.com:cirrostratus1/momamcts.git",
     )
 
     _maybe(
     git_repository,
     name = "rule_monitor_project",
-    commit = "0a618b3e10755e1feb19f9859943fe619a4f923b",
+    commit = "ab0dd984b4663eadaa209f2a25d6f4887de4bc7f",
     remote = "git@github.com:bark-simulator/rule-monitoring.git",
     )
 

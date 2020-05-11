@@ -116,7 +116,7 @@ std::vector<Reward> MvmctsStateMultiAgent::get_final_reward() const {
     if (observed_world_->GetAgent(agent_ids[ai])) {
       for (const auto &rule : multi_agent_rule_state_.at(agent_ids[ai])) {
         rewards[ai](rule.GetPriority()) +=
-            rule.GetAutomaton()->GetFinalReward(rule);
+            rule.GetAutomaton()->FinalTransit(rule);
       }
     }
   }
