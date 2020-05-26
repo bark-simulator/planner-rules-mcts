@@ -205,24 +205,24 @@ dynamic::Trajectory BehaviorMCTSMultiAgent<Stat>::Plan(
   VLOG(1) << outs.str();
 
   // MCTS SEARCH
-  mcts.search(mcts_state, max_search_time_, max_num_iterations_);
+  mcts.Search(mcts_state, max_search_time_, max_num_iterations_);
 
-  mcts::ActionIdx best_action = mcts.returnBestAction()[0];
+  mcts::ActionIdx best_action = mcts.ReturnBestAction()[0];
   SetLastAction(DiscreteAction(best_action));
 
   if (dump_tree_) {
     std::stringstream filename;
     filename << "/tmp/tree_dot_file_" << delta_time;
-    mcts.printTreeToDotFile(filename.str());
+    mcts.PrintTreeToDotFile(filename.str());
   }
 
   ego_model->ActionToBehavior(BehaviorMotionPrimitives::MotionIdx(best_action));
   auto traj = ego_model->Plan(delta_time, observed_world);
 
   // Save root node of mcts for tree visualization
-  root_ = mcts.get_root();
+  root_ = mcts.GetRoot();
 
-  LOG(INFO) << "BehaviorMCTSMultiAgent, iterations: " << mcts.numIterations()
+  LOG(INFO) << "BehaviorMCTSMultiAgent, iterations: " << mcts.NumIterations()
             << ", best action: " << best_action
             << ", current state: " << traj.row(traj.rows() - 1);
 
@@ -418,21 +418,21 @@ ValueLinePairVector BehaviorMCTSMultiAgent<Stat>::DfsTree(
     BehaviorMCTSMultiAgent::MctsNode root, const ValueLinePair &prefix,
     size_t value_idx) {
   ValueLinePair new_prefix(prefix);
-  auto ego_agent = root->get_state()->GetObservedWorld()->GetEgoAgent();
+  auto ego_agent = root->GetState()->GetObservedWorld()->GetEgoAgent();
   if (ego_agent) {
     new_prefix.second.AddPoint(ego_agent->GetCurrentPosition());
   }
   ValueLinePairVector lines;
-  auto child_map = root->get_children();
+  auto child_map = root->GetChildren();
   if (child_map.size() > 0) {
     for (const auto &child : child_map) {
       new_prefix.first +=
-          root->get_joint_rewards().find(child.first)->second.at(0)(value_idx);
+          root->GetJointRewards().find(child.first)->second.at(0)(value_idx);
       auto res = DfsTree(child.second, new_prefix, value_idx);
       lines.insert(lines.end(), res.begin(), res.end());
     }
   } else {
-    new_prefix.first += root->get_value()[0](value_idx);
+    new_prefix.first += root->GetValue()[0](value_idx);
     lines.push_back(new_prefix);
   }
   return lines;

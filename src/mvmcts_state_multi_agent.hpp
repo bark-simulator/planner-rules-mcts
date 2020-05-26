@@ -46,21 +46,21 @@ class MvmctsStateMultiAgent
                         const std::vector<AgentIdx> &agent_idx,
                         unsigned int horizon);
 
-  std::shared_ptr<MvmctsStateMultiAgent> clone() const;
+  std::shared_ptr<MvmctsStateMultiAgent> Clone() const;
 
-  std::shared_ptr<MvmctsStateMultiAgent> execute(
+  std::shared_ptr<MvmctsStateMultiAgent> Execute(
       const mcts::JointAction &joint_action,
       std::vector<mcts::Reward> &rewards) const;
 
-  mcts::ActionIdx get_num_actions(mcts::AgentIdx agent_idx) const;
+  mcts::ActionIdx GetNumActions(mcts::AgentIdx agent_idx) const;
 
-  bool is_terminal() const;
+  bool IsTerminal() const;
 
-  const std::vector<mcts::AgentIdx> get_agent_idx() const;
+  const std::vector<mcts::AgentIdx> GetAgentIdx() const;
 
-  std::string sprintf() const;
+  std::string PrintState() const;
 
-  std::vector<Reward> get_final_reward() const;
+  std::vector<Reward> GetTerminalReward() const;
 
   JointReward EvaluateRules();
 

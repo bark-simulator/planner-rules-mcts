@@ -114,9 +114,9 @@ void python_planner_uct(py::module m) {
                       const MvmctsStateParameters *,
                       const std::vector<AgentIdx> &,
                       unsigned int>())
-        .def("execute", [](const MvmctsStateMultiAgent& state, const mcts::JointAction &joint_action) {
+        .def("Execute", [](const MvmctsStateMultiAgent& state, const mcts::JointAction &joint_action) {
             std::vector<mcts::Reward> rewards;
-            auto new_state = state.execute(joint_action, rewards);
+            auto new_state = state.Execute(joint_action, rewards);
             return std::make_tuple(new_state, rewards);
         })
         .def_property_readonly("observed_world", &MvmctsStateMultiAgent::GetObservedWorld)

@@ -52,12 +52,6 @@ mcts::MctsParameters MakeMctsParameters(const commons::ParamsPtr &params) {
       params->GetListFloat("BehaviorMCTSAgent::UCTExplorationConstant",
                        "Exploration constant of UCT", std::vector<float>(reward_vec_size, 0.7f))).cast<double>();
   assert(mcts_p.uct_statistic.EXPLORATION_CONSTANT.size() == reward_vec_size);
-  mcts_p.uct_statistic.PROGRESSIVE_WIDENING_ENABLED =
-      params->GetBool("BehaviorMCTSAgent::EnableProgressiveWidening",
-                       "Enables the Progressive Widening heursitc", false);
-  mcts_p.uct_statistic.PROGRESSIVE_WIDENING_ALPHA =
-      params->GetReal("BehaviorMCTSAgent::ProgressiveWideningAlpha",
-                       "Parameter for ProgressiveWidening", 0.5);
   std::vector<float> default_lower_bound(reward_vec_size, -1.0);
   default_lower_bound[reward_vec_size - 1] = -50000.0;
   auto lower_bound = params->GetListFloat(

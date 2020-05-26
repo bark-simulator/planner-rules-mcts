@@ -25,7 +25,7 @@ def planner_mv_mcts_dependencies():
     _maybe(
     git_repository,
     name = "momamcts_project", # was mcts
-    commit = "74affb31ab9cefdddd35c03843293e4bb9ddf5a2",
+    commit = "4e56956b77459f991bdc2bab1217731debbd90db",
     remote = "git@github.com:cirrostratus1/momamcts.git",
     )
 
@@ -130,16 +130,6 @@ cc_library(
     branch = "master",
     remote = "https://github.com/nelhage/rules_boost"
     )
-
-    # _maybe(
-    # http_archive,
-    # name = "spot",
-    # build_file = "@//tools:spot.BUILD",
-    # patch_cmds = ["./configure"],
-    # sha256 = "dcb7aa684725304afb3d435f26f25b51fbd6e9a6ef610e16163cc0030ad5eab4",
-    # strip_prefix = "spot-2.8.1",
-    # urls = ["http://www.lrde.epita.fr/dload/spot/spot-2.8.1.tar.gz"],
-    # )
 
 
 def _maybe(repo_rule, name, **kwargs):

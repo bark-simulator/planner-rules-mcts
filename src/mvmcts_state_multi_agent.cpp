@@ -43,15 +43,15 @@ MvmctsStateMultiAgent::MvmctsStateMultiAgent(
       is_terminal_state_(false) {
   is_terminal_state_ = CheckTerminal();
 }
-std::shared_ptr<MvmctsStateMultiAgent> MvmctsStateMultiAgent::clone() const {
+std::shared_ptr<MvmctsStateMultiAgent> MvmctsStateMultiAgent::Clone() const {
   return std::make_shared<MvmctsStateMultiAgent>(*this);
 }
-std::shared_ptr<MvmctsStateMultiAgent> MvmctsStateMultiAgent::execute(
+std::shared_ptr<MvmctsStateMultiAgent> MvmctsStateMultiAgent::Execute(
     const mcts::JointAction &joint_action,
     std::vector<mcts::Reward> &rewards) const {
   EASY_FUNCTION();
-  BARK_EXPECT_TRUE(!is_terminal());
-  std::vector<AgentIdx> agent_ids = get_agent_idx();
+  BARK_EXPECT_TRUE(!IsTerminal());
+  std::vector<AgentIdx> agent_ids = GetAgentIdx();
   size_t num_agents = agent_ids.size();
   rewards.resize(num_agents, Reward::Zero(state_params_->REWARD_VECTOR_SIZE));
 
@@ -87,9 +87,9 @@ std::shared_ptr<MvmctsStateMultiAgent> MvmctsStateMultiAgent::execute(
   }
   return next_state;
 }
-mcts::ActionIdx MvmctsStateMultiAgent::get_num_actions(
+mcts::ActionIdx MvmctsStateMultiAgent::GetNumActions(
     mcts::AgentIdx agent_idx) const {
-  AgentId agent_id = get_agent_idx()[agent_idx];
+  AgentId agent_id = GetAgentIdx()[agent_idx];
   auto agent = observed_world_->GetAgent(agent_id);
   if (agent && !agent->IsInactive()) {
     auto agent_observed_world = std::make_shared<ObservedWorld>(std::move(observed_world_->Observe({agent_id})[0]));
@@ -100,14 +100,14 @@ mcts::ActionIdx MvmctsStateMultiAgent::get_num_actions(
     return 1;
   }
 }
-bool MvmctsStateMultiAgent::is_terminal() const { return is_terminal_state_; }
-const std::vector<mcts::AgentIdx> MvmctsStateMultiAgent::get_agent_idx() const {
+bool MvmctsStateMultiAgent::IsTerminal() const { return is_terminal_state_; }
+const std::vector<mcts::AgentIdx> MvmctsStateMultiAgent::GetAgentIdx() const {
   return agent_idx_;
 }
-std::string MvmctsStateMultiAgent::sprintf() const { return std::string(); }
+std::string MvmctsStateMultiAgent::PrintState() const { return std::string(); }
 
-std::vector<Reward> MvmctsStateMultiAgent::get_final_reward() const {
-  std::vector<AgentIdx> agent_ids = get_agent_idx();
+std::vector<Reward> MvmctsStateMultiAgent::GetTerminalReward() const {
+  std::vector<AgentIdx> agent_ids = GetAgentIdx();
   size_t num_agents = agent_ids.size();
   JointReward rewards(num_agents,
                       Reward::Zero(state_params_->REWARD_VECTOR_SIZE));
@@ -149,7 +149,7 @@ Reward MvmctsStateMultiAgent::EvaluateRules(const AgentPtr &agent) {
   return reward;
 }
 JointReward MvmctsStateMultiAgent::EvaluateRules() {
-  const auto agent_ids = get_agent_idx();
+  const auto agent_ids = GetAgentIdx();
   JointReward rewards = JointReward(
       agent_ids.size(), Reward::Zero(state_params_->REWARD_VECTOR_SIZE));
   const auto agent_map = observed_world_->GetAgents();
