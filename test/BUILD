@@ -18,15 +18,3 @@
 #        "@gtest//:main",
 #    ],
 #)
-
-cc_test(
-    name = "rule_monitor_test",
-    srcs = [
-        "rule_monitor_test.cc",
-    ],
-    copts = ["-Iexternal/gtest/include"],
-    deps = [
-        "@gtest//:main",
-        "@rule_monitor_project//ltl:rule_monitor",
-    ],
-)
