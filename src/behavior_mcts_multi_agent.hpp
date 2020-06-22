@@ -22,14 +22,14 @@
 #include "mcts/mcts_parameters.h"
 #include "mcts/statistics/e_greedy_statistic.h"
 #include "mcts/statistics/thres_uct_statistic.h"
-#include "modules/models/behavior/behavior_model.hpp"
-#include "modules/models/behavior/motion_primitives/macro_actions.hpp"
-#include "modules/models/behavior/motion_primitives/primitives.hpp"
+#include "bark/models/behavior/behavior_model.hpp"
+#include "bark/models/behavior/motion_primitives/macro_actions.hpp"
+#include "bark/models/behavior/motion_primitives/primitives/primitive.hpp"
 #include "src/mvmcts_state_multi_agent.hpp"
 #include "src/util.hpp"
-#include "modules/models/dynamic/single_track.hpp"
-#include "modules/world/observed_world.hpp"
-#include "modules/world/prediction/prediction_settings.hpp"
+#include "bark/models/dynamic/single_track.hpp"
+#include "bark/world/observed_world.hpp"
+#include "bark/world/prediction/prediction_settings.hpp"
 
 namespace modules {
 namespace world {
@@ -46,9 +46,7 @@ using mcts::ObjectiveVec;
 using modules::models::dynamic::SingleTrackModel;
 using modules::world::AgentMap;
 using modules::world::ObservedWorldPtr;
-using modules::world::evaluation::BaseLabelEvaluator;
 using modules::world::prediction::PredictionSettings;
-typedef std::vector<std::shared_ptr<BaseLabelEvaluator>> LabelEvaluators;
 typedef std::unordered_map<AgentId, std::vector<std::shared_ptr<RuleMonitor>>>
     MultiAgentRuleMap;
 typedef std::pair<mcts::Reward::Scalar, geometry::Line> ValueLinePair;
@@ -78,7 +76,7 @@ class BehaviorMCTSMultiAgent : public modules::models::behavior::BehaviorModel {
   void AddCommonRules(const std::vector<std::shared_ptr<RuleMonitor>> &rules);
 
   void AddLabels(
-      const std::vector<std::shared_ptr<BaseLabelEvaluator>> &label_evaluators);
+      const LabelEvaluators &label_evaluators);
 
   ValueLinePairVector GetTree(size_t value_idx = 0);
   const std::vector<std::shared_ptr<RuleMonitor>> &GetCommonRules() const;
@@ -161,15 +159,6 @@ dynamic::Trajectory BehaviorMCTSMultiAgent<Stat>::Plan(
       std::dynamic_pointer_cast<ObservedWorld>(observed_world.Clone());
   mcts_observed_world->SetupPrediction(prediction_settings_);
 
-  // SETUP LABELS
-  mcts_observed_world->AddLabels(label_evaluators_);
-  auto label_map = mcts_observed_world->EvaluateLabels();
-
-  // Print labels
-  for (const auto &pair : label_map) {
-    VLOG(2) << pair.first << ": " << pair.second;
-  }
-
   // SETUP MCTS
   mcts::Mcts<MvmctsStateMultiAgent, Stat, Stat, mcts::RandomHeuristic> mcts(
       mcts_parameters_);
@@ -182,7 +171,7 @@ dynamic::Trajectory BehaviorMCTSMultiAgent<Stat>::Plan(
     AddKnownAgents(new_agents);
   auto agent_ids = GetAgentIdMap(observed_world);
   MvmctsStateMultiAgent mcts_state(mcts_observed_world, multi_agent_rule_state_,
-                                   &state_params_, agent_ids, state_params_.HORIZON);
+                                   &state_params_, agent_ids, state_params_.HORIZON, &label_evaluators_);
 
   // Transit automata from last planning step to current
     mcts_state.EvaluateRules();
@@ -335,7 +324,7 @@ const MultiAgentRuleMap &BehaviorMCTSMultiAgent<Stat>::GetAgentRules() const {
 }
 template <class Stat>
 void BehaviorMCTSMultiAgent<Stat>::AddLabels(
-    const std::vector<std::shared_ptr<BaseLabelEvaluator>> &label_evaluators) {
+    const LabelEvaluators &label_evaluators) {
   label_evaluators_.insert(label_evaluators_.end(), label_evaluators.begin(),
                            label_evaluators.end());
 }

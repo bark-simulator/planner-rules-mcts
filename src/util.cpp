@@ -4,11 +4,11 @@
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
 #include "util.hpp"
-#include "modules/models/behavior/constant_velocity/constant_velocity.hpp"
-#include "modules/models/behavior/mobil/mobil.hpp"
-#include "modules/models/behavior/motion_primitives/macro_actions.hpp"
-#include "modules/models/behavior/motion_primitives/motion_primitives.hpp"
-#include "modules/models/dynamic/single_track.hpp"
+#include "bark/models/behavior/constant_velocity/constant_velocity.hpp"
+#include "bark/models/behavior/rule_based/lane_change_behavior.hpp"
+#include "bark/models/behavior/motion_primitives/macro_actions.hpp"
+#include "bark/models/behavior/motion_primitives/motion_primitives.hpp"
+#include "bark/models/dynamic/single_track.hpp"
 
 #include <limits>
 #include <vector>

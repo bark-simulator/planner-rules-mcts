@@ -4,7 +4,7 @@
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
 #include "mvmcts_state_parameters.hpp"
-#include "modules/models/dynamic/dynamic_model.hpp"
+#include "bark/models/dynamic/dynamic_model.hpp"
 
 modules::models::behavior::MvmctsStateParameters::MvmctsStateParameters(
     const float out_of_map_weight, const float potential_weight,

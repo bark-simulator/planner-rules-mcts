@@ -3,9 +3,9 @@ cc_library(
     srcs = ["util.cpp"],
     hdrs = ["util.hpp"],
     deps = [
-        "@bark_project//modules/commons/params:include",
-        "@bark_project//modules/models/behavior:include",
-        "@bark_project//modules/world:include",
+        "@bark_project//bark/commons/params:include",
+        "@bark_project//bark/models/behavior:include",
+        "@bark_project//bark/world:include",
         "@momamcts_project//mcts",
     ],
 )
@@ -15,8 +15,8 @@ cc_library(
     srcs = ["mvmcts_state_parameters.cpp"],
     hdrs = ["mvmcts_state_parameters.hpp"],
     deps = [
-        "@bark_project//modules/commons/params",
-        "@bark_project//modules/world:include",
+        "@bark_project//bark/commons/params",
+        "@bark_project//bark/world:include",
     ],
 )
 
@@ -33,8 +33,11 @@ cc_library(
     deps = [
         ":util",
         ":mvmcts_state_parameters",
-        "@bark_project//modules:include",
-        "@bark_project//modules/models/behavior/motion_primitives:motion_primitives",
+        "@bark_project//bark:include",
+        "@bark_project//bark/world/evaluation/ltl/labels:base_label_evaluator",
+        "@bark_project//bark/models/behavior/motion_primitives:motion_primitives",
+        "@bark_project//bark/world/evaluation:evaluator_drivable_area",
+        "@bark_project//bark/world/evaluation:evaluator_collision_ego_agent",
         "@com_github_google_glog//:glog",
         "@rule_monitor_project//ltl:rule_monitor",
         "@momamcts_project//mcts",

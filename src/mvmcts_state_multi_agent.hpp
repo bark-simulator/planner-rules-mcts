@@ -9,10 +9,11 @@
 #include <iostream>
 
 #include "ltl/rule_state.h"
+#include "bark/world/evaluation/ltl/labels/base_label_function.hpp"
 #include "mcts/state.h"
-#include "modules/models/behavior/behavior_model.hpp"
-#include "modules/world/objects/agent.hpp"
-#include "modules/world/observed_world.hpp"
+#include "bark/models/behavior/behavior_model.hpp"
+#include "bark/world/objects/agent.hpp"
+#include "bark/world/observed_world.hpp"
 #include "mvmcts_state_parameters.hpp"
 
 namespace modules {
@@ -33,7 +34,9 @@ using mcts::Reward;
 using modules::world::ObservedWorld;
 using modules::world::ObservedWorldPtr;
 using dynamic::State;
+using modules::world::evaluation::BaseLabelFunction;
 
+typedef std::vector<std::shared_ptr<BaseLabelFunction>> LabelEvaluators;
 typedef std::unordered_map<AgentId, std::vector<RuleState>>
     MultiAgentRuleState;
 
@@ -44,7 +47,7 @@ class MvmctsStateMultiAgent
                         const MultiAgentRuleState &multi_agent_rule_state,
                         const MvmctsStateParameters *params,
                         const std::vector<AgentIdx> &agent_idx,
-                        unsigned int horizon);
+                        unsigned int horizon, const LabelEvaluators* label_evaluators);
 
   std::shared_ptr<MvmctsStateMultiAgent> Clone() const;
 
@@ -83,6 +86,7 @@ class MvmctsStateMultiAgent
   const unsigned int horizon_;
   const ObservedWorldPtr observed_world_;
   bool is_terminal_state_;
+  const LabelEvaluators* label_evaluators_;
 };
 }  // namespace behavior
 }  // namespace models

@@ -12,12 +12,13 @@
 #include <easy/profiler.h>
 
 #include "ltl/label.h"
-#include "modules/models/behavior/behavior_model.hpp"
-#include "modules/models/behavior/motion_primitives/motion_primitives.hpp"
-#include "modules/models/dynamic/dynamic_model.hpp"
-#include "modules/world/evaluation/evaluator_drivable_area.hpp"
-#include "modules/world/objects/agent.hpp"
-#include "modules/world/observed_world.hpp"
+#include "bark/models/behavior/behavior_model.hpp"
+#include "bark/models/behavior/motion_primitives/motion_primitives.hpp"
+#include "bark/models/dynamic/dynamic_model.hpp"
+#include "bark/world/evaluation/evaluator_drivable_area.hpp"
+#include "bark/world/evaluation/evaluator_collision_ego_agent.hpp"
+#include "bark/world/objects/agent.hpp"
+#include "bark/world/observed_world.hpp"
 
 namespace modules {
 namespace models {
@@ -25,22 +26,25 @@ namespace behavior {
 
 using dynamic::StateDefinition;
 using ltl::Label;
-using modules::world::LabelMap;
+using modules::world::evaluation::LabelMap;
 using modules::world::ObservedWorld;
 using modules::world::ObservedWorldPtr;
 using modules::world::evaluation::EvaluatorDrivableArea;
+using modules::world::evaluation::EvaluatorCollisionEgoAgent;
+using modules::models::execution::ExecutionStatus;
 
 MvmctsStateMultiAgent::MvmctsStateMultiAgent(
     const modules::world::ObservedWorldPtr &observed_world,
     const MultiAgentRuleState &multi_agent_rule_state,
     const MvmctsStateParameters *params, const std::vector<AgentIdx> &agent_idx,
-    unsigned int horizon)
+    unsigned int horizon, const LabelEvaluators* label_evaluators)
     : multi_agent_rule_state_(multi_agent_rule_state),
       agent_idx_(agent_idx),
       state_params_(params),
       horizon_(horizon),
       observed_world_(observed_world),
-      is_terminal_state_(false) {
+      is_terminal_state_(false),
+      label_evaluators_(label_evaluators){
   is_terminal_state_ = CheckTerminal();
 }
 std::shared_ptr<MvmctsStateMultiAgent> MvmctsStateMultiAgent::Clone() const {
@@ -65,7 +69,7 @@ std::shared_ptr<MvmctsStateMultiAgent> MvmctsStateMultiAgent::Execute(
           state_params_->PREDICTION_TIME_SPAN, agent_action_map));
   auto next_state = std::make_shared<MvmctsStateMultiAgent>(
       predicted_world, multi_agent_rule_state_, state_params_, agent_idx_,
-      horizon_ - 1);
+      horizon_ - 1, label_evaluators_);
 
   AgentId world_agent_id;
   AgentPtr agent;
@@ -73,7 +77,7 @@ std::shared_ptr<MvmctsStateMultiAgent> MvmctsStateMultiAgent::Execute(
     world_agent_id = agent_ids.at(ai);
     agent = predicted_world->GetAgent(world_agent_id);
     rewards[ai] = Reward::Zero(state_params_->REWARD_VECTOR_SIZE);
-    if (agent && !agent->IsInactive()) {
+    if (agent && agent->GetExecutionStatus() == ExecutionStatus::VALID) {
       rewards[ai] += GetActionCost(agent);
       rewards[ai] += PotentialReward(
           world_agent_id, agent->GetCurrentState(),
@@ -91,7 +95,7 @@ mcts::ActionIdx MvmctsStateMultiAgent::GetNumActions(
     mcts::AgentIdx agent_idx) const {
   AgentId agent_id = GetAgentIdx()[agent_idx];
   auto agent = observed_world_->GetAgent(agent_id);
-  if (agent && !agent->IsInactive()) {
+  if (agent && agent->GetExecutionStatus() == ExecutionStatus::VALID) {
     auto agent_observed_world = std::make_shared<ObservedWorld>(std::move(observed_world_->Observe({agent_id})[0]));
     return std::dynamic_pointer_cast<BehaviorMotionPrimitives>(
                agent->GetBehaviorModel())
@@ -127,23 +131,23 @@ Reward MvmctsStateMultiAgent::EvaluateRules(const AgentPtr &agent) {
   // Create observed world from agent perspective
   ObservedWorld agent_observed_world =
       observed_world_->Observe({agent->GetAgentId()})[0];
-  agent_observed_world.AddLabels(observed_world_->GetLabelEvaluators());
 
-  // Get labels
-  LabelMap label_map = agent_observed_world.EvaluateLabels();
-  if (!is_terminal_state_ &&
-      agent->GetAgentId() == observed_world_->GetEgoAgent()->GetAgentId()) {
-    is_terminal_state_ =
-        is_terminal_state_ || label_map.at(Label("collision_ego"));
+  // Obtain labels
+  LabelMap label_map;
+  for(const auto& l : *label_evaluators_) {
+      auto labels = l->Evaluate(agent_observed_world);
+      label_map.insert(labels.begin(), labels.end());
   }
-  if (!agent->IsInactive()) {
+
+  if (agent->GetExecutionStatus() == ExecutionStatus::VALID) {
     for (auto &rule : multi_agent_rule_state_.at(agent->GetAgentId())) {
       reward(rule.GetPriority()) +=
           rule.GetAutomaton()->Evaluate(label_map, rule);
     }
-    // Check if agent is in a terminal state
+    // Check if agent has collided
     if (label_map.at(Label("collision_ego"))) {
-      observed_world_->GetAgent(agent->GetAgentId())->SetInactive();
+        // TODO: Maybe use a separate value for collisions?
+      observed_world_->GetAgent(agent->GetAgentId())->GetExecutionModel()->SetExecutionStatus(ExecutionStatus::INVALID);
     }
   }
   return reward;
@@ -183,9 +187,7 @@ Eigen::VectorXf MvmctsStateMultiAgent::GetActionCost(
                           dt;
   const float avg_vel = 0.5f * a * dt + traj(0, dynamic::VEL_POSITION);
   const float a_lat = theta_dot * avg_vel;  //  Radial acceleration
-  //  LOG(INFO) << "Theta dot:"  << theta_dot << " Vel " << avg_vel << " Alat
-  //  "
-  //  << a_lat;
+
   reward(value_pos) +=
       state_params_->RADIAL_ACCELERATION_WEIGHT * a_lat * a_lat * dt;
 
@@ -228,12 +230,19 @@ bool MvmctsStateMultiAgent::CheckTerminal() const {
   if (!ego) {
     return true;
   }
-  EvaluatorDrivableArea evaluator(observed_world_->GetEgoAgent()->GetAgentId());
+  EvaluatorDrivableArea evaluator_out_of_map;
+  EvaluatorCollisionEgoAgent evaluator_collision;
+  // Planning horizon reached
   terminal = terminal || horizon_ == 0;
+  // Out of map
   terminal =
       terminal ||
-      boost::get<bool>(evaluator.Evaluate(
+      boost::get<bool>(evaluator_out_of_map.Evaluate(
           *std::dynamic_pointer_cast<const world::World>(observed_world_)));
+  // Collision
+  terminal = terminal || boost::get<bool>(evaluator_collision.Evaluate(
+        *std::dynamic_pointer_cast<const world::World>(observed_world_)));
+  // Goal reached
   terminal = terminal || ego->AtGoal();
   return terminal;
 }

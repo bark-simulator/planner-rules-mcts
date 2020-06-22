@@ -8,8 +8,8 @@
 
 #include <map>
 #include "mcts/mcts_parameters.h"
-#include "modules/commons/params/params.hpp"
-#include "modules/models/behavior/behavior_model.hpp"
+#include "bark/commons/params/params.hpp"
+#include "bark/models/behavior/behavior_model.hpp"
 
 namespace modules {
 namespace models {
@@ -20,6 +20,6 @@ Eigen::VectorXf StdToEigen(const std::vector<float>& v);
 
 }  // namespace behavior
 }  // namespace models
-}  // namespace modules
+}  // namespace bark
 
 #endif  // MODULES_MODELS_BEHAVIOR_PLANNER_MCTS_UTIL_HPP_

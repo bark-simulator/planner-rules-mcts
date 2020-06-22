@@ -3,10 +3,10 @@
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
-#include "python/python_planner_uct.hpp"
+#include "python/python_planner_mvmcts.hpp"
 #include "mcts/random_generator.h"
 #include "src/behavior_mcts_multi_agent.hpp"
-#include "python/polymorphic_conversion.hpp"
+#include "bark/python_wrapper/polymorphic_conversion.hpp"
 #include "src/mvmcts_state_multi_agent.hpp"
 
 namespace py = pybind11;
@@ -20,11 +20,11 @@ using modules::models::behavior::MultiAgentRuleState;
 using modules::models::behavior::MvmctsStateParameters;
 using modules::models::behavior::MakeMctsParameters;
 using modules::world::PredictionSettings;
-using modules::world::LabelEvaluators;
+using modules::models::behavior::LabelEvaluators;
 using mcts::AgentIdx;
 using ltl::RuleMonitor;
 
-void python_planner_uct(py::module m) {
+void python_planner_mvmcts(py::module m) {
 
     py::class_ < BehaviorUCTMultiAgent, BehaviorModel,
         std::shared_ptr < BehaviorUCTMultiAgent >> (m, "BehaviorUCTMultiAgent")
@@ -54,7 +54,7 @@ void python_planner_uct(py::module m) {
                 [](py::tuple t) {
                     if (t.size() != 5)
                         throw std::runtime_error("Invalid behavior model state!");
-                    std::vector<LabelEvaluatorPtr> labels;
+                    LabelEvaluators labels;
                     for (const auto &label_tuple :
                         t[1].cast < std::vector < py::tuple >> ()) {
                         labels.emplace_back(PythonToLabel(label_tuple));
@@ -95,7 +95,7 @@ void python_planner_uct(py::module m) {
                 [](py::tuple t) {
                     if (t.size() != 5)
                         throw std::runtime_error("Invalid behavior model state!");
-                    std::vector<LabelEvaluatorPtr> labels;
+                    LabelEvaluators labels;
                     for (const auto &label_tuple :
                         t[1].cast < std::vector < py::tuple >> ()) {
                         labels.emplace_back(PythonToLabel(label_tuple));
@@ -113,7 +113,8 @@ void python_planner_uct(py::module m) {
                       const MultiAgentRuleState &,
                       const MvmctsStateParameters *,
                       const std::vector<AgentIdx> &,
-                      unsigned int>())
+                      unsigned int,
+                      const LabelEvaluators*>())
         .def("Execute", [](const MvmctsStateMultiAgent& state, const mcts::JointAction &joint_action) {
             std::vector<mcts::Reward> rewards;
             auto new_state = state.Execute(joint_action, rewards);

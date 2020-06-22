@@ -6,10 +6,10 @@
 
 #ifndef PYTHON_PYTHON_PLANNER_UCT_HPP_
 #define PYTHON_PYTHON_PLANNER_UCT_HPP_
-#include "python/common.hpp"
+#include "bark/python_wrapper/common.hpp"
 
 namespace py = pybind11;
 
-void python_planner_uct(py::module m);
+void python_planner_mvmcts(py::module m);
 
 #endif   // PYTHON_PYTHON_PLANNER_UCT_HPP_

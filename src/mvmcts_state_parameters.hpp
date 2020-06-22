@@ -6,8 +6,8 @@
 #ifndef MODULES_MODELS_BEHAVIOR_PLANNER_MCTS_MVMCTS_STATE_PARAMETERS_HPP_
 #define MODULES_MODELS_BEHAVIOR_PLANNER_MCTS_MVMCTS_STATE_PARAMETERS_HPP_
 
-#include "modules/commons/params/setter_params.hpp"
-#include "modules/world/observed_world.hpp"
+#include "bark/commons/params/setter_params.hpp"
+#include "bark/world/observed_world.hpp"
 
 namespace modules {
 namespace models {

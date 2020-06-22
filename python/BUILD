@@ -2,12 +2,12 @@ package(default_visibility = ["//visibility:public"])
 
 cc_library(
     name = "planner_mvmcts",
-    srcs = ["python_planner_uct.cpp"],
-    hdrs = ["python_planner_uct.hpp"],
+    srcs = ["python_planner_mvmcts.cpp"],
+    hdrs = ["python_planner_mvmcts.hpp"],
     visibility = ["//visibility:public"],
     deps = [
         "//src:planner_mvmcts_multi_agent",
-        "@bark_project//python:common",
+        "@bark_project//bark/python_wrapper:common",
         "@com_github_eigen_eigen//:eigen",
         "@pybind11",
         "@python_linux//:python-lib",
@@ -23,14 +23,14 @@ cc_binary(
     deps = [
         ":planner_mvmcts",
         "@rule_monitor_project//python/bindings:rule_monitor",
-        "@bark_project//modules/models/behavior",
-        "@bark_project//modules/models/behavior/constant_velocity",
-        "@bark_project//modules/models/behavior/motion_primitives",
-        "@bark_project//modules/models/behavior/mobil",
-        "@bark_project//modules/world",
-        "@bark_project//modules/world/evaluation:evaluator_collision_ego_agent",
-        "@bark_project//modules/world/evaluation:evaluator_goal_reached",
-        "@bark_project//python:behavior",
+        "@bark_project//bark/models/behavior",
+        "@bark_project//bark/models/behavior/constant_velocity",
+        "@bark_project//bark/models/behavior/motion_primitives",
+        "@bark_project//bark/models/behavior/rule_based:lane_change_behavior",
+        "@bark_project//bark/world",
+        "@bark_project//bark/world/evaluation:evaluator_collision_ego_agent",
+        "@bark_project//bark/world/evaluation:evaluator_goal_reached",
+        "@bark_project//bark/python_wrapper:behavior",
     ],
 )
 
@@ -46,5 +46,5 @@ py_test(
   srcs = ["pickle_unpickle_test.py"],
   data = [':planner_mvmcts.so'],
   imports = ['../../python/'],
-  deps = ["@bark_project//modules/runtime/commons:parameters"]
+  deps = ["@bark_project//bark/runtime/commons"]
 )
