@@ -6,7 +6,7 @@
 #include "mvmcts_state_parameters.hpp"
 #include "bark/models/dynamic/dynamic_model.hpp"
 
-modules::models::behavior::MvmctsStateParameters::MvmctsStateParameters(
+bark::models::behavior::MvmctsStateParameters::MvmctsStateParameters(
     const float out_of_map_weight, const float potential_weight,
     const float acceleration_weight, const float radial_acceleration_weight,
     const float desired_velocity_weight, const float lane_center_weight,
@@ -25,7 +25,7 @@ modules::models::behavior::MvmctsStateParameters::MvmctsStateParameters(
       HORIZON(horizon),
       DISCOUNT_FACTOR(discount_factor) {}
 
-modules::models::behavior::MvmctsStateParameters::MvmctsStateParameters(
+bark::models::behavior::MvmctsStateParameters::MvmctsStateParameters(
     const commons::ParamsPtr &params)
     : OUT_OF_MAP_WEIGHT(params->GetReal("BehaviorMCTSAgent::StateParameters::OutOfMapWeight", "Penalty for leaving the map", -800)),
       POTENTIAL_WEIGHT(params->GetReal("BehaviorMCTSAgent::StateParameters::PotentialWeight", "Weight of the goal potential function", -1.0)),

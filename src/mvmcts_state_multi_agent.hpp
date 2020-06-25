@@ -3,20 +3,20 @@
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
-#ifndef MODULES_MODELS_BEHAVIOR_PLANNER_MCTS_MVMCTS_STATE_MULTI_AGENT_HPP_
-#define MODULES_MODELS_BEHAVIOR_PLANNER_MCTS_MVMCTS_STATE_MULTI_AGENT_HPP_
+#ifndef SRC_MVMCTS_STATE_MULTI_AGENT_HPP_
+#define SRC_MVMCTS_STATE_MULTI_AGENT_HPP_
 
 #include <iostream>
 
 #include "ltl/rule_state.h"
-#include "bark/world/evaluation/ltl/labels/base_label_function.hpp"
+#include "bark/world/evaluation/ltl/label_functions/base_label_function.hpp"
 #include "mcts/state.h"
 #include "bark/models/behavior/behavior_model.hpp"
 #include "bark/world/objects/agent.hpp"
 #include "bark/world/observed_world.hpp"
 #include "mvmcts_state_parameters.hpp"
 
-namespace modules {
+namespace bark {
 
 namespace world {
 class ObservedWorld;
@@ -28,13 +28,13 @@ namespace behavior {
 
 using namespace mcts;
 using ltl::RuleState;
-using modules::world::AgentPtr;
-using modules::world::objects::AgentId;
+using bark::world::AgentPtr;
+using bark::world::objects::AgentId;
 using mcts::Reward;
-using modules::world::ObservedWorld;
-using modules::world::ObservedWorldPtr;
+using bark::world::ObservedWorld;
+using bark::world::ObservedWorldPtr;
 using dynamic::State;
-using modules::world::evaluation::BaseLabelFunction;
+using bark::world::evaluation::BaseLabelFunction;
 
 typedef std::vector<std::shared_ptr<BaseLabelFunction>> LabelEvaluators;
 typedef std::unordered_map<AgentId, std::vector<RuleState>>
@@ -43,7 +43,7 @@ typedef std::unordered_map<AgentId, std::vector<RuleState>>
 class MvmctsStateMultiAgent
     : public mcts::StateInterface<MvmctsStateMultiAgent> {
  public:
-  MvmctsStateMultiAgent(const modules::world::ObservedWorldPtr &observed_world,
+  MvmctsStateMultiAgent(const bark::world::ObservedWorldPtr &observed_world,
                         const MultiAgentRuleState &multi_agent_rule_state,
                         const MvmctsStateParameters *params,
                         const std::vector<AgentIdx> &agent_idx,
@@ -90,6 +90,6 @@ class MvmctsStateMultiAgent
 };
 }  // namespace behavior
 }  // namespace models
-}  // namespace modules
+}  // namespace bark
 
-#endif  // MODULES_MODELS_BEHAVIOR_PLANNER_MCTS_MVMCTS_STATE_MULTI_AGENT_HPP_
+#endif  // SRC_MVMCTS_STATE_MULTI_AGENT_HPP_

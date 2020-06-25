@@ -11,7 +11,7 @@
 #include "bark/commons/params/params.hpp"
 #include "bark/models/behavior/behavior_model.hpp"
 
-namespace modules {
+namespace bark {
 namespace models {
 namespace behavior {
 

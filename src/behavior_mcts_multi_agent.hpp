@@ -31,7 +31,7 @@
 #include "bark/world/observed_world.hpp"
 #include "bark/world/prediction/prediction_settings.hpp"
 
-namespace modules {
+namespace bark {
 namespace world {
 class ObservedWorld;
 }
@@ -43,17 +43,17 @@ using ltl::RuleMonitor;
 using ltl::RuleState;
 using mcts::MctsParameters;
 using mcts::ObjectiveVec;
-using modules::models::dynamic::SingleTrackModel;
-using modules::world::AgentMap;
-using modules::world::ObservedWorldPtr;
-using modules::world::prediction::PredictionSettings;
+using bark::models::dynamic::SingleTrackModel;
+using bark::world::AgentMap;
+using bark::world::ObservedWorldPtr;
+using bark::world::prediction::PredictionSettings;
 typedef std::unordered_map<AgentId, std::vector<std::shared_ptr<RuleMonitor>>>
     MultiAgentRuleMap;
 typedef std::pair<mcts::Reward::Scalar, geometry::Line> ValueLinePair;
 typedef std::vector<ValueLinePair> ValueLinePairVector;
 
 template <class Stat>
-class BehaviorMCTSMultiAgent : public modules::models::behavior::BehaviorModel {
+class BehaviorMCTSMultiAgent : public bark::models::behavior::BehaviorModel {
  public:
   using MctsNode = typename mcts::Mcts<MvmctsStateMultiAgent, Stat, Stat,
                                        mcts::RandomHeuristic>::StageNodeSPtr;
@@ -100,7 +100,7 @@ class BehaviorMCTSMultiAgent : public modules::models::behavior::BehaviorModel {
   std::vector<std::shared_ptr<RuleMonitor>> common_rules_;
   MultiAgentRuleMap agent_rules_;
   MultiAgentRuleState multi_agent_rule_state_;
-  modules::world::prediction::PredictionSettings prediction_settings_;
+  bark::world::prediction::PredictionSettings prediction_settings_;
   unsigned int max_num_iterations_;
   unsigned int max_search_time_;
   unsigned int random_seed_;
@@ -144,7 +144,7 @@ BehaviorMCTSMultiAgent<Stat>::BehaviorMCTSMultiAgent(
       reward_vec_size_(
           params->GetInt("BehaviorMCTSAgent::RewardVectorSize",
                          "Number of dimensions of the reward vector", 1)),
-      mcts_parameters_(modules::models::behavior::MakeMctsParameters(params)),
+      mcts_parameters_(bark::models::behavior::MakeMctsParameters(params)),
       state_params_(params),
       multi_agent_(params->GetBool("BehaviorMCTSAgent::MultiAgent",
                                    "True for multi-agent planning", true)) {
@@ -434,6 +434,6 @@ std::shared_ptr<BehaviorModel> BehaviorMCTSMultiAgent<Stat>::Clone() const {
 
 }  // namespace behavior
 }  // namespace models
-}  // namespace modules
+}  // namespace bark
 
 #endif  // MODULES_MODELS_BEHAVIOR_PLANNER_MCTS_BEHAVIOR_MCTS_MULTI_AGENT_HPP_

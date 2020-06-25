@@ -34,7 +34,7 @@ cc_library(
         ":util",
         ":mvmcts_state_parameters",
         "@bark_project//bark:include",
-        "@bark_project//bark/world/evaluation/ltl/labels:base_label_evaluator",
+        "@bark_project//bark/world/evaluation/ltl/label_functions:base_label_function",
         "@bark_project//bark/models/behavior/motion_primitives:motion_primitives",
         "@bark_project//bark/world/evaluation:evaluator_drivable_area",
         "@bark_project//bark/world/evaluation:evaluator_collision_ego_agent",

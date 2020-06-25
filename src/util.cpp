@@ -13,7 +13,7 @@
 #include <limits>
 #include <vector>
 
-namespace modules {
+namespace bark {
 namespace models {
 namespace behavior {
 
@@ -93,4 +93,4 @@ Eigen::VectorXf StdToEigen(const std::vector<float>& v) {
 
 }  // namespace behavior
 }  // namespace models
-}  // namespace modules
+}  // namespace bark

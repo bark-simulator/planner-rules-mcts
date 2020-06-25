@@ -9,11 +9,11 @@
 #include "bark/commons/params/setter_params.hpp"
 #include "bark/world/observed_world.hpp"
 
-namespace modules {
+namespace bark {
 namespace models {
 namespace behavior {
 
-using modules::commons::Params;
+using bark::commons::Params;
 
 class MvmctsStateParameters {
  public:
@@ -40,6 +40,6 @@ class MvmctsStateParameters {
 
 }  // namespace behavior
 }  // namespace models
-}  // namespace modules
+}  // namespace bark
 
 #endif  // MODULES_MODELS_BEHAVIOR_PLANNER_MCTS_MVMCTS_STATE_PARAMETERS_HPP_

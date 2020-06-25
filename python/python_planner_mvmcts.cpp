@@ -10,17 +10,17 @@
 #include "src/mvmcts_state_multi_agent.hpp"
 
 namespace py = pybind11;
-using modules::commons::Params;
-using modules::models::behavior::BehaviorModel;
-using modules::models::behavior::BehaviorUCTMultiAgent;
-using modules::models::behavior::BehaviorEGreedyMultiAgent;
-using modules::models::behavior::MultiAgentRuleMap;
-using modules::models::behavior::MvmctsStateMultiAgent;
-using modules::models::behavior::MultiAgentRuleState;
-using modules::models::behavior::MvmctsStateParameters;
-using modules::models::behavior::MakeMctsParameters;
-using modules::world::PredictionSettings;
-using modules::models::behavior::LabelEvaluators;
+using bark::commons::Params;
+using bark::models::behavior::BehaviorModel;
+using bark::models::behavior::BehaviorUCTMultiAgent;
+using bark::models::behavior::BehaviorEGreedyMultiAgent;
+using bark::models::behavior::MultiAgentRuleMap;
+using bark::models::behavior::MvmctsStateMultiAgent;
+using bark::models::behavior::MultiAgentRuleState;
+using bark::models::behavior::MvmctsStateParameters;
+using bark::models::behavior::MakeMctsParameters;
+using bark::world::PredictionSettings;
+using bark::models::behavior::LabelEvaluators;
 using mcts::AgentIdx;
 using ltl::RuleMonitor;
 
@@ -28,7 +28,7 @@ void python_planner_mvmcts(py::module m) {
 
     py::class_ < BehaviorUCTMultiAgent, BehaviorModel,
         std::shared_ptr < BehaviorUCTMultiAgent >> (m, "BehaviorUCTMultiAgent")
-            .def(py::init<const modules::commons::ParamsPtr &, const PredictionSettings &,
+            .def(py::init<const bark::commons::ParamsPtr &, const PredictionSettings &,
                           const LabelEvaluators &,
                           const std::vector<std::shared_ptr<RuleMonitor>> &,
                           const MultiAgentRuleMap &>())
@@ -64,12 +64,12 @@ void python_planner_mvmcts(py::module m) {
                         t[4].cast<PredictionSettings>(),
                         labels,
                         t[2].cast < std::vector < std::shared_ptr < ltl::RuleMonitor >> > (),
-                        t[3].cast<modules::models::behavior::MultiAgentRuleMap>());
+                        t[3].cast<bark::models::behavior::MultiAgentRuleMap>());
                 }));
 
     py::class_ < BehaviorEGreedyMultiAgent, BehaviorModel,
         std::shared_ptr < BehaviorEGreedyMultiAgent >> (m, "BehaviorEGreedyMultiAgent")
-            .def(py::init<const modules::commons::ParamsPtr &, const PredictionSettings &,
+            .def(py::init<const bark::commons::ParamsPtr &, const PredictionSettings &,
                           const LabelEvaluators &,
                           const std::vector<std::shared_ptr<RuleMonitor>> &,
                           const MultiAgentRuleMap &>())
@@ -105,11 +105,11 @@ void python_planner_mvmcts(py::module m) {
                         t[4].cast<PredictionSettings>(),
                         labels,
                         t[2].cast < std::vector < std::shared_ptr < ltl::RuleMonitor >> > (),
-                        t[3].cast<modules::models::behavior::MultiAgentRuleMap>());
+                        t[3].cast<bark::models::behavior::MultiAgentRuleMap>());
                 }));
 
     py::class_ < MvmctsStateMultiAgent, std::shared_ptr < MvmctsStateMultiAgent >> (m, "MvmctsStateMultiAgent")
-        .def(py::init<const modules::world::ObservedWorldPtr &,
+        .def(py::init<const bark::world::ObservedWorldPtr &,
                       const MultiAgentRuleState &,
                       const MvmctsStateParameters *,
                       const std::vector<AgentIdx> &,
@@ -127,7 +127,7 @@ void python_planner_mvmcts(py::module m) {
              });
 
     py::class_ < MvmctsStateParameters, std::shared_ptr < MvmctsStateParameters >> (m, "MvmctsStateParameters")
-        .def(py::init<const modules::commons::ParamsPtr &>());
+        .def(py::init<const bark::commons::ParamsPtr &>());
 //    py::class_<mcts::MctsParameters, std::shared_ptr<mcts::MctsParameters>>(m, "MctsParameters");
 
 //    m.def("MakeMvmctsStateParameters", &MakeMvmctsStateParameters);

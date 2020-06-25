@@ -11,7 +11,7 @@
 #include <memory>
 #include <easy/profiler.h>
 
-#include "ltl/label.h"
+#include "bark/world/evaluation/ltl/label/label.h"
 #include "bark/models/behavior/behavior_model.hpp"
 #include "bark/models/behavior/motion_primitives/motion_primitives.hpp"
 #include "bark/models/dynamic/dynamic_model.hpp"
@@ -20,21 +20,21 @@
 #include "bark/world/objects/agent.hpp"
 #include "bark/world/observed_world.hpp"
 
-namespace modules {
+namespace bark {
 namespace models {
 namespace behavior {
 
 using dynamic::StateDefinition;
 using ltl::Label;
-using modules::world::evaluation::LabelMap;
-using modules::world::ObservedWorld;
-using modules::world::ObservedWorldPtr;
-using modules::world::evaluation::EvaluatorDrivableArea;
-using modules::world::evaluation::EvaluatorCollisionEgoAgent;
-using modules::models::execution::ExecutionStatus;
+using bark::world::evaluation::LabelMap;
+using bark::world::ObservedWorld;
+using bark::world::ObservedWorldPtr;
+using bark::world::evaluation::EvaluatorDrivableArea;
+using bark::world::evaluation::EvaluatorCollisionEgoAgent;
+using bark::models::execution::ExecutionStatus;
 
 MvmctsStateMultiAgent::MvmctsStateMultiAgent(
-    const modules::world::ObservedWorldPtr &observed_world,
+    const bark::world::ObservedWorldPtr &observed_world,
     const MultiAgentRuleState &multi_agent_rule_state,
     const MvmctsStateParameters *params, const std::vector<AgentIdx> &agent_idx,
     unsigned int horizon, const LabelEvaluators* label_evaluators)
@@ -217,7 +217,7 @@ Reward MvmctsStateMultiAgent::PotentialReward(AgentId agent_id, const State &new
   return reward;
 }
 inline float MvmctsStateMultiAgent::Potential(
-    AgentId agent_id, const modules::models::dynamic::State &state) const {
+    AgentId agent_id, const bark::models::dynamic::State &state) const {
   const float dv = std::abs(state(dynamic::StateDefinition::VEL_POSITION) -
                             state_params_->DESIRED_VELOCITY);
   return -state_params_->POTENTIAL_WEIGHT *
@@ -251,4 +251,4 @@ const ObservedWorldPtr &MvmctsStateMultiAgent::GetObservedWorld() const {
 }
 }  // namespace behavior
 }  // namespace models
-}  // namespace modules
+}  // namespace bark
