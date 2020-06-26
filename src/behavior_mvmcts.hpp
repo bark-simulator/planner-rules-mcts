@@ -28,7 +28,7 @@
 #include "mcts/mcts_parameters.h"
 #include "mcts/statistics/e_greedy_statistic.h"
 #include "mcts/statistics/thres_uct_statistic.h"
-#include "src/mvmcts_state_multi_agent.hpp"
+#include "src/mvmcts_state.hpp"
 #include "src/util.hpp"
 
 namespace bark {
@@ -53,18 +53,18 @@ typedef std::pair<mcts::Reward::Scalar, geometry::Line> ValueLinePair;
 typedef std::vector<ValueLinePair> ValueLinePairVector;
 
 template <class Stat>
-class BehaviorMCTSMultiAgent : public bark::models::behavior::BehaviorModel {
+class BehaviorMvmcts : public bark::models::behavior::BehaviorModel {
  public:
   using MctsNode = typename mcts::Mcts<MvmctsStateMultiAgent, Stat, Stat,
                                        mcts::RandomHeuristic>::StageNodeSPtr;
 
-  BehaviorMCTSMultiAgent(
+  BehaviorMvmcts(
       const ParamsPtr& params, const PredictionSettings& prediction_settings,
       const LabelEvaluators& label_evaluators,
       const std::vector<std::shared_ptr<RuleMonitor>>& common_rules,
       const MultiAgentRuleMap& agent_rules);
 
-  ~BehaviorMCTSMultiAgent() = default;
+  ~BehaviorMvmcts() = default;
 
   Trajectory Plan(float delta_time,
                   const world::ObservedWorld& observed_world) override;
@@ -92,7 +92,7 @@ class BehaviorMCTSMultiAgent : public bark::models::behavior::BehaviorModel {
       const world::ObservedWorld& observed_world) const;
   void MakeRuleStates(const std::vector<int>& new_agent_ids);
   void AddKnownAgents(const std::vector<int>& agent_ids);
-  ValueLinePairVector DfsTree(BehaviorMCTSMultiAgent::MctsNode root,
+  ValueLinePairVector DfsTree(BehaviorMvmcts::MctsNode root,
                               const ValueLinePair& prefix, size_t value_idx);
 
   std::vector<std::shared_ptr<RuleMonitor>> common_rules_;
@@ -112,12 +112,11 @@ class BehaviorMCTSMultiAgent : public bark::models::behavior::BehaviorModel {
   const bool multi_agent_;
 };
 
-typedef BehaviorMCTSMultiAgent<mcts::ThresUCTStatistic> BehaviorUCTMultiAgent;
-typedef BehaviorMCTSMultiAgent<mcts::EGreedyStatistic>
-    BehaviorEGreedyMultiAgent;
+typedef BehaviorMvmcts<mcts::ThresUCTStatistic> BehaviorMvmctsUct;
+typedef BehaviorMvmcts<mcts::EGreedyStatistic> BehaviorMvmctsEGreedy;
 
 template <class Stat>
-BehaviorMCTSMultiAgent<Stat>::BehaviorMCTSMultiAgent(
+BehaviorMvmcts<Stat>::BehaviorMvmcts(
     const ParamsPtr& params, const PredictionSettings& prediction_settings,
     const LabelEvaluators& label_evaluators,
     const std::vector<std::shared_ptr<RuleMonitor>>& common_rules,
@@ -150,7 +149,7 @@ BehaviorMCTSMultiAgent<Stat>::BehaviorMCTSMultiAgent(
 }
 
 template <class Stat>
-dynamic::Trajectory BehaviorMCTSMultiAgent<Stat>::Plan(
+dynamic::Trajectory BehaviorMvmcts<Stat>::Plan(
     float delta_time, const world::ObservedWorld& observed_world) {
   ObservedWorldPtr mcts_observed_world =
       std::dynamic_pointer_cast<ObservedWorld>(observed_world.Clone());
@@ -209,7 +208,7 @@ dynamic::Trajectory BehaviorMCTSMultiAgent<Stat>::Plan(
   // Save root node of mcts for tree visualization
   root_ = mcts.GetRoot();
 
-  LOG(INFO) << "BehaviorMCTSMultiAgent, iterations: " << mcts.NumIterations()
+  LOG(INFO) << "BehaviorMvmcts, iterations: " << mcts.NumIterations()
             << ", best action: " << best_action
             << ", current state: " << traj.row(traj.rows() - 1);
 
@@ -221,7 +220,7 @@ dynamic::Trajectory BehaviorMCTSMultiAgent<Stat>::Plan(
 /// \tparam Stat
 /// \param rules
 template <class Stat>
-void BehaviorMCTSMultiAgent<Stat>::AddCommonRules(
+void BehaviorMvmcts<Stat>::AddCommonRules(
     const std::vector<std::shared_ptr<RuleMonitor>>& rules) {
   common_rules_.insert(common_rules_.end(), rules.begin(), rules.end());
   // Print automata to dot file
@@ -239,7 +238,7 @@ void BehaviorMCTSMultiAgent<Stat>::AddCommonRules(
 /// \param agent_ids AgentIDs of agent to add rules to
 /// \param rules
 template <class Stat>
-void BehaviorMCTSMultiAgent<Stat>::AddAgentRules(
+void BehaviorMvmcts<Stat>::AddAgentRules(
     const std::vector<AgentId>& agent_ids,
     const std::vector<std::shared_ptr<RuleMonitor>>& rules) {
   // Need to store rules separately that if there appears a new agent, we can
@@ -255,7 +254,7 @@ void BehaviorMCTSMultiAgent<Stat>::AddAgentRules(
   }
 }
 template <class Stat>
-void BehaviorMCTSMultiAgent<Stat>::MakeRuleStates(
+void BehaviorMvmcts<Stat>::MakeRuleStates(
     const std::vector<int>& new_agent_ids) {
   std::vector<int> current_agent_ids;
   std::set_union(new_agent_ids.begin(), new_agent_ids.end(),
@@ -313,30 +312,30 @@ void BehaviorMCTSMultiAgent<Stat>::MakeRuleStates(
 }
 template <class Stat>
 const std::vector<std::shared_ptr<RuleMonitor>>&
-BehaviorMCTSMultiAgent<Stat>::GetCommonRules() const {
+BehaviorMvmcts<Stat>::GetCommonRules() const {
   return common_rules_;
 }
 template <class Stat>
-const MultiAgentRuleMap& BehaviorMCTSMultiAgent<Stat>::GetAgentRules() const {
+const MultiAgentRuleMap& BehaviorMvmcts<Stat>::GetAgentRules() const {
   return agent_rules_;
 }
 template <class Stat>
-void BehaviorMCTSMultiAgent<Stat>::AddLabels(
+void BehaviorMvmcts<Stat>::AddLabels(
     const LabelEvaluators& label_evaluators) {
   label_evaluators_.insert(label_evaluators_.end(), label_evaluators.begin(),
                            label_evaluators.end());
 }
 template <class Stat>
-const MctsParameters& BehaviorMCTSMultiAgent<Stat>::GetMctsParameters() const {
+const MctsParameters& BehaviorMvmcts<Stat>::GetMctsParameters() const {
   return mcts_parameters_;
 }
 template <class Stat>
-void BehaviorMCTSMultiAgent<Stat>::SetMctsParameters(
+void BehaviorMvmcts<Stat>::SetMctsParameters(
     const MctsParameters& mcts_parameters) {
   mcts_parameters_ = mcts_parameters;
 }
 template <class Stat>
-std::vector<int> BehaviorMCTSMultiAgent<Stat>::GetNewAgents(
+std::vector<int> BehaviorMvmcts<Stat>::GetNewAgents(
     const AgentMap& agent_map) {
   std::vector<int> sorted_agent_ids;
   // Convert type to int
@@ -358,7 +357,7 @@ std::vector<int> BehaviorMCTSMultiAgent<Stat>::GetNewAgents(
 //! \return A vector of interacting agent ids. Ego is always stored in the first
 //! entry
 template <class Stat>
-std::vector<AgentIdx> BehaviorMCTSMultiAgent<Stat>::GetAgentIdMap(
+std::vector<AgentIdx> BehaviorMvmcts<Stat>::GetAgentIdMap(
     const world::ObservedWorld& observed_world) const {
   std::vector<mcts::AgentIdx> agent_ids;
   if (multi_agent_) {
@@ -376,23 +375,23 @@ std::vector<AgentIdx> BehaviorMCTSMultiAgent<Stat>::GetAgentIdMap(
   return agent_ids;
 }
 template <class Stat>
-void BehaviorMCTSMultiAgent<Stat>::AddKnownAgents(
+void BehaviorMvmcts<Stat>::AddKnownAgents(
     const std::vector<int>& agent_ids) {
   known_agents_.insert(agent_ids.begin(), agent_ids.end());
 }
 template <class Stat>
-const LabelEvaluators& BehaviorMCTSMultiAgent<Stat>::GetLabelEvaluators()
+const LabelEvaluators& BehaviorMvmcts<Stat>::GetLabelEvaluators()
     const {
   return label_evaluators_;
 }
 template <class Stat>
-const PredictionSettings& BehaviorMCTSMultiAgent<Stat>::GetPredictionSettings()
+const PredictionSettings& BehaviorMvmcts<Stat>::GetPredictionSettings()
     const {
   return prediction_settings_;
 }
 
 template <class Stat>
-ValueLinePairVector BehaviorMCTSMultiAgent<Stat>::GetTree(size_t value_idx) {
+ValueLinePairVector BehaviorMvmcts<Stat>::GetTree(size_t value_idx) {
   ValueLinePairVector lines;
   if (root_) {
     lines = DfsTree(root_, ValueLinePair(0.0f, geometry::Line()), value_idx);
@@ -400,8 +399,7 @@ ValueLinePairVector BehaviorMCTSMultiAgent<Stat>::GetTree(size_t value_idx) {
   return lines;
 }
 template <class Stat>
-ValueLinePairVector BehaviorMCTSMultiAgent<Stat>::DfsTree(
-    BehaviorMCTSMultiAgent::MctsNode root, const ValueLinePair& prefix,
+ValueLinePairVector BehaviorMvmcts<Stat>::DfsTree(BehaviorMvmcts::MctsNode root, const ValueLinePair& prefix,
     size_t value_idx) {
   ValueLinePair new_prefix(prefix);
   auto ego_agent = root->GetState()->GetObservedWorld()->GetEgoAgent();
@@ -424,9 +422,9 @@ ValueLinePairVector BehaviorMCTSMultiAgent<Stat>::DfsTree(
   return lines;
 }
 template <class Stat>
-std::shared_ptr<BehaviorModel> BehaviorMCTSMultiAgent<Stat>::Clone() const {
+std::shared_ptr<BehaviorModel> BehaviorMvmcts<Stat>::Clone() const {
   return std::dynamic_pointer_cast<BehaviorModel>(
-      std::make_shared<BehaviorMCTSMultiAgent<Stat>>(*this));
+      std::make_shared<BehaviorMvmcts<Stat>>(*this));
 }
 
 }  // namespace behavior

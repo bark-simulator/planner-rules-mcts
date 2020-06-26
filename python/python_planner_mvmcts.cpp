@@ -5,15 +5,15 @@
 
 #include "python/python_planner_mvmcts.hpp"
 #include "mcts/random_generator.h"
-#include "src/behavior_mcts_multi_agent.hpp"
+#include "src/behavior_mvmcts.hpp"
 #include "bark/python_wrapper/polymorphic_conversion.hpp"
-#include "src/mvmcts_state_multi_agent.hpp"
+#include "src/mvmcts_state.hpp"
 
 namespace py = pybind11;
 using bark::commons::Params;
 using bark::models::behavior::BehaviorModel;
-using bark::models::behavior::BehaviorUCTMultiAgent;
-using bark::models::behavior::BehaviorEGreedyMultiAgent;
+using bark::models::behavior::BehaviorModel;
+using bark::models::behavior::LabelEvaluators;
 using bark::models::behavior::MultiAgentRuleMap;
 using bark::models::behavior::MvmctsStateMultiAgent;
 using bark::models::behavior::MultiAgentRuleState;
@@ -26,22 +26,22 @@ using ltl::RuleMonitor;
 
 void python_planner_mvmcts(py::module m) {
 
-    py::class_ < BehaviorUCTMultiAgent, BehaviorModel,
-        std::shared_ptr < BehaviorUCTMultiAgent >> (m, "BehaviorUCTMultiAgent")
+    py::class_ <BehaviorMvmctsUct, BehaviorModel,
+        std::shared_ptr <BehaviorMvmctsUct>> (m, "BehaviorMvmctsUct")
             .def(py::init<const bark::commons::ParamsPtr &, const PredictionSettings &,
                           const LabelEvaluators &,
                           const std::vector<std::shared_ptr<RuleMonitor>> &,
                           const MultiAgentRuleMap &>())
-            .def("AddAgentRules", &BehaviorUCTMultiAgent::AddAgentRules)
-            .def("AddCommonRules", &BehaviorUCTMultiAgent::AddCommonRules)
-            .def("AddLabels", &BehaviorUCTMultiAgent::AddLabels)
-            .def("GetTree", &BehaviorUCTMultiAgent::GetTree)
+            .def("AddAgentRules", &BehaviorMvmctsUct::AddAgentRules)
+            .def("AddCommonRules", &BehaviorMvmctsUct::AddCommonRules)
+            .def("AddLabels", &BehaviorMvmctsUct::AddLabels)
+            .def("GetTree", &BehaviorMvmctsUct::GetTree)
             .def("__repr__",
-                 [](const BehaviorUCTMultiAgent &m) {
-                     return "bark.behavior.BehaviorUCTMultiAgent";
+                 [](const BehaviorMvmctsUct&m) {
+                     return "bark.behavior.BehaviorMvmctsUct";
                  })
             .def(py::pickle(
-                [](const BehaviorUCTMultiAgent &b) {
+                [](const BehaviorMvmctsUct&b) {
                     std::vector<py::tuple> labels;
                     for (const auto &label : b.GetLabelEvaluators()) {
                         labels.emplace_back(LabelToPython(label));
@@ -59,7 +59,7 @@ void python_planner_mvmcts(py::module m) {
                         t[1].cast < std::vector < py::tuple >> ()) {
                         labels.emplace_back(PythonToLabel(label_tuple));
                     }
-                    return new BehaviorUCTMultiAgent(
+                    return new BehaviorMvmctsUct(
                         PythonToParams(t[0].cast<py::tuple>()),
                         t[4].cast<PredictionSettings>(),
                         labels,
@@ -67,22 +67,22 @@ void python_planner_mvmcts(py::module m) {
                         t[3].cast<bark::models::behavior::MultiAgentRuleMap>());
                 }));
 
-    py::class_ < BehaviorEGreedyMultiAgent, BehaviorModel,
-        std::shared_ptr < BehaviorEGreedyMultiAgent >> (m, "BehaviorEGreedyMultiAgent")
+    py::class_ <BehaviorMvmctsEGreedy, BehaviorModel,
+        std::shared_ptr <BehaviorMvmctsEGreedy>> (m, "BehaviorMvmctsEGreedy")
             .def(py::init<const bark::commons::ParamsPtr &, const PredictionSettings &,
                           const LabelEvaluators &,
                           const std::vector<std::shared_ptr<RuleMonitor>> &,
                           const MultiAgentRuleMap &>())
-            .def("AddAgentRules", &BehaviorEGreedyMultiAgent::AddAgentRules)
-            .def("AddCommonRules", &BehaviorEGreedyMultiAgent::AddCommonRules)
-            .def("AddLabels", &BehaviorEGreedyMultiAgent::AddLabels)
-            .def("GetTree", &BehaviorEGreedyMultiAgent::GetTree)
+            .def("AddAgentRules", &BehaviorMvmctsEGreedy::AddAgentRules)
+            .def("AddCommonRules", &BehaviorMvmctsEGreedy::AddCommonRules)
+            .def("AddLabels", &BehaviorMvmctsEGreedy::AddLabels)
+            .def("GetTree", &BehaviorMvmctsEGreedy::GetTree)
             .def("__repr__",
-                 [](const BehaviorEGreedyMultiAgent &m) {
-                     return "bark.behavior.BehaviorEGreedyMultiAgent";
+                 [](const BehaviorMvmctsEGreedy&m) {
+                     return "bark.behavior.BehaviorMvmctsEGreedy";
                  })
             .def(py::pickle(
-                [](const BehaviorEGreedyMultiAgent &b) {
+                [](const BehaviorMvmctsEGreedy&b) {
                     std::vector<py::tuple> labels;
                     for (const auto &label : b.GetLabelEvaluators()) {
                         labels.emplace_back(LabelToPython(label));
@@ -100,7 +100,7 @@ void python_planner_mvmcts(py::module m) {
                         t[1].cast < std::vector < py::tuple >> ()) {
                         labels.emplace_back(PythonToLabel(label_tuple));
                     }
-                    return new BehaviorEGreedyMultiAgent(
+                    return new BehaviorMvmctsEGreedy(
                         PythonToParams(t[0].cast<py::tuple>()),
                         t[4].cast<PredictionSettings>(),
                         labels,

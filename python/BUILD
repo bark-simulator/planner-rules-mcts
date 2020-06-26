@@ -6,7 +6,7 @@ cc_library(
     hdrs = ["python_planner_mvmcts.hpp"],
     visibility = ["//visibility:public"],
     deps = [
-        "//src:planner_mvmcts_multi_agent",
+        "//src:planner_mvmcts",
         "@bark_project//bark/python_wrapper:common",
         "@com_github_eigen_eigen//:eigen",
         "@pybind11",

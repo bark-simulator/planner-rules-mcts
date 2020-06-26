@@ -21,13 +21,13 @@ cc_library(
 )
 
 cc_library(
-    name = "planner_mvmcts_multi_agent",
+    name = "planner_mvmcts",
     srcs = [
-        "mvmcts_state_multi_agent.cpp",
+        "mvmcts_state.cpp",
     ],
     hdrs = [
-        "behavior_mcts_multi_agent.hpp",
-        "mvmcts_state_multi_agent.hpp",
+        "behavior_mvmcts.hpp",
+        "mvmcts_state.hpp",
     ],
     visibility = ["//visibility:public"],
     deps = [

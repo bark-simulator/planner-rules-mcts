@@ -8,4 +8,4 @@ print(sys.path)
 
 import time
 # time.sleep(20)
-from planner_mvmcts import BehaviorMCTSMultiAgent
+from planner_mvmcts import BehaviorMvmcts
