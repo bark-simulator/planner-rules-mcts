@@ -3,19 +3,20 @@
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
-#include "mvmcts_state_multi_agent.hpp"
+#include "src/mvmcts_state.hpp"
 
-#include <unordered_map>
-#include <string>
-#include <vector>
 #include <memory>
+#include <string>
+#include <unordered_map>
+#include <utility>
+#include <vector>
 
-#include "bark/world/evaluation/ltl/label/label.h"
 #include "bark/models/behavior/behavior_model.hpp"
 #include "bark/models/behavior/motion_primitives/motion_primitives.hpp"
 #include "bark/models/dynamic/dynamic_model.hpp"
-#include "bark/world/evaluation/evaluator_drivable_area.hpp"
 #include "bark/world/evaluation/evaluator_collision_ego_agent.hpp"
+#include "bark/world/evaluation/evaluator_drivable_area.hpp"
+#include "bark/world/evaluation/ltl/label/label.h"
 #include "bark/world/objects/agent.hpp"
 #include "bark/world/observed_world.hpp"
 
@@ -23,19 +24,19 @@ namespace bark {
 namespace models {
 namespace behavior {
 
-using dynamic::StateDefinition;
-using ltl::Label;
-using bark::world::evaluation::LabelMap;
+using bark::models::execution::ExecutionStatus;
 using bark::world::ObservedWorld;
 using bark::world::ObservedWorldPtr;
-using bark::world::evaluation::EvaluatorDrivableArea;
 using bark::world::evaluation::EvaluatorCollisionEgoAgent;
-using bark::models::execution::ExecutionStatus;
+using bark::world::evaluation::EvaluatorDrivableArea;
+using bark::world::evaluation::LabelMap;
+using dynamic::StateDefinition;
+using ltl::Label;
 
-MvmctsStateMultiAgent::MvmctsStateMultiAgent(
-    const bark::world::ObservedWorldPtr &observed_world,
-    const MultiAgentRuleState &multi_agent_rule_state,
-    const MvmctsStateParameters *params, const std::vector<AgentIdx> &agent_idx,
+MvmctsState::MvmctsState(
+    const bark::world::ObservedWorldPtr& observed_world,
+    const MultiAgentRuleState& multi_agent_rule_state,
+    const MvmctsStateParameters* params, const std::vector<AgentIdx>& agent_idx,
     unsigned int horizon, const LabelEvaluators* label_evaluators)
     : multi_agent_rule_state_(multi_agent_rule_state),
       agent_idx_(agent_idx),
@@ -43,15 +44,15 @@ MvmctsStateMultiAgent::MvmctsStateMultiAgent(
       horizon_(horizon),
       observed_world_(observed_world),
       is_terminal_state_(false),
-      label_evaluators_(label_evaluators){
+      label_evaluators_(label_evaluators) {
   is_terminal_state_ = CheckTerminal();
 }
-std::shared_ptr<MvmctsStateMultiAgent> MvmctsStateMultiAgent::Clone() const {
-  return std::make_shared<MvmctsStateMultiAgent>(*this);
+std::shared_ptr<MvmctsState> MvmctsState::Clone() const {
+  return std::make_shared<MvmctsState>(*this);
 }
-std::shared_ptr<MvmctsStateMultiAgent> MvmctsStateMultiAgent::Execute(
-    const mcts::JointAction &joint_action,
-    std::vector<mcts::Reward> &rewards) const {
+std::shared_ptr<MvmctsState> MvmctsState::Execute(
+    const mcts::JointAction& joint_action,
+    std::vector<mcts::Reward>& rewards) const {
   BARK_EXPECT_TRUE(!IsTerminal());
   std::vector<AgentIdx> agent_ids = GetAgentIdx();
   size_t num_agents = agent_ids.size();
@@ -65,7 +66,7 @@ std::shared_ptr<MvmctsStateMultiAgent> MvmctsStateMultiAgent::Execute(
   auto predicted_world =
       std::dynamic_pointer_cast<ObservedWorld>(observed_world_->Predict(
           state_params_->PREDICTION_TIME_SPAN, agent_action_map));
-  auto next_state = std::make_shared<MvmctsStateMultiAgent>(
+  auto next_state = std::make_shared<MvmctsState>(
       predicted_world, multi_agent_rule_state_, state_params_, agent_idx_,
       horizon_ - 1, label_evaluators_);
 
@@ -89,12 +90,13 @@ std::shared_ptr<MvmctsStateMultiAgent> MvmctsStateMultiAgent::Execute(
   }
   return next_state;
 }
-mcts::ActionIdx MvmctsStateMultiAgent::GetNumActions(
+mcts::ActionIdx MvmctsState::GetNumActions(
     mcts::AgentIdx agent_idx) const {
   AgentId agent_id = GetAgentIdx()[agent_idx];
   auto agent = observed_world_->GetAgent(agent_id);
   if (agent && agent->GetExecutionStatus() == ExecutionStatus::VALID) {
-    auto agent_observed_world = std::make_shared<ObservedWorld>(std::move(observed_world_->Observe({agent_id})[0]));
+    auto agent_observed_world = std::make_shared<ObservedWorld>(
+        std::move(observed_world_->Observe({agent_id})[0]));
     return std::dynamic_pointer_cast<BehaviorMotionPrimitives>(
                agent->GetBehaviorModel())
         ->GetNumMotionPrimitives(agent_observed_world);
@@ -102,13 +104,13 @@ mcts::ActionIdx MvmctsStateMultiAgent::GetNumActions(
     return 1;
   }
 }
-bool MvmctsStateMultiAgent::IsTerminal() const { return is_terminal_state_; }
-const std::vector<mcts::AgentIdx> MvmctsStateMultiAgent::GetAgentIdx() const {
+bool MvmctsState::IsTerminal() const { return is_terminal_state_; }
+const std::vector<mcts::AgentIdx> MvmctsState::GetAgentIdx() const {
   return agent_idx_;
 }
-std::string MvmctsStateMultiAgent::PrintState() const { return std::string(); }
+std::string MvmctsState::PrintState() const { return std::string(); }
 
-std::vector<Reward> MvmctsStateMultiAgent::GetTerminalReward() const {
+std::vector<Reward> MvmctsState::GetTerminalReward() const {
   std::vector<AgentIdx> agent_ids = GetAgentIdx();
   size_t num_agents = agent_ids.size();
   JointReward rewards(num_agents,
@@ -116,7 +118,7 @@ std::vector<Reward> MvmctsStateMultiAgent::GetTerminalReward() const {
   for (size_t ai = 0; ai < num_agents; ++ai) {
     // Only get final reward for agents present
     if (observed_world_->GetAgent(agent_ids[ai])) {
-      for (const auto &rule : multi_agent_rule_state_.at(agent_ids[ai])) {
+      for (const auto& rule : multi_agent_rule_state_.at(agent_ids[ai])) {
         rewards[ai](rule.GetPriority()) +=
             rule.GetAutomaton()->FinalTransit(rule);
       }
@@ -124,7 +126,7 @@ std::vector<Reward> MvmctsStateMultiAgent::GetTerminalReward() const {
   }
   return rewards;
 }
-Reward MvmctsStateMultiAgent::EvaluateRules(const AgentPtr &agent) {
+Reward MvmctsState::EvaluateRules(const AgentPtr& agent) {
   Reward reward = Reward::Zero(state_params_->REWARD_VECTOR_SIZE);
   // Create observed world from agent perspective
   ObservedWorld agent_observed_world =
@@ -132,25 +134,27 @@ Reward MvmctsStateMultiAgent::EvaluateRules(const AgentPtr &agent) {
 
   // Obtain labels
   LabelMap label_map;
-  for(const auto& l : *label_evaluators_) {
-      auto labels = l->Evaluate(agent_observed_world);
-      label_map.insert(labels.begin(), labels.end());
+  for (const auto& l : *label_evaluators_) {
+    auto labels = l->Evaluate(agent_observed_world);
+    label_map.insert(labels.begin(), labels.end());
   }
 
   if (agent->GetExecutionStatus() == ExecutionStatus::VALID) {
-    for (auto &rule : multi_agent_rule_state_.at(agent->GetAgentId())) {
+    for (auto& rule : multi_agent_rule_state_.at(agent->GetAgentId())) {
       reward(rule.GetPriority()) +=
           rule.GetAutomaton()->Evaluate(label_map, rule);
     }
     // Check if agent has collided
     if (label_map.at(Label("collision_ego"))) {
-        // TODO: Maybe use a separate value for collisions?
-      observed_world_->GetAgent(agent->GetAgentId())->GetExecutionModel()->SetExecutionStatus(ExecutionStatus::INVALID);
+      // TODO: Maybe use a separate value for collisions?
+      observed_world_->GetAgent(agent->GetAgentId())
+          ->GetExecutionModel()
+          ->SetExecutionStatus(ExecutionStatus::INVALID);
     }
   }
   return reward;
 }
-JointReward MvmctsStateMultiAgent::EvaluateRules() {
+JointReward MvmctsState::EvaluateRules() {
   const auto agent_ids = GetAgentIdx();
   JointReward rewards = JointReward(
       agent_ids.size(), Reward::Zero(state_params_->REWARD_VECTOR_SIZE));
@@ -162,13 +166,13 @@ JointReward MvmctsStateMultiAgent::EvaluateRules() {
   }
   return rewards;
 }
-const MultiAgentRuleState &MvmctsStateMultiAgent::GetMultiAgentRuleState()
+const MultiAgentRuleState& MvmctsState::GetMultiAgentRuleState()
     const {
   return multi_agent_rule_state_;
 }
 
-Eigen::VectorXf MvmctsStateMultiAgent::GetActionCost(
-    const std::shared_ptr<const world::Agent> &agent) const {
+Eigen::VectorXf MvmctsState::GetActionCost(
+    const std::shared_ptr<const world::Agent>& agent) const {
   Eigen::VectorXf reward = Reward::Zero(state_params_->REWARD_VECTOR_SIZE);
   const size_t value_pos = state_params_->REWARD_VECTOR_SIZE - 1;
   auto traj = agent->GetBehaviorModel()->GetLastTrajectory();
@@ -193,7 +197,7 @@ Eigen::VectorXf MvmctsStateMultiAgent::GetActionCost(
   reward(value_pos) += state_params_->DESIRED_VELOCITY_WEIGHT *
                        fabs(avg_vel - state_params_->DESIRED_VELOCITY) * dt;
   //  Lane center deviation
-  const auto &lane_corridor = agent->GetRoadCorridor()->GetCurrentLaneCorridor(
+  const auto& lane_corridor = agent->GetRoadCorridor()->GetCurrentLaneCorridor(
       agent->GetCurrentPosition());
   if (lane_corridor) {
     const float lane_center_dev =
@@ -206,23 +210,24 @@ Eigen::VectorXf MvmctsStateMultiAgent::GetActionCost(
   return reward;
 }
 
-Reward MvmctsStateMultiAgent::PotentialReward(AgentId agent_id, const State &new_state,
-                                    const State &current_state) const {
+Reward MvmctsState::PotentialReward(
+    AgentId agent_id, const State& new_state,
+    const State& current_state) const {
   Eigen::VectorXf reward = Reward::Zero(state_params_->REWARD_VECTOR_SIZE);
   reward(reward.size() - 1) =
       state_params_->DISCOUNT_FACTOR * Potential(agent_id, new_state) -
       Potential(agent_id, current_state);
   return reward;
 }
-inline float MvmctsStateMultiAgent::Potential(
-    AgentId agent_id, const bark::models::dynamic::State &state) const {
+inline float MvmctsState::Potential(
+    AgentId agent_id, const bark::models::dynamic::State& state) const {
   const float dv = std::abs(state(dynamic::StateDefinition::VEL_POSITION) -
                             state_params_->DESIRED_VELOCITY);
   return -state_params_->POTENTIAL_WEIGHT *
          state_params_->PREDICTION_TIME_SPAN * dv;
 }
 
-bool MvmctsStateMultiAgent::CheckTerminal() const {
+bool MvmctsState::CheckTerminal() const {
   bool terminal = false;
   auto ego = observed_world_->GetEgoAgent();
   if (!ego) {
@@ -238,13 +243,15 @@ bool MvmctsStateMultiAgent::CheckTerminal() const {
       boost::get<bool>(evaluator_out_of_map.Evaluate(
           *std::dynamic_pointer_cast<const world::World>(observed_world_)));
   // Collision
-  terminal = terminal || boost::get<bool>(evaluator_collision.Evaluate(
-        *std::dynamic_pointer_cast<const world::World>(observed_world_)));
+  terminal =
+      terminal ||
+      boost::get<bool>(evaluator_collision.Evaluate(
+          *std::dynamic_pointer_cast<const world::World>(observed_world_)));
   // Goal reached
   terminal = terminal || ego->AtGoal();
   return terminal;
 }
-const ObservedWorldPtr &MvmctsStateMultiAgent::GetObservedWorld() const {
+const ObservedWorldPtr& MvmctsState::GetObservedWorld() const {
   return observed_world_;
 }
 }  // namespace behavior

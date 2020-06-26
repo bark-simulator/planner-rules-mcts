@@ -55,7 +55,7 @@ typedef std::vector<ValueLinePair> ValueLinePairVector;
 template <class Stat>
 class BehaviorMvmcts : public bark::models::behavior::BehaviorModel {
  public:
-  using MctsNode = typename mcts::Mcts<MvmctsStateMultiAgent, Stat, Stat,
+  using MctsNode = typename mcts::Mcts<MvmctsState, Stat, Stat,
                                        mcts::RandomHeuristic>::StageNodeSPtr;
 
   BehaviorMvmcts(
@@ -156,7 +156,7 @@ dynamic::Trajectory BehaviorMvmcts<Stat>::Plan(
   mcts_observed_world->SetupPrediction(prediction_settings_);
 
   // SETUP MCTS
-  mcts::Mcts<MvmctsStateMultiAgent, Stat, Stat, mcts::RandomHeuristic> mcts(
+  mcts::Mcts<MvmctsState, Stat, Stat, mcts::RandomHeuristic> mcts(
       mcts_parameters_);
 
   // SETUP MCTS STATE
@@ -166,7 +166,7 @@ dynamic::Trajectory BehaviorMvmcts<Stat>::Plan(
   MakeRuleStates(new_agents);
   AddKnownAgents(new_agents);
   auto agent_ids = GetAgentIdMap(observed_world);
-  MvmctsStateMultiAgent mcts_state(mcts_observed_world, multi_agent_rule_state_,
+  MvmctsState mcts_state(mcts_observed_world, multi_agent_rule_state_,
                                    &state_params_, agent_ids,
                                    state_params_.HORIZON, &label_evaluators_);
 

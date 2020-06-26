@@ -15,7 +15,7 @@ using bark::models::behavior::BehaviorModel;
 using bark::models::behavior::BehaviorModel;
 using bark::models::behavior::LabelEvaluators;
 using bark::models::behavior::MultiAgentRuleMap;
-using bark::models::behavior::MvmctsStateMultiAgent;
+using bark::models::behavior::MultiAgentRuleState;
 using bark::models::behavior::MultiAgentRuleState;
 using bark::models::behavior::MvmctsStateParameters;
 using bark::models::behavior::MakeMctsParameters;
@@ -108,22 +108,22 @@ void python_planner_mvmcts(py::module m) {
                         t[3].cast<bark::models::behavior::MultiAgentRuleMap>());
                 }));
 
-    py::class_ < MvmctsStateMultiAgent, std::shared_ptr < MvmctsStateMultiAgent >> (m, "MvmctsStateMultiAgent")
+    py::class_ <MvmctsState, std::shared_ptr <MvmctsState>> (m, "MvmctsState")
         .def(py::init<const bark::world::ObservedWorldPtr &,
                       const MultiAgentRuleState &,
                       const MvmctsStateParameters *,
                       const std::vector<AgentIdx> &,
                       unsigned int,
                       const LabelEvaluators*>())
-        .def("Execute", [](const MvmctsStateMultiAgent& state, const mcts::JointAction &joint_action) {
+        .def("Execute", [](const MvmctsState& state, const mcts::JointAction &joint_action) {
             std::vector<mcts::Reward> rewards;
             auto new_state = state.Execute(joint_action, rewards);
             return std::make_tuple(new_state, rewards);
         })
-        .def_property_readonly("observed_world", &MvmctsStateMultiAgent::GetObservedWorld)
+        .def_property_readonly("observed_world", &MvmctsState::GetObservedWorld)
         .def("__repr__",
-             [](const MvmctsStateMultiAgent &m) {
-                 return "bark.behavior.MvmctsStateMultiAgent";
+             [](const MvmctsState&m) {
+                 return "bark.behavior.MvmctsState";
              });
 
     py::class_ < MvmctsStateParameters, std::shared_ptr < MvmctsStateParameters >> (m, "MvmctsStateParameters")

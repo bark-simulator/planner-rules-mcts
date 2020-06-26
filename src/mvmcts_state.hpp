@@ -40,18 +40,17 @@ typedef std::vector<std::shared_ptr<BaseLabelFunction>> LabelEvaluators;
 typedef std::unordered_map<AgentId, std::vector<RuleState>>
     MultiAgentRuleState;
 
-class MvmctsStateMultiAgent
-    : public mcts::StateInterface<MvmctsStateMultiAgent> {
+class MvmctsState : public mcts::StateInterface<MvmctsState> {
  public:
-  MvmctsStateMultiAgent(const bark::world::ObservedWorldPtr &observed_world,
+  MvmctsState(const bark::world::ObservedWorldPtr &observed_world,
                         const MultiAgentRuleState &multi_agent_rule_state,
                         const MvmctsStateParameters *params,
                         const std::vector<AgentIdx> &agent_idx,
                         unsigned int horizon, const LabelEvaluators* label_evaluators);
 
-  std::shared_ptr<MvmctsStateMultiAgent> Clone() const;
+  std::shared_ptr<MvmctsState> Clone() const;
 
-  std::shared_ptr<MvmctsStateMultiAgent> Execute(
+  std::shared_ptr<MvmctsState> Execute(
       const mcts::JointAction &joint_action,
       std::vector<mcts::Reward> &rewards) const;
 
