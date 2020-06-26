@@ -128,7 +128,5 @@ void python_planner_mvmcts(py::module m) {
 
     py::class_ < MvmctsStateParameters, std::shared_ptr < MvmctsStateParameters >> (m, "MvmctsStateParameters")
         .def(py::init<const bark::commons::ParamsPtr &>());
-//    py::class_<mcts::MctsParameters, std::shared_ptr<mcts::MctsParameters>>(m, "MctsParameters");
 
-//    m.def("MakeMvmctsStateParameters", &MakeMvmctsStateParameters);
 }
