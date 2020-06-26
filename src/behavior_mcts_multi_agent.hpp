@@ -154,7 +154,6 @@ BehaviorMCTSMultiAgent<Stat>::BehaviorMCTSMultiAgent(
 template <class Stat>
 dynamic::Trajectory BehaviorMCTSMultiAgent<Stat>::Plan(
     float delta_time, const world::ObservedWorld &observed_world) {
-  EASY_FUNCTION();
   ObservedWorldPtr mcts_observed_world =
       std::dynamic_pointer_cast<ObservedWorld>(observed_world.Clone());
   mcts_observed_world->SetupPrediction(prediction_settings_);

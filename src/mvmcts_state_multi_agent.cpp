@@ -9,7 +9,6 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include <easy/profiler.h>
 
 #include "bark/world/evaluation/ltl/label/label.h"
 #include "bark/models/behavior/behavior_model.hpp"
@@ -53,7 +52,6 @@ std::shared_ptr<MvmctsStateMultiAgent> MvmctsStateMultiAgent::Clone() const {
 std::shared_ptr<MvmctsStateMultiAgent> MvmctsStateMultiAgent::Execute(
     const mcts::JointAction &joint_action,
     std::vector<mcts::Reward> &rewards) const {
-  EASY_FUNCTION();
   BARK_EXPECT_TRUE(!IsTerminal());
   std::vector<AgentIdx> agent_ids = GetAgentIdx();
   size_t num_agents = agent_ids.size();

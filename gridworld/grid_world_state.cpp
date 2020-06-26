@@ -42,9 +42,6 @@ GridWorldState::GridWorldState(
 
 std::shared_ptr<GridWorldState> GridWorldState::Execute(
     const JointAction &joint_action, std::vector<Reward> &rewards) const {
-#ifdef PROFILING
-  EASY_FUNCTION();
-#endif
   EvaluationMap labels;
   RuleStateMap next_automata(rule_state_map_);
   World next_world;
@@ -62,9 +59,6 @@ std::shared_ptr<GridWorldState> GridWorldState::Execute(
       continue;
     }
     // Labeling
-#ifdef PROFILING
-    EASY_BLOCK("labelling");
-#endif
     std::vector<AgentState> next_other_agents(next_agent_states);
     next_other_agents.erase(next_other_agents.begin() + agent_idx);
     // Create perspective from current agent
@@ -74,9 +68,6 @@ std::shared_ptr<GridWorldState> GridWorldState::Execute(
       auto new_labels = le->evaluate(next_world);
       labels.insert(new_labels.begin(), new_labels.end());
     }
-#ifdef PROFILING
-    EASY_END_BLOCK;
-#endif
     rewards[agent_idx] = Reward::Zero(parameters_.reward_vec_size);
 
     // Automata transit
@@ -97,9 +88,6 @@ std::shared_ptr<GridWorldState> GridWorldState::Execute(
 }
 std::vector<AgentState> GridWorldState::Step(
     const JointAction &joint_action) const {
-#ifdef PROFILING
-  EASY_FUNCTION();
-#endif
   std::vector<AgentState> next_agent_states(agent_states_.size());
   for (size_t i = 0; i < this->agent_states_.size(); ++i) {
     if (this->terminal_agents_[i]) {
