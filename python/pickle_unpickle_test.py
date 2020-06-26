@@ -27,11 +27,11 @@ class PickleTests(unittest.TestCase):
         params["BehaviorMCTSAgent"]["Rules"]["common"]["weight"] = -700.0
         params["BehaviorMCTSAgent"]["Rules"]["common"]["priority"] = 0
 
-        behavior = BehaviorUCTMultiAgent(params, PredictionSettings(BehaviorMPMacroActions(params), None, None, []), [], [], {})
+        behavior = BehaviorMvmctsUct(params, PredictionSettings(BehaviorMPMacroActions(params), None, None, []), [], [], {})
 
         behavior_after = pickle_unpickle(behavior)
 
-        self.assertTrue(isinstance(behavior_after, BehaviorUCTMultiAgent))
+        self.assertTrue(isinstance(behavior_after, BehaviorMvmctsUct))
 
 
 if __name__ == '__main__':

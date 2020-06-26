@@ -12,8 +12,10 @@
 namespace py = pybind11;
 using bark::commons::Params;
 using bark::models::behavior::BehaviorModel;
-using bark::models::behavior::BehaviorModel;
+using bark::models::behavior::BehaviorMvmctsUct;
+using bark::models::behavior::BehaviorMvmctsEGreedy;
 using bark::models::behavior::LabelEvaluators;
+using bark::models::behavior::MvmctsState;
 using bark::models::behavior::MultiAgentRuleMap;
 using bark::models::behavior::MultiAgentRuleState;
 using bark::models::behavior::MultiAgentRuleState;
