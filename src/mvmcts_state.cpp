@@ -158,7 +158,7 @@ JointReward MvmctsState::EvaluateRules() {
   const auto agent_ids = GetAgentIdx();
   JointReward rewards = JointReward(
       agent_ids.size(), Reward::Zero(state_params_->REWARD_VECTOR_SIZE));
-  const auto agent_map = observed_world_->GetAgents();
+  const auto agent_map = observed_world_->GetValidAgents();
   AgentId agent_id;
   for (size_t ai = 0; ai < agent_ids.size(); ++ai) {
     agent_id = agent_ids[ai];

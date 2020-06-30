@@ -162,7 +162,7 @@ dynamic::Trajectory BehaviorMvmcts<Stat>::Plan(
   // SETUP MCTS STATE
   auto ego_model = std::dynamic_pointer_cast<BehaviorMPMacroActions>(
       prediction_settings_.ego_prediction_model_);
-  auto new_agents = GetNewAgents(observed_world.GetAgents());
+  auto new_agents = GetNewAgents(observed_world.GetValidAgents());
   MakeRuleStates(new_agents);
   AddKnownAgents(new_agents);
   auto agent_ids = GetAgentIdMap(observed_world);
@@ -361,7 +361,7 @@ std::vector<AgentIdx> BehaviorMvmcts<Stat>::GetAgentIdMap(
     const world::ObservedWorld& observed_world) const {
   std::vector<mcts::AgentIdx> agent_ids;
   if (multi_agent_) {
-    world::AgentMap agent_map = observed_world.GetOtherAgents();
+    world::AgentMap agent_map = observed_world.GetValidOtherAgents();
     agent_ids.emplace_back(observed_world.GetEgoAgent()->GetAgentId());
     for (const auto& agent : agent_map) {
       if (prediction_settings_.specific_prediction_agents_.count(agent.first) ==
