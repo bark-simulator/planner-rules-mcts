@@ -10,7 +10,7 @@
 #include <ostream>
 #include <string>
 #include <utility>
-#include "external/com_github_google_glog/_virtual_includes/default_glog_headers/glog/logging.h"
+#include "glog/logging.h"
 
 #include "gridworld/grid_world_env.h"
 
