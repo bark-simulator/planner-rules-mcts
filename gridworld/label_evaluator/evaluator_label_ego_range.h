@@ -16,7 +16,7 @@
 class EvaluatorLabelEgoRange : public EvaluatorLabelBase<World> {
  public:
   EvaluatorLabelEgoRange(const std::string& label_str, int start, int end);
-  std::vector<std::pair<ltl::Label, bool>> evaluate(
+  std::vector<std::pair<Label, bool>> evaluate(
       const World& state) const override;
 
  private:

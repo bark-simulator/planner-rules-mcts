@@ -11,7 +11,7 @@
 EvaluatorLabelAtPosition::EvaluatorLabelAtPosition(const std::string &label_str,
                                                    const int position)
     : EvaluatorLabelBase(label_str), position_(position) {}
-std::vector<std::pair<ltl::Label, bool>> EvaluatorLabelAtPosition::evaluate(
+std::vector<std::pair<Label, bool>> EvaluatorLabelAtPosition::evaluate(
     const World &state) const {
   return {{get_label(),
            // Were left, now right of position_

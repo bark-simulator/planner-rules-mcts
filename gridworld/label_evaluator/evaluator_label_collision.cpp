@@ -31,7 +31,7 @@ bool check_collision(const AgentState &a, const AgentState &b) {
 EvaluatorLabelCollision::EvaluatorLabelCollision(const std::string &label_str,
                                                  const int merging_point)
     : EvaluatorLabelBase(label_str), merging_point_(merging_point) {}
-std::vector<std::pair<ltl::Label, bool>> EvaluatorLabelCollision::evaluate(
+std::vector<std::pair<Label, bool>> EvaluatorLabelCollision::evaluate(
     const World &state) const {
   // Check if intervals (ego.x_pos - ego.last_action, ego.x_pos] and
   // (other.x_pos - other.last_action, other.x_pos] overlap.

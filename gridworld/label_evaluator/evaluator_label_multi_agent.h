@@ -15,7 +15,7 @@
 class EvaluatorLabelMultiAgent : public EvaluatorLabelBase<World> {
  public:
   explicit EvaluatorLabelMultiAgent(const std::string& label_str);
-  std::vector<std::pair<ltl::Label, bool>> evaluate(
+  std::vector<std::pair<Label, bool>> evaluate(
       const World& state) const override;
 
  protected:
