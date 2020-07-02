@@ -228,7 +228,6 @@ inline float MvmctsState::Potential(
 }
 
 bool MvmctsState::CheckTerminal() const {
-  bool terminal = false;
   auto ego = observed_world_->GetEgoAgent();
   if (!ego) {
     return true;
@@ -236,19 +235,16 @@ bool MvmctsState::CheckTerminal() const {
   EvaluatorDrivableArea evaluator_out_of_map;
   EvaluatorCollisionEgoAgent evaluator_collision;
   // Planning horizon reached
-  terminal = terminal || horizon_ == 0;
+  const bool horizon_reached = (horizon_ == 0);
   // Out of map
-  terminal =
-      terminal ||
-      boost::get<bool>(evaluator_out_of_map.Evaluate(
-          *std::dynamic_pointer_cast<const world::World>(observed_world_)));
+  const bool out_of_map =
+      boost::get<bool>(evaluator_out_of_map.Evaluate(*observed_world_));
   // Collision
-  terminal =
-      terminal ||
-      boost::get<bool>(evaluator_collision.Evaluate(
-          *std::dynamic_pointer_cast<const world::World>(observed_world_)));
+  const bool collision =
+      boost::get<bool>(evaluator_collision.Evaluate(*observed_world_));
   // Goal reached
-  terminal = terminal || ego->AtGoal();
+  const bool at_goal = ego->AtGoal();
+  const bool terminal = horizon_reached || out_of_map || collision || at_goal;
   return terminal;
 }
 const ObservedWorldPtr& MvmctsState::GetObservedWorld() const {
