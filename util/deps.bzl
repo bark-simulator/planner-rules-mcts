@@ -19,7 +19,7 @@ def planner_mv_mcts_dependencies():
     _maybe(
         git_repository,
         name = "momamcts_project",  # was mcts
-        commit = "4e56956b77459f991bdc2bab1217731debbd90db",
+        commit = "ff7fb90b4d35c7ddbb5113a7050580a7403713f8",
         remote = "git@github.com:cirrostratus1/momamcts.git",
     )
 

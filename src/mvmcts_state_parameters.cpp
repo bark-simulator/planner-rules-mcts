@@ -28,10 +28,14 @@ bark::models::behavior::MvmctsStateParameters::MvmctsStateParameters(
 bark::models::behavior::MvmctsStateParameters::MvmctsStateParameters(
     const commons::ParamsPtr &params)
     : OUT_OF_MAP_WEIGHT(params->GetReal("BehaviorMCTSAgent::StateParameters::OutOfMapWeight", "Penalty for leaving the map", -800)),
-      POTENTIAL_WEIGHT(params->GetReal("BehaviorMCTSAgent::StateParameters::PotentialWeight", "Weight of the goal potential function", -1.0)),
+      POTENTIAL_WEIGHT(
+          params->GetReal("BehaviorMCTSAgent::StateParameters::PotentialWeight",
+                          "Weight of the goal potential function", 0.0)),
       ACCELERATION_WEIGHT(params->GetReal("BehaviorMCTSAgent::StateParameters::AccelerationWeight", "Weight for longitudinal accelerations", 0.0)),
       RADIAL_ACCELERATION_WEIGHT(params->GetReal("BehaviorMCTSAgent::StateParameters::RadialAccelerationWeight", "Weight for radial acceleration", 0.0)),
-      DESIRED_VELOCITY_WEIGHT(params->GetReal("BehaviorMCTSAgent::StateParameters::DesiredVelocityWeight", "Weight for deviating from the desired velocity", -1.0)),
+      DESIRED_VELOCITY_WEIGHT(params->GetReal(
+          "BehaviorMCTSAgent::StateParameters::DesiredVelocityWeight",
+          "Weight for deviating from the desired velocity", 0.0)),
       LANE_CENTER_WEIGHT(params->GetReal("BehaviorMCTSAgent::StateParameters::LaneCenterDeviationWeight", "Weight for deviating from the lane center", 0.0)),
       REWARD_VECTOR_SIZE(static_cast<unsigned int>(params->GetInt("BehaviorMCTSAgent::RewardVectorSize", "Size of the reward vector", 1))),
       PREDICTION_TIME_SPAN(params->GetReal("BehaviorMCTSAgent::StateParameters::PredictionTimeSpan", "Time between two consecutive states", 0.3)),

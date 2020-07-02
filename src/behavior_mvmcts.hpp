@@ -94,6 +94,7 @@ class BehaviorMvmcts : public bark::models::behavior::BehaviorModel {
   void AddKnownAgents(const std::vector<int>& agent_ids);
   ValueLinePairVector DfsTree(BehaviorMvmcts::MctsNode root,
                               const ValueLinePair& prefix, size_t value_idx);
+  void RemoveRuleStates(std::vector<AgentIdx> current_agents);
 
   std::vector<std::shared_ptr<RuleMonitor>> common_rules_;
   MultiAgentRuleMap agent_rules_;
@@ -166,9 +167,12 @@ dynamic::Trajectory BehaviorMvmcts<Stat>::Plan(
   MakeRuleStates(new_agents);
   AddKnownAgents(new_agents);
   auto agent_ids = GetAgentIdMap(observed_world);
+  RemoveRuleStates(agent_ids);
   MvmctsState mcts_state(mcts_observed_world, multi_agent_rule_state_,
                                    &state_params_, agent_ids,
                                    state_params_.HORIZON, &label_evaluators_);
+  LOG_IF(FATAL, mcts_state.IsTerminal())
+      << "Current state is terminal! Aborting!";
 
   // Transit automata from last planning step to current
   mcts_state.EvaluateRules();
@@ -184,8 +188,8 @@ dynamic::Trajectory BehaviorMvmcts<Stat>::Plan(
   outs << "Available Primitives: ";
   int status;
   for (const auto& prim : available_mp_idx) {
-    outs << abi::__cxa_demangle(typeid(*(primitives.at(prim))).name(), 0, 0,
-                                &status)
+    outs << abi::__cxa_demangle(typeid(*(primitives.at(prim))).name(), nullptr,
+                                0, &status)
          << ", ";
   }
   VLOG(1) << outs.str();
@@ -425,6 +429,43 @@ template <class Stat>
 std::shared_ptr<BehaviorModel> BehaviorMvmcts<Stat>::Clone() const {
   return std::dynamic_pointer_cast<BehaviorModel>(
       std::make_shared<BehaviorMvmcts<Stat>>(*this));
+}
+/// Remove all rule states, containing agents not present in the current world.
+/// \param current_agents List of agent IDs in the current world
+template <class Stat>
+void BehaviorMvmcts<Stat>::RemoveRuleStates(
+    std::vector<AgentIdx> current_agents) {
+  std::sort(current_agents.begin(), current_agents.end());
+  auto iter_agent = multi_agent_rule_state_.begin();
+  while (iter_agent != multi_agent_rule_state_.end()) {
+    if (std::find(current_agents.begin(), current_agents.end(),
+                  iter_agent->first) == current_agents.end()) {
+      // Agent is out of map
+      auto iter_known_agents = std::find(
+          known_agents_.begin(), known_agents_.end(), iter_agent->first);
+      assert(iter_known_agents != known_agents_.end());
+      known_agents_.erase(iter_known_agents);
+      iter_agent = multi_agent_rule_state_.erase(iter_agent);
+      continue;
+    }
+    auto iter = iter_agent->second.begin();
+    std::vector<int> diff;
+    while (iter != iter_agent->second.end()) {
+      diff.clear();
+      auto agent_ids = iter->GetAgentIds();
+      std::sort(agent_ids.begin(), agent_ids.end());
+      // Find agents referenced by rule state but not existent in world
+      std::set_difference(agent_ids.begin(), agent_ids.end(),
+                          current_agents.begin(), current_agents.end(),
+                          std::back_inserter(diff));
+      if (!diff.empty()) {
+        iter = iter_agent->second.erase(iter);
+        continue;
+      }
+      ++iter;
+    }
+    ++iter_agent;
+  }
 }
 
 }  // namespace behavior
