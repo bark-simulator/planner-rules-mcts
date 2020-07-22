@@ -7,15 +7,15 @@
 #define MODULES_MODELS_BEHAVIOR_PLANNER_MCTS_UTIL_HPP_
 
 #include <map>
-#include "mcts/mcts_parameters.h"
 #include "bark/commons/params/params.hpp"
 #include "bark/models/behavior/behavior_model.hpp"
+#include "mvmcts/mvmcts_parameters.h"
 
 namespace bark {
 namespace models {
 namespace behavior {
 
-mcts::MctsParameters MakeMctsParameters(const commons::ParamsPtr &params);
+mvmcts::MvmctsParameters MakeMctsParameters(const commons::ParamsPtr& params);
 Eigen::VectorXf StdToEigen(const std::vector<float>& v);
 
 }  // namespace behavior

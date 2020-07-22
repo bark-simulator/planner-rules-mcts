@@ -23,9 +23,9 @@ def pickle_unpickle(object):
 class PickleTests(unittest.TestCase):
     def test_behavior_uct_single_agent_pickle(self):
         params = ParameterServer()
-        params["BehaviorMCTSAgent"]["Rules"]["common"]["formula"] = "G !collision_ego"
-        params["BehaviorMCTSAgent"]["Rules"]["common"]["weight"] = -700.0
-        params["BehaviorMCTSAgent"]["Rules"]["common"]["priority"] = 0
+        params["BehaviorMvmcts"]["Rules"]["common"]["formula"] = "G !collision_ego"
+        params["BehaviorMvmcts"]["Rules"]["common"]["weight"] = -700.0
+        params["BehaviorMvmcts"]["Rules"]["common"]["priority"] = 0
 
         behavior = BehaviorMvmctsUct(params, PredictionSettings(BehaviorMPMacroActions(params), None, None, []), [], [], {})
 

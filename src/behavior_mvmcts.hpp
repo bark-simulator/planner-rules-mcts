@@ -23,11 +23,11 @@
 #include "bark/world/prediction/prediction_settings.hpp"
 #include "glog/logging.h"
 #include "ltl/rule_state.h"
-#include "mcts/heuristics/random_heuristic.h"
-#include "mcts/mcts.h"
-#include "mcts/mcts_parameters.h"
-#include "mcts/statistics/e_greedy_statistic.h"
-#include "mcts/statistics/thres_uct_statistic.h"
+#include "mvmcts/heuristics/random_heuristic.h"
+#include "mvmcts/mvmcts.h"
+#include "mvmcts/mvmcts_parameters.h"
+#include "mvmcts/statistics/thres_greedy_statistic.h"
+#include "mvmcts/statistics/thres_uct_statistic.h"
 #include "src/mvmcts_state.hpp"
 #include "src/util.hpp"
 
@@ -45,18 +45,20 @@ using bark::world::prediction::PredictionSettings;
 using commons::ParamsPtr;
 using ltl::RuleMonitor;
 using ltl::RuleState;
-using mcts::MctsParameters;
-using mcts::ObjectiveVec;
+using mvmcts::AgentIdx;
+using mvmcts::MvmctsParameters;
+using mvmcts::ObjectiveVec;
 typedef std::unordered_map<AgentId, std::vector<std::shared_ptr<RuleMonitor>>>
     MultiAgentRuleMap;
-typedef std::pair<mcts::Reward::Scalar, geometry::Line> ValueLinePair;
+typedef std::pair<mvmcts::Reward::Scalar, geometry::Line> ValueLinePair;
 typedef std::vector<ValueLinePair> ValueLinePairVector;
 
 template <class Stat>
 class BehaviorMvmcts : public bark::models::behavior::BehaviorModel {
  public:
-  using MctsNode = typename mcts::Mcts<MvmctsState, Stat, Stat,
-                                       mcts::RandomHeuristic>::StageNodeSPtr;
+  using MvmctsNode =
+      typename mvmcts::Mvmcts<MvmctsState, Stat, Stat,
+                              mvmcts::RandomHeuristic>::StageNodeSPtr;
 
   BehaviorMvmcts(
       const ParamsPtr& params, const PredictionSettings& prediction_settings,
@@ -81,10 +83,10 @@ class BehaviorMvmcts : public bark::models::behavior::BehaviorModel {
   const std::vector<std::shared_ptr<RuleMonitor>>& GetCommonRules() const;
   const MultiAgentRuleMap& GetAgentRules() const;
   const LabelEvaluators& GetLabelEvaluators() const;
-  const MctsParameters& GetMctsParameters() const;
+  const MvmctsParameters& GetMctsParameters() const;
   const PredictionSettings& GetPredictionSettings() const;
 
-  void SetMctsParameters(const MctsParameters& mcts_parameters);
+  void SetMctsParameters(const MvmctsParameters& mcts_parameters);
 
  private:
   std::vector<int> GetNewAgents(const AgentMap& agent_map);
@@ -92,8 +94,7 @@ class BehaviorMvmcts : public bark::models::behavior::BehaviorModel {
       const world::ObservedWorld& observed_world) const;
   void MakeRuleStates(const std::vector<int>& new_agent_ids);
   void AddKnownAgents(const std::vector<int>& agent_ids);
-  ValueLinePairVector DfsTree(BehaviorMvmcts::MctsNode root,
-                              const ValueLinePair& prefix, size_t value_idx);
+  ValueLinePairVector DfsTree(MvmctsNode root, const ValueLinePair& prefix, size_t value_idx);
   void RemoveRuleStates(std::vector<AgentIdx> current_agents);
 
   std::vector<std::shared_ptr<RuleMonitor>> common_rules_;
@@ -106,15 +107,15 @@ class BehaviorMvmcts : public bark::models::behavior::BehaviorModel {
   bool dump_tree_;
   LabelEvaluators label_evaluators_;
   size_t reward_vec_size_;
-  MctsParameters mcts_parameters_;
+  MvmctsParameters mcts_parameters_;
   MvmctsStateParameters state_params_;
   std::set<AgentId> known_agents_;
-  MctsNode root_;
+  MvmctsNode root_;
   const bool multi_agent_;
 };
 
-typedef BehaviorMvmcts<mcts::ThresUCTStatistic> BehaviorMvmctsUct;
-typedef BehaviorMvmcts<mcts::EGreedyStatistic> BehaviorMvmctsEGreedy;
+typedef BehaviorMvmcts<mvmcts::ThresUCTStatistic> BehaviorMvmctsUct;
+typedef BehaviorMvmcts<mvmcts::ThresGreedyStatistic> BehaviorMvmctsGreedy;
 
 template <class Stat>
 BehaviorMvmcts<Stat>::BehaviorMvmcts(
@@ -127,26 +128,26 @@ BehaviorMvmcts<Stat>::BehaviorMvmcts(
       agent_rules_(agent_rules),
       prediction_settings_(prediction_settings),
       max_num_iterations_(
-          params->GetInt("BehaviorMCTSAgent::MaxNumIterations",
+          params->GetInt("BehaviorMvmcts::MaxNumIterations",
                          "Maximum number of mcts search iterations", 2000)),
-      max_search_time_(params->GetInt("BehaviorMCTSAgent::MaxSearchTime",
+      max_search_time_(params->GetInt("BehaviorMvmcts::MaxSearchTime",
                                       "Maximum search time in milliseconds",
                                       std::numeric_limits<int>::max())),
       random_seed_(params->GetInt(
-          "BehaviorMCTSAgent::RandomSeed",
+          "BehaviorMvmcts::RandomSeed",
           "Random seed applied used during search process", 1000)),
       dump_tree_(params->GetBool(
-          "BehaviorMCTSAgent::DumpTree",
+          "BehaviorMvmcts::DumpTree",
           "If true, tree is dumped to dot file after planning", false)),
       label_evaluators_(label_evaluators),
       reward_vec_size_(
-          params->GetInt("BehaviorMCTSAgent::RewardVectorSize",
+          params->GetInt("BehaviorMvmcts::RewardVectorSize",
                          "Number of dimensions of the reward vector", 1)),
       mcts_parameters_(bark::models::behavior::MakeMctsParameters(params)),
       state_params_(params),
-      multi_agent_(params->GetBool("BehaviorMCTSAgent::MultiAgent",
+      multi_agent_(params->GetBool("BehaviorMvmcts::MultiAgent",
                                    "True for multi-agent planning", true)) {
-  mcts::RandomGenerator::random_generator_ = std::mt19937(random_seed_);
+  mvmcts::RandomGenerator::random_generator_ = std::mt19937(random_seed_);
 }
 
 template <class Stat>
@@ -157,11 +158,11 @@ dynamic::Trajectory BehaviorMvmcts<Stat>::Plan(
   mcts_observed_world->SetupPrediction(prediction_settings_);
 
   // SETUP MCTS
-  mcts::Mcts<MvmctsState, Stat, Stat, mcts::RandomHeuristic> mcts(
+  mvmcts::Mvmcts<MvmctsState, Stat, Stat, mvmcts::RandomHeuristic> mcts(
       mcts_parameters_);
 
   // SETUP MCTS STATE
-  auto ego_model = std::dynamic_pointer_cast<BehaviorMPMacroActions>(
+  auto ego_model = std::dynamic_pointer_cast<BehaviorMotionPrimitives>(
       prediction_settings_.ego_prediction_model_);
   auto new_agents = GetNewAgents(observed_world.GetValidAgents());
   MakeRuleStates(new_agents);
@@ -182,22 +183,22 @@ dynamic::Trajectory BehaviorMvmcts<Stat>::Plan(
        multi_agent_rule_state_[observed_world.GetEgoAgentId()]) {
     VLOG(2) << rs;
   }
-  auto available_mp_idx = ego_model->GetValidPrimitives(mcts_observed_world);
-  auto primitives = ego_model->GetMotionPrimitives();
-  std::stringstream outs;
-  outs << "Available Primitives: ";
-  int status;
-  for (const auto& prim : available_mp_idx) {
-    outs << abi::__cxa_demangle(typeid(*(primitives.at(prim))).name(), nullptr,
-                                0, &status)
-         << ", ";
-  }
-  VLOG(1) << outs.str();
+  //  auto available_mp_idx =
+  //  ego_model->GetValidPrimitives(mcts_observed_world); auto primitives =
+  //  ego_model->GetMotionPrimitives(); std::stringstream outs; outs <<
+  //  "Available Primitives: "; int status; for (const auto& prim :
+  //  available_mp_idx) {
+  //    outs << abi::__cxa_demangle(typeid(*(primitives.at(prim))).name(),
+  //    nullptr,
+  //                                0, &status)
+  //         << ", ";
+  //  }
+  //  VLOG(1) << outs.str();
 
   // MCTS SEARCH
   mcts.Search(mcts_state, max_search_time_, max_num_iterations_);
 
-  mcts::ActionIdx best_action = mcts.ReturnBestAction()[0];
+  ActionIdx best_action = mcts.ReturnBestAction()[0];
   SetLastAction(DiscreteAction(best_action));
 
   if (dump_tree_) {
@@ -330,12 +331,12 @@ void BehaviorMvmcts<Stat>::AddLabels(
                            label_evaluators.end());
 }
 template <class Stat>
-const MctsParameters& BehaviorMvmcts<Stat>::GetMctsParameters() const {
+const MvmctsParameters& BehaviorMvmcts<Stat>::GetMctsParameters() const {
   return mcts_parameters_;
 }
 template <class Stat>
 void BehaviorMvmcts<Stat>::SetMctsParameters(
-    const MctsParameters& mcts_parameters) {
+    const MvmctsParameters& mcts_parameters) {
   mcts_parameters_ = mcts_parameters;
 }
 template <class Stat>
@@ -363,7 +364,7 @@ std::vector<int> BehaviorMvmcts<Stat>::GetNewAgents(
 template <class Stat>
 std::vector<AgentIdx> BehaviorMvmcts<Stat>::GetAgentIdMap(
     const world::ObservedWorld& observed_world) const {
-  std::vector<mcts::AgentIdx> agent_ids;
+  std::vector<AgentIdx> agent_ids;
   if (multi_agent_) {
     world::AgentMap agent_map = observed_world.GetValidOtherAgents();
     agent_ids.emplace_back(observed_world.GetEgoAgent()->GetAgentId());
@@ -403,8 +404,9 @@ ValueLinePairVector BehaviorMvmcts<Stat>::GetTree(size_t value_idx) {
   return lines;
 }
 template <class Stat>
-ValueLinePairVector BehaviorMvmcts<Stat>::DfsTree(BehaviorMvmcts::MctsNode root, const ValueLinePair& prefix,
-    size_t value_idx) {
+ValueLinePairVector BehaviorMvmcts<Stat>::DfsTree(MvmctsNode root,
+                                                  const ValueLinePair& prefix,
+                                                  size_t value_idx) {
   ValueLinePair new_prefix(prefix);
   auto ego_agent = root->GetState()->GetObservedWorld()->GetEgoAgent();
   if (ego_agent) {

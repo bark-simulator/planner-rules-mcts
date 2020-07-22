@@ -6,7 +6,7 @@ cc_library(
         "@bark_project//bark/commons/params:include",
         "@bark_project//bark/models/behavior:include",
         "@bark_project//bark/world:include",
-        "@momamcts_project//mcts",
+        "@momamcts_project//mvmcts",
     ],
 )
 
@@ -40,7 +40,7 @@ cc_library(
         "@bark_project//bark/world/evaluation:evaluator_collision_ego_agent",
         "@com_github_google_glog//:glog",
         "@rule_monitor_project//ltl:rule_monitor",
-        "@momamcts_project//mcts",
+        "@momamcts_project//mvmcts",
     ],
 )
 
@@ -49,6 +49,6 @@ cc_library(
     hdrs = glob(["*.hpp"]),
     visibility = ["//visibility:public"],
     deps = [
-        "@momamcts_project//mcts",
+        "@momamcts_project//mvmcts",
     ],
 )

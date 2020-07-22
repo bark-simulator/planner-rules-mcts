@@ -51,8 +51,7 @@ std::shared_ptr<MvmctsState> MvmctsState::Clone() const {
   return std::make_shared<MvmctsState>(*this);
 }
 std::shared_ptr<MvmctsState> MvmctsState::Execute(
-    const mcts::JointAction& joint_action,
-    std::vector<mcts::Reward>& rewards) const {
+    const JointAction& joint_action, std::vector<Reward>& rewards) const {
   BARK_EXPECT_TRUE(!IsTerminal());
   std::vector<AgentIdx> agent_ids = GetAgentIdx();
   size_t num_agents = agent_ids.size();
@@ -90,8 +89,7 @@ std::shared_ptr<MvmctsState> MvmctsState::Execute(
   }
   return next_state;
 }
-mcts::ActionIdx MvmctsState::GetNumActions(
-    mcts::AgentIdx agent_idx) const {
+ActionIdx MvmctsState::GetNumActions(AgentIdx agent_idx) const {
   AgentId agent_id = GetAgentIdx()[agent_idx];
   auto agent = observed_world_->GetAgent(agent_id);
   if (agent && agent->GetExecutionStatus() == ExecutionStatus::VALID) {
@@ -105,7 +103,7 @@ mcts::ActionIdx MvmctsState::GetNumActions(
   }
 }
 bool MvmctsState::IsTerminal() const { return is_terminal_state_; }
-const std::vector<mcts::AgentIdx> MvmctsState::GetAgentIdx() const {
+const std::vector<AgentIdx> MvmctsState::GetAgentIdx() const {
   return agent_idx_;
 }
 std::string MvmctsState::PrintState() const { return std::string(); }
@@ -173,6 +171,7 @@ const MultiAgentRuleState& MvmctsState::GetMultiAgentRuleState()
 
 Eigen::VectorXf MvmctsState::GetActionCost(
     const std::shared_ptr<const world::Agent>& agent) const {
+  float action_cost = 0.0f;
   Eigen::VectorXf reward = Reward::Zero(state_params_->REWARD_VECTOR_SIZE);
   const size_t value_pos = state_params_->REWARD_VECTOR_SIZE - 1;
   auto traj = agent->GetBehaviorModel()->GetLastTrajectory();
@@ -181,7 +180,7 @@ Eigen::VectorXf MvmctsState::GetActionCost(
   const float a = (traj(traj_size - 1, dynamic::VEL_POSITION) -
                    traj(0, dynamic::VEL_POSITION)) /
                   dt;
-  reward(value_pos) +=
+  action_cost +=
       state_params_->ACCELERATION_WEIGHT * a * a * dt;  //  Acceleration
 
   const float theta_dot = (traj(traj_size - 1, dynamic::THETA_POSITION) -
@@ -190,12 +189,11 @@ Eigen::VectorXf MvmctsState::GetActionCost(
   const float avg_vel = 0.5f * a * dt + traj(0, dynamic::VEL_POSITION);
   const float a_lat = theta_dot * avg_vel;  //  Radial acceleration
 
-  reward(value_pos) +=
-      state_params_->RADIAL_ACCELERATION_WEIGHT * a_lat * a_lat * dt;
+  action_cost += state_params_->RADIAL_ACCELERATION_WEIGHT * a_lat * a_lat * dt;
 
   //  Desired velocity
-  reward(value_pos) += state_params_->DESIRED_VELOCITY_WEIGHT *
-                       fabs(avg_vel - state_params_->DESIRED_VELOCITY) * dt;
+  action_cost += state_params_->DESIRED_VELOCITY_WEIGHT *
+                 fabs(avg_vel - state_params_->DESIRED_VELOCITY) * dt;
   //  Lane center deviation
   const auto& lane_corridor = agent->GetRoadCorridor()->GetCurrentLaneCorridor(
       agent->GetCurrentPosition());
@@ -204,9 +202,10 @@ Eigen::VectorXf MvmctsState::GetActionCost(
         commons::transformation::FrenetPosition(agent->GetCurrentPosition(),
                                                 lane_corridor->GetCenterLine())
             .lat;
-    reward(value_pos) +=
+    action_cost +=
         state_params_->LANE_CENTER_WEIGHT * fabs(lane_center_dev) * dt;
   }
+  reward(value_pos) = action_cost;
   return reward;
 }
 

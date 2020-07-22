@@ -8,12 +8,12 @@
 
 #include <iostream>
 
-#include "ltl/rule_state.h"
-#include "bark/world/evaluation/ltl/label_functions/base_label_function.hpp"
-#include "mcts/state.h"
 #include "bark/models/behavior/behavior_model.hpp"
+#include "bark/world/evaluation/ltl/label_functions/base_label_function.hpp"
 #include "bark/world/objects/agent.hpp"
 #include "bark/world/observed_world.hpp"
+#include "ltl/rule_state.h"
+#include "mvmcts/state.h"
 #include "mvmcts_state_parameters.hpp"
 
 namespace bark {
@@ -26,11 +26,10 @@ typedef std::shared_ptr<ObservedWorld> ObservedWorldPtr;
 namespace models {
 namespace behavior {
 
-using namespace mcts;
+using namespace mvmcts;
 using ltl::RuleState;
 using bark::world::AgentPtr;
 using bark::world::objects::AgentId;
-using mcts::Reward;
 using bark::world::ObservedWorld;
 using bark::world::ObservedWorldPtr;
 using dynamic::State;
@@ -40,7 +39,7 @@ typedef std::vector<std::shared_ptr<BaseLabelFunction>> LabelEvaluators;
 typedef std::unordered_map<AgentId, std::vector<RuleState>>
     MultiAgentRuleState;
 
-class MvmctsState : public mcts::StateInterface<MvmctsState> {
+class MvmctsState : public StateInterface<MvmctsState> {
  public:
   MvmctsState(const bark::world::ObservedWorldPtr &observed_world,
                         const MultiAgentRuleState &multi_agent_rule_state,
@@ -50,15 +49,14 @@ class MvmctsState : public mcts::StateInterface<MvmctsState> {
 
   std::shared_ptr<MvmctsState> Clone() const;
 
-  std::shared_ptr<MvmctsState> Execute(
-      const mcts::JointAction &joint_action,
-      std::vector<mcts::Reward> &rewards) const;
+  std::shared_ptr<MvmctsState> Execute(const JointAction& joint_action,
+                                       std::vector<Reward>& rewards) const;
 
-  mcts::ActionIdx GetNumActions(mcts::AgentIdx agent_idx) const;
+  ActionIdx GetNumActions(AgentIdx agent_idx) const;
 
   bool IsTerminal() const;
 
-  const std::vector<mcts::AgentIdx> GetAgentIdx() const;
+  const std::vector<AgentIdx> GetAgentIdx() const;
 
   std::string PrintState() const;
 

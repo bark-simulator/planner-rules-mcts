@@ -16,11 +16,13 @@
 #include "bark/world/tests/make_test_world.hpp"
 #include "gtest/gtest.h"
 #include "ltl/rule_monitor.h"
-#include "mcts/mcts.h"
+#include "mvmcts/mvmcts.h"
+#include "src/behavior_mvmcts.hpp"
 #include "src/mvmcts_state.hpp"
+#include "src/util.hpp"
 
 using namespace bark::models::behavior;
-using namespace mcts;
+using namespace mvmcts;
 using bark::commons::ParamsPtr;
 using bark::commons::SetterParams;
 using bark::geometry::Point2d;
@@ -70,9 +72,13 @@ MultiAgentRuleState make_rule_states(
   return {{1, rule_states}};
 }
 
-TEST(single_agent_mcts_state, execute) {
+TEST(single_agent_mvmcts_state, execute) {
   // Setup prediction models for ego agent and other agents
   ParamsPtr params(new SetterParams());
+  params->SetReal("BehaviorMvmcts::StateParameters::PotentialWeight", 0.0);
+  params->SetReal("BehaviorMvmcts::StateParameters::DesiredVelocityWeight",
+                  0.0);
+  params->SetBool("BehaviorMvmcts::MultiAgent", false);
   DynamicModelPtr dyn_model(new SingleTrackModel(params));
   BehaviorModelPtr ego_prediction_model(
       new BehaviorMPContinuousActions(params));
@@ -100,13 +106,13 @@ TEST(single_agent_mcts_state, execute) {
   // Create an observed world with specific goal definition and the
   // corresponding mcts state
   Polygon polygon(
-      Pose(1, 1, 0),
-      std::vector<Point2d>{Point2d(0, 0), Point2d(0, 2), Point2d(2, 2),
-                           Point2d(2, 0), Point2d(0, 0)});
+      Pose(3.5, 3.5, 0),
+      std::vector<Point2d>{Point2d(0, 0), Point2d(0, 7), Point2d(7, 7),
+                           Point2d(7, 0), Point2d(0, 0)});
   std::shared_ptr<Polygon> goal_polygon(
       std::dynamic_pointer_cast<Polygon>(polygon.Translate(
-          Point2d(20, 0))));  // < move the goal polygon into the driving
-                              // corridor in front of the ego vehicle
+          Point2d(20, -2.75))));  // < move the goal polygon into the driving
+                                  // corridor in front of the ego vehicle
   auto goal_definition_ptr =
       std::make_shared<GoalDefinitionPolygon>(*goal_polygon);
 
@@ -124,7 +130,7 @@ TEST(single_agent_mcts_state, execute) {
   MvmctsState mcts_state(observed_world, make_rule_states(make_rules()),
                          &state_params, {1}, 20, &label_evaluators);
 
-  std::vector<mcts::Reward> rewards;
+  std::vector<Reward> rewards;
   auto next_mcts_state = mcts_state.Execute(JointAction({0}), rewards);
   rewards += next_mcts_state->GetTerminalReward();
   // Checking reward of zero if we are neither colliding or at goal
@@ -162,9 +168,8 @@ TEST(single_agent_mcts_state, execute) {
   EXPECT_TRUE(next_mcts_state->IsTerminal());
   bark::world::EvaluatorPtr evaluator_goal_reached(new EvaluatorGoalReached());
   auto terminal_world = next_mcts_state->GetObservedWorld();
-  terminal_world->AddEvaluator("goal_reached", evaluator_goal_reached);
-  auto results = terminal_world->Evaluate();
-  EXPECT_TRUE(boost::get<bool>(results["goal_reached"]));
+  auto results = evaluator_goal_reached->Evaluate(*terminal_world);
+  EXPECT_TRUE(boost::get<bool>(results));
 }
 
 // TEST(single_agent_mcts_state, execute_goal_reached_state_limits) {

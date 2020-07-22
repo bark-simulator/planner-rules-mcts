@@ -4,16 +4,16 @@
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
 #include "python/python_planner_mvmcts.hpp"
-#include "mcts/random_generator.h"
-#include "src/behavior_mvmcts.hpp"
 #include "bark/python_wrapper/polymorphic_conversion.hpp"
+#include "mvmcts/random_generator.h"
+#include "src/behavior_mvmcts.hpp"
 #include "src/mvmcts_state.hpp"
 
 namespace py = pybind11;
 using bark::commons::Params;
 using bark::models::behavior::BehaviorModel;
 using bark::models::behavior::BehaviorMvmctsUct;
-using bark::models::behavior::BehaviorMvmctsEGreedy;
+using bark::models::behavior::LabelEvaluators;
 using bark::models::behavior::LabelEvaluators;
 using bark::models::behavior::MvmctsState;
 using bark::models::behavior::MultiAgentRuleMap;
@@ -23,8 +23,6 @@ using bark::models::behavior::MvmctsStateParameters;
 using bark::models::behavior::MakeMctsParameters;
 using bark::world::PredictionSettings;
 using bark::models::behavior::LabelEvaluators;
-using mcts::AgentIdx;
-using ltl::RuleMonitor;
 
 void python_planner_mvmcts(py::module m) {
 
@@ -69,23 +67,23 @@ void python_planner_mvmcts(py::module m) {
                         t[3].cast<bark::models::behavior::MultiAgentRuleMap>());
                 }));
 
-    py::class_ <BehaviorMvmctsEGreedy, BehaviorModel,
-        std::shared_ptr <BehaviorMvmctsEGreedy>> (m, "BehaviorMvmctsEGreedy")
-            .def(py::init<const bark::commons::ParamsPtr &, const PredictionSettings &,
+  py::class_<BehaviorMvmctsGreedy, BehaviorModel,
+             std::shared_ptr<BehaviorMvmctsGreedy>>(m, "BehaviorMvmctsGreedy")
+      .def(py::init<const bark::commons::ParamsPtr &, const PredictionSettings &,
                           const LabelEvaluators &,
                           const std::vector<std::shared_ptr<RuleMonitor>> &,
                           const MultiAgentRuleMap &>())
-            .def("AddAgentRules", &BehaviorMvmctsEGreedy::AddAgentRules)
-            .def("AddCommonRules", &BehaviorMvmctsEGreedy::AddCommonRules)
-            .def("AddLabels", &BehaviorMvmctsEGreedy::AddLabels)
-            .def("GetTree", &BehaviorMvmctsEGreedy::GetTree)
-            .def("__repr__",
-                 [](const BehaviorMvmctsEGreedy&m) {
-                     return "bark.behavior.BehaviorMvmctsEGreedy";
-                 })
+        .def("AddAgentRules", &BehaviorMvmctsGreedy::AddAgentRules)
+        .def("AddCommonRules", &BehaviorMvmctsGreedy::AddCommonRules)
+        .def("AddLabels", &BehaviorMvmctsGreedy::AddLabels)
+        .def("GetTree", &BehaviorMvmctsGreedy::GetTree)
+        .def("__repr__",
+             [](const BehaviorMvmctsGreedy& m) {
+               return "bark.behavior.BehaviorMvmctsGreedy";
+             })
             .def(py::pickle(
-                [](const BehaviorMvmctsEGreedy&b) {
-                    std::vector<py::tuple> labels;
+            [](const BehaviorMvmctsGreedy& b) {
+              std::vector<py::tuple> labels;
                     for (const auto &label : b.GetLabelEvaluators()) {
                         labels.emplace_back(LabelToPython(label));
                     }
@@ -102,7 +100,7 @@ void python_planner_mvmcts(py::module m) {
                         t[1].cast < std::vector < py::tuple >> ()) {
                         labels.emplace_back(PythonToLabel(label_tuple));
                     }
-                    return new BehaviorMvmctsEGreedy(
+                    return new BehaviorMvmctsGreedy(
                         PythonToParams(t[0].cast<py::tuple>()),
                         t[4].cast<PredictionSettings>(),
                         labels,
@@ -117,9 +115,11 @@ void python_planner_mvmcts(py::module m) {
                       const std::vector<AgentIdx> &,
                       unsigned int,
                       const LabelEvaluators*>())
-        .def("Execute", [](const MvmctsState& state, const mcts::JointAction &joint_action) {
-            std::vector<mcts::Reward> rewards;
-            auto new_state = state.Execute(joint_action, rewards);
+      .def("Execute",
+           [](const MvmctsState& state,
+              const mvmcts::JointAction& joint_action) {
+             std::vector<mvmcts::Reward> rewards;
+             auto new_state = state.Execute(joint_action, rewards);
             return std::make_tuple(new_state, rewards);
         })
         .def_property_readonly("observed_world", &MvmctsState::GetObservedWorld)
