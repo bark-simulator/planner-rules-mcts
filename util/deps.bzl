@@ -77,26 +77,10 @@ cc_library(
         remote = "https://github.com/google/glog",
     )
     _maybe(
-        http_archive,
-        name = "gtest",
-        url = "https://github.com/google/googletest/archive/release-1.7.0.zip",
-        sha256 = "b58cb7547a28b2c718d1e38aee18a3659c9e3ff52440297e965f5edffe34b6d0",
-        build_file_content = """
-cc_library(
-    name = "main",
-    srcs = glob(
-        ["src/*.cc"],
-        exclude = ["src/gtest-all.cc"]
-    ),
-    hdrs = glob([
-        "include/**/*.h",
-        "src/*.h"
-    ]),
-    copts = ["-Iexternal/gtest/include"],
-    linkopts = ["-pthread"],
-    visibility = ["//visibility:public"],
-)""",
-        strip_prefix = "googletest-release-1.7.0",
+    git_repository,
+    name = "gtest",
+    commit = "703bd9caab50b139428cea1aaff9974ebee5742e",
+    remote = "https://github.com/google/googletest"
     )
 
     _maybe(

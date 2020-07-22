@@ -16,6 +16,6 @@ cc_binary(
         "@bark_project//bark/world/evaluation:evaluator_drivable_area",
         "@bark_project//bark/world/evaluation/ltl/label_functions:label_function",
         "@bark_project//bark/world/goal_definition",
-        "@gtest//:main",
+        "@gtest//:gtest_main",
     ],
 )
