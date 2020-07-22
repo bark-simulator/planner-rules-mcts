@@ -23,8 +23,8 @@ class MvmctsStateParameters {
       const float desired_velocity_weight, const float lane_center_weight,
       const unsigned int reward_vector_size, const float prediction_time_span,
       const float desired_velocity, const unsigned int horizon,
-      const float discount_factor);
-  explicit MvmctsStateParameters(const commons::ParamsPtr &params);
+      const float discount_factor, const float goal_reward);
+  explicit MvmctsStateParameters(const commons::ParamsPtr& params);
   const float OUT_OF_MAP_WEIGHT;
   const float POTENTIAL_WEIGHT;
   const float ACCELERATION_WEIGHT;
@@ -36,6 +36,7 @@ class MvmctsStateParameters {
   const float DESIRED_VELOCITY;
   const unsigned int HORIZON;
   const float DISCOUNT_FACTOR;
+  const float GOAL_REWARD;
 };
 
 }  // namespace behavior

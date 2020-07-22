@@ -12,7 +12,7 @@ bark::models::behavior::MvmctsStateParameters::MvmctsStateParameters(
     const float desired_velocity_weight, const float lane_center_weight,
     const unsigned int reward_vector_size, const float prediction_time_span,
     const float desired_velocity, const unsigned int horizon,
-    const float discount_factor)
+    const float discount_factor, const float goal_reward)
     : OUT_OF_MAP_WEIGHT(out_of_map_weight),
       POTENTIAL_WEIGHT(potential_weight),
       ACCELERATION_WEIGHT(acceleration_weight),
@@ -23,7 +23,8 @@ bark::models::behavior::MvmctsStateParameters::MvmctsStateParameters(
       PREDICTION_TIME_SPAN(prediction_time_span),
       DESIRED_VELOCITY(desired_velocity),
       HORIZON(horizon),
-      DISCOUNT_FACTOR(discount_factor) {}
+      DISCOUNT_FACTOR(discount_factor),
+      GOAL_REWARD(goal_reward) {}
 
 bark::models::behavior::MvmctsStateParameters::MvmctsStateParameters(
     const commons::ParamsPtr& params)

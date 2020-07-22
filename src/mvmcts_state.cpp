@@ -33,11 +33,12 @@ using bark::world::evaluation::LabelMap;
 using dynamic::StateDefinition;
 using ltl::Label;
 
-MvmctsState::MvmctsState(
-    const bark::world::ObservedWorldPtr& observed_world,
-    const MultiAgentRuleState& multi_agent_rule_state,
-    const MvmctsStateParameters* params, const std::vector<AgentIdx>& agent_idx,
-    unsigned int horizon, const LabelEvaluators* label_evaluators)
+MvmctsState::MvmctsState(const bark::world::ObservedWorldPtr& observed_world,
+                         const MultiAgentRuleState& multi_agent_rule_state,
+                         const MvmctsStateParameters* params,
+                         const std::vector<AgentIdx>& agent_idx,
+                         unsigned int horizon,
+                         const LabelEvaluators* label_evaluators)
     : multi_agent_rule_state_(multi_agent_rule_state),
       agent_idx_(agent_idx),
       state_params_(params),
@@ -81,6 +82,10 @@ std::shared_ptr<MvmctsState> MvmctsState::Execute(
           world_agent_id, agent->GetCurrentState(),
           observed_world_->GetAgent(world_agent_id)->GetCurrentState());
       rewards[ai] += next_state->EvaluateRules(agent);
+      if (agent->AtGoal()) {
+        rewards[ai](state_params_->REWARD_VECTOR_SIZE - 1) +=
+            state_params_->GOAL_REWARD;
+      }
     } else if (observed_world_->GetAgent(world_agent_id) && !agent) {
       // Agent got out of map during this time step
       // So we obtain its out-of-map-penalty
@@ -115,7 +120,8 @@ std::vector<Reward> MvmctsState::GetTerminalReward() const {
                       Reward::Zero(state_params_->REWARD_VECTOR_SIZE));
   for (size_t ai = 0; ai < num_agents; ++ai) {
     // Only get final reward for agents present
-    if (observed_world_->GetAgent(agent_ids[ai])) {
+    auto agent = observed_world_->GetAgent(agent_ids[ai]);
+    if (agent) {
       for (const auto& rule : multi_agent_rule_state_.at(agent_ids[ai])) {
         rewards[ai](rule.GetPriority()) +=
             rule.GetAutomaton()->FinalTransit(rule);
@@ -164,8 +170,7 @@ JointReward MvmctsState::EvaluateRules() {
   }
   return rewards;
 }
-const MultiAgentRuleState& MvmctsState::GetMultiAgentRuleState()
-    const {
+const MultiAgentRuleState& MvmctsState::GetMultiAgentRuleState() const {
   return multi_agent_rule_state_;
 }
 
@@ -209,9 +214,8 @@ Eigen::VectorXf MvmctsState::GetActionCost(
   return reward;
 }
 
-Reward MvmctsState::PotentialReward(
-    AgentId agent_id, const State& new_state,
-    const State& current_state) const {
+Reward MvmctsState::PotentialReward(AgentId agent_id, const State& new_state,
+                                    const State& current_state) const {
   Eigen::VectorXf reward = Reward::Zero(state_params_->REWARD_VECTOR_SIZE);
   reward(reward.size() - 1) =
       state_params_->DISCOUNT_FACTOR * Potential(agent_id, new_state) -
