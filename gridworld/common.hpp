@@ -10,9 +10,9 @@
 #include <utility>
 #include <vector>
 
-#include "mcts/state.h"
+#include "mvmcts/state.h"
 
-using mcts::ActionIdx;
+using mvmcts::ActionIdx;
 
 enum class Actions { WAIT = 0, FORWARD = 1, BACKWARD = -1, NUM = 4 };
 

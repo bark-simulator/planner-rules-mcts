@@ -15,18 +15,19 @@
 #include "gridworld/grid_world_state.hpp"
 #include "gridworld/label_evaluator/evaluator_label_at_position.h"
 #include "gridworld/label_evaluator/evaluator_label_collision.h"
-#include "mcts/mcts.h"
-#include "mcts/random_generator.h"
-#include "mcts/statistics/slack_uct_statistic.h"
+#include "mvmcts/mvmcts.h"
+#include "mvmcts/random_generator.h"
+#include "mvmcts/statistics/slack_uct_statistic.h"
 
-using namespace mcts;
+using namespace mvmcts;
 using RuleMonitorSPtr = RuleMonitor::RuleMonitorSPtr;
+typedef std::vector<Eigen::MatrixXi> History;
 
 class BaseTestEnv {
  public:
   explicit BaseTestEnv(const ObjectiveVec &thres);
   ~BaseTestEnv() = default;
-  static MctsParameters MakeMctsParameters(const ObjectiveVec &thres);
+  static MvmctsParameters MakeMctsParameters(const ObjectiveVec& thres);
   static GridWorldStateParameter MakeGridWorldStateParameters();
   static std::vector<std::map<Rule, RuleMonitorSPtr>> MakeAutomata(
       size_t num_agents);
@@ -40,11 +41,11 @@ class BaseTestEnv {
   const std::deque<JointAction> &GetActionHistory() const;
   void SetJt(const JointAction &jt);
 
-  const MctsParameters mcts_parameters;
+  const MvmctsParameters mcts_parameters;
   const GridWorldStateParameter grid_world_state_parameter;
   std::vector<std::shared_ptr<EvaluatorLabelBase<World>>> label_evaluators;
   std::vector<Reward> rewards;
-  std::vector<Eigen::MatrixXi> state_history;
+  History state_history;
   std::shared_ptr<GridWorldState> state;
 
   static const int NUM_AGENTS = 3;

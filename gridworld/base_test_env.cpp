@@ -40,8 +40,8 @@ BaseTestEnv::BaseTestEnv(const ObjectiveVec &thres)
       agent_states, false, aut_v, label_evaluators, grid_world_state_parameter,
       0, std::vector<bool>(agent_states.size(), false));
 }
-MctsParameters BaseTestEnv::MakeMctsParameters(const ObjectiveVec &thres) {
-  MctsParameters param;
+MvmctsParameters BaseTestEnv::MakeMctsParameters(const ObjectiveVec& thres) {
+  MvmctsParameters param;
 
   param.REWARD_VEC_SIZE = 3;
 
@@ -54,13 +54,16 @@ MctsParameters BaseTestEnv::MakeMctsParameters(const ObjectiveVec &thres) {
   param.uct_statistic.LOWER_BOUND = ObjectiveVec::Zero(param.REWARD_VEC_SIZE);
   param.uct_statistic.UPPER_BOUND = ObjectiveVec::Zero(param.REWARD_VEC_SIZE);
 
-  param.e_greedy_uct_statistic_.EPSILON = 1.0;
+  param.thres_uct_statistic_.EPSILON = 1.0;
 
   param.slack_uct_statistic_.SLACK_FACTOR = 0.2;
 
   assert(thres.size() == param.REWARD_VEC_SIZE);
   param.thres_uct_statistic_.THRESHOLD = thres;
   param.thres_uct_statistic_.EPSILON = 0.0;
+
+  param.thres_greedy_statistic_.DECAY1 = .8;
+  param.thres_greedy_statistic_.DECAY2 = .12;
 
   param.uct_statistic.LOWER_BOUND << -1.0f, -1.0f, -100.0f;
   param.uct_statistic.UPPER_BOUND << 0.0f, 0.0f, 0.0f;

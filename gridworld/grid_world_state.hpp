@@ -18,12 +18,12 @@
 #include "gridworld/label_evaluator/evaluator_label_base.h"
 #include "ltl/rule_monitor.h"
 
-using namespace mcts;
+using namespace mvmcts;
 using namespace ltl;
 
 typedef std::vector<std::multimap<Rule, RuleState>> RuleStateMap;
 
-class GridWorldState : public mcts::StateInterface<GridWorldState> {
+class GridWorldState : public mvmcts::StateInterface<GridWorldState> {
  public:
   typedef Actions ActionType;
 

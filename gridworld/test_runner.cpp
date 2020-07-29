@@ -10,7 +10,7 @@
 #include "evaluation/evaluation.h"
 #include "gridworld/test_runner.h"
 
-using mcts::evaluation::QValWriter;
+using mvmcts::evaluation::QValWriter;
 
 TestRunner::Result TestRunner::RunTest(size_t num_iter, int max_steps) {
   // Always recreate test environment to isolate test iterations

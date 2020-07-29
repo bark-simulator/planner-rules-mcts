@@ -11,9 +11,14 @@
 #include <utility>
 
 #include "gridworld/base_test_env.h"
-#include "mcts/heuristics/random_heuristic.h"
-#include "mcts/mcts.h"
-#include "mcts/statistics/uct_statistic.h"
+#include "mvmcts/heuristics/random_heuristic.h"
+#include "mvmcts/mvmcts.h"
+#include "mvmcts/statistics/uct_statistic.h"
+
+using mvmcts::JointAction;
+using mvmcts::ObjectiveVec;
+using mvmcts::RandomHeuristic;
+using mvmcts::UctStatistic;
 
 template <class Stats = UctStatistic<>, class Heuristic = RandomHeuristic>
 class CrossingTestEnv : public BaseTestEnv {
@@ -30,7 +35,7 @@ class CrossingTestEnv : public BaseTestEnv {
   std::map<unsigned long, Eigen::VectorXf> GetEgoQval() override {
     return mcts.GetRoot()->GetEgoIntNode().GetExpectedRewards();
   }
-  Mcts<GridWorldState, Stats, Stats, Heuristic> mcts;
+  Mvmcts<GridWorldState, Stats, Stats, Heuristic> mcts;
 };
 
 #endif  // GRIDWORLD_CROSSING_TEST_ENV_H_

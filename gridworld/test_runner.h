@@ -16,7 +16,7 @@
 
 using Eigen::ArrayXi;
 using Eigen::MatrixXf;
-using mcts::JointReward;
+using mvmcts::JointReward;
 using std::ofstream;
 using std::ostream;
 using std::stringstream;
