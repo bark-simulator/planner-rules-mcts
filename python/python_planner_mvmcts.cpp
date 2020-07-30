@@ -13,6 +13,7 @@ namespace py = pybind11;
 using bark::commons::Params;
 using bark::models::behavior::BehaviorModel;
 using bark::models::behavior::BehaviorMvmctsUct;
+using bark::models::behavior::BehaviorMvmctsGreedy;
 using bark::models::behavior::LabelEvaluators;
 using bark::models::behavior::LabelEvaluators;
 using bark::models::behavior::MvmctsState;
@@ -23,6 +24,8 @@ using bark::models::behavior::MvmctsStateParameters;
 using bark::models::behavior::MakeMctsParameters;
 using bark::world::PredictionSettings;
 using bark::models::behavior::LabelEvaluators;
+using ltl::RuleMonitor;
+using mvmcts::AgentIdx;
 
 void python_planner_mvmcts(py::module m) {
 

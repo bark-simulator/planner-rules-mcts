@@ -32,20 +32,6 @@ cc_library(
     ],
 )
 
-cc_binary(
-    name = "threshold_comparison",
-    srcs = [
-        "threshold_comparison.cpp",
-    ],
-    deps = [
-        ":test_runner",
-        "//gridworld:grid_world_state",
-        "//gridworld:state_file_writer",
-        "@com_github_google_glog//:glog",
-        "@momamcts_project//mvmcts",
-    ],
-)
-
 cc_library(
     name = "common",
     srcs = ["common.cpp"],
