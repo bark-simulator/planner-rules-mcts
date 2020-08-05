@@ -18,13 +18,15 @@ using bark::commons::Params;
 class MvmctsStateParameters {
  public:
   MvmctsStateParameters(
-      const float out_of_map_weight, const float potential_weight,
-      const float acceleration_weight, const float radial_acceleration_weight,
+      const float collision_weight, const float out_of_map_weight,
+      const float potential_weight, const float acceleration_weight,
+      const float radial_acceleration_weight,
       const float desired_velocity_weight, const float lane_center_weight,
       const unsigned int reward_vector_size, const float prediction_time_span,
       const float desired_velocity, const unsigned int horizon,
       const float discount_factor, const float goal_reward);
   explicit MvmctsStateParameters(const commons::ParamsPtr& params);
+  const float COLLISION_WEIGHT;
   const float OUT_OF_MAP_WEIGHT;
   const float POTENTIAL_WEIGHT;
   const float ACCELERATION_WEIGHT;

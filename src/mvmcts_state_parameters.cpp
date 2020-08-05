@@ -7,13 +7,14 @@
 #include "bark/models/dynamic/dynamic_model.hpp"
 
 bark::models::behavior::MvmctsStateParameters::MvmctsStateParameters(
-    const float out_of_map_weight, const float potential_weight,
+    const float collision_weight, const float out_of_map_weight, const float potential_weight,
     const float acceleration_weight, const float radial_acceleration_weight,
     const float desired_velocity_weight, const float lane_center_weight,
     const unsigned int reward_vector_size, const float prediction_time_span,
     const float desired_velocity, const unsigned int horizon,
     const float discount_factor, const float goal_reward)
-    : OUT_OF_MAP_WEIGHT(out_of_map_weight),
+    : COLLISION_WEIGHT(collision_weight),
+      OUT_OF_MAP_WEIGHT(out_of_map_weight),
       POTENTIAL_WEIGHT(potential_weight),
       ACCELERATION_WEIGHT(acceleration_weight),
       RADIAL_ACCELERATION_WEIGHT(radial_acceleration_weight),
@@ -28,7 +29,10 @@ bark::models::behavior::MvmctsStateParameters::MvmctsStateParameters(
 
 bark::models::behavior::MvmctsStateParameters::MvmctsStateParameters(
     const commons::ParamsPtr& params)
-    : OUT_OF_MAP_WEIGHT(
+    : COLLISION_WEIGHT(
+          params->GetReal("BehaviorMvmcts::StateParameters::CollisionWeight",
+                          "Penalty for collision", 0)),
+      OUT_OF_MAP_WEIGHT(
           params->GetReal("BehaviorMvmcts::StateParameters::OutOfMapWeight",
                           "Penalty for leaving the map", -800)),
       POTENTIAL_WEIGHT(
