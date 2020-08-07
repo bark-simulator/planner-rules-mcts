@@ -12,7 +12,7 @@ bark::models::behavior::MvmctsStateParameters::MvmctsStateParameters(
     const float desired_velocity_weight, const float lane_center_weight,
     const unsigned int reward_vector_size, const float prediction_time_span,
     const float desired_velocity, const unsigned int horizon,
-    const float discount_factor, const float goal_reward)
+    const float discount_factor, const float goal_reward, const bool use_rule_reward_for_ego_only)
     : COLLISION_WEIGHT(collision_weight),
       OUT_OF_MAP_WEIGHT(out_of_map_weight),
       POTENTIAL_WEIGHT(potential_weight),
@@ -25,7 +25,8 @@ bark::models::behavior::MvmctsStateParameters::MvmctsStateParameters(
       DESIRED_VELOCITY(desired_velocity),
       HORIZON(horizon),
       DISCOUNT_FACTOR(discount_factor),
-      GOAL_REWARD(goal_reward) {}
+      GOAL_REWARD(goal_reward),
+      USE_RULE_REWARD_FOR_EGO_ONLY(use_rule_reward_for_ego_only) {}
 
 bark::models::behavior::MvmctsStateParameters::MvmctsStateParameters(
     const commons::ParamsPtr& params)
@@ -66,4 +67,7 @@ bark::models::behavior::MvmctsStateParameters::MvmctsStateParameters(
                                       0.9)),
       GOAL_REWARD(params->GetReal(
           "BehaviorMvmcts::StateParameters::GoalReward",
-          "Reward received when reaching the agent's goal.", 0.0)) {}
+          "Reward received when reaching the agent's goal.", 0.0)),
+      USE_RULE_REWARD_FOR_EGO_ONLY(params->GetBool(
+          "BehaviorMvmcts::StateParameters::UseRuleRewardForEgoOnly",
+          "Rewards from Rule evaluations are only used for ego vehicle.", false))  {}

@@ -63,7 +63,7 @@ std::shared_ptr<MvmctsState> MvmctsState::Execute(
   for (size_t i = 0; i < num_agents; ++i) {
     agent_action_map.insert({agent_ids[i], DiscreteAction(joint_action[i])});
   }
-  auto predicted_world =
+  ObservedWorldPtr predicted_world =
       std::dynamic_pointer_cast<ObservedWorld>(observed_world_->Predict(
           state_params_->PREDICTION_TIME_SPAN, agent_action_map));
   auto next_state = std::make_shared<MvmctsState>(
@@ -77,8 +77,10 @@ std::shared_ptr<MvmctsState> MvmctsState::Execute(
     agent = predicted_world->GetAgent(world_agent_id);
     rewards[ai] = Reward::Zero(state_params_->REWARD_VECTOR_SIZE);
     if (agent && agent->GetExecutionStatus() == ExecutionStatus::VALID) {
+      // calculate collision reward (always at priority 0)
       auto evaluator_collision = EvaluatorCollisionEgoAgent(agent->GetAgentId());
-      bool collision_ego = boost::get<bool>(evaluator_collision.Evaluate(*predicted_world));
+      ObservedWorld agent_observed_world = predicted_world->Observe({agent->GetAgentId()})[0];
+      bool collision_ego = boost::get<bool>(evaluator_collision.Evaluate(agent_observed_world));
       rewards[ai](0) += collision_ego * state_params_->COLLISION_WEIGHT;
 
       rewards[ai] += GetActionCost(agent);
@@ -86,8 +88,12 @@ std::shared_ptr<MvmctsState> MvmctsState::Execute(
       rewards[ai] += PotentialReward(
           world_agent_id, agent->GetCurrentState(),
           observed_world_->GetAgent(world_agent_id)->GetCurrentState());
-
-      rewards[ai] += next_state->EvaluateRules(agent);
+      
+      if ((state_params_->USE_RULE_REWARD_FOR_EGO_ONLY) && (world_agent_id != observed_world_->GetEgoAgentId())) {} 
+      else {
+        rewards[ai] += next_state->EvaluateRules(agent);
+      }
+      
       
       if (agent->AtGoal()) {
         rewards[ai](state_params_->REWARD_VECTOR_SIZE - 1) +=
