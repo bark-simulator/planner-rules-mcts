@@ -155,8 +155,26 @@ dynamic::Trajectory BehaviorMvmcts<Stat>::Plan(
     float delta_time, const world::ObservedWorld& observed_world) {
   ObservedWorldPtr mcts_observed_world =
       std::dynamic_pointer_cast<ObservedWorld>(observed_world.Clone());
-  mcts_observed_world->SetupPrediction(prediction_settings_);
 
+  AgentMap nearby_agents = observed_world.GetNearestAgents(observed_world.CurrentEgoPosition(), 3);
+  // for (const auto& agent : nearby_agents) {
+  //   LOG(INFO) << "agent " << agent.first << " is nearby";
+  // }
+  // auto params = std::make_shared<bark::commons::SetterParams>();
+  // BehaviorModelPtr beh_model_const(new BehaviorConstantVelocity(params));
+  // prediction_settings_.specific_prediction_model_ = beh_model_const;
+  prediction_settings_.specific_prediction_agents_.clear();
+  for (const auto& agent : observed_world.GetValidOtherAgents()) {
+    if (nearby_agents.count(agent.first) == 0) {
+      // LOG(INFO) << "adding agent " << agent.first << " specific_prediction_agents_ ... not interacting";
+      prediction_settings_.specific_prediction_agents_.insert(agent.first);
+    } else {
+      // LOG(INFO) << "not adding agent " << agent.first << " specific_prediction_agents_, as it is nearby ... interacting";
+    }
+  }
+
+  mcts_observed_world->SetupPrediction(prediction_settings_);
+  
   // SETUP MCTS
   mvmcts::Mvmcts<MvmctsState, Stat, Stat, mvmcts::RandomHeuristic> mcts(
       mcts_parameters_);
