@@ -78,13 +78,19 @@ std::shared_ptr<MvmctsState> MvmctsState::Execute(
     rewards[ai] = Reward::Zero(state_params_->REWARD_VECTOR_SIZE);
     if (agent && agent->GetExecutionStatus() == ExecutionStatus::VALID) {
       // calculate collision reward (always at priority 0)
-      auto evaluator_collision =
-          EvaluatorCollisionEgoAgent(agent->GetAgentId());
       ObservedWorld agent_observed_world =
           predicted_world->Observe({agent->GetAgentId()})[0];
-      bool collision_ego =
+
+      EvaluatorCollisionEgoAgent evaluator_collision(agent->GetAgentId());
+      EvaluatorDrivableArea evaluator_out_of_map(agent->GetAgentId());
+
+      const bool collision_ego =
           boost::get<bool>(evaluator_collision.Evaluate(agent_observed_world));
       rewards[ai](0) += collision_ego * state_params_->COLLISION_WEIGHT;
+
+      const bool out_of_map =
+          boost::get<bool>(evaluator_out_of_map.Evaluate(agent_observed_world));
+      rewards[ai](0) += out_of_map * state_params_->OUT_OF_MAP_WEIGHT;
 
       rewards[ai] += GetActionCost(agent);
 

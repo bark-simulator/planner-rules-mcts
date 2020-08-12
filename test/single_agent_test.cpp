@@ -58,7 +58,6 @@ LabelEvaluators make_labels() {
 std::vector<std::shared_ptr<RuleMonitor>> make_rules() {
   std::vector<std::shared_ptr<RuleMonitor>> rules;
   rules.emplace_back(RuleMonitor::MakeRule("G !collision_ego", -1000, 0));
-  rules.emplace_back(RuleMonitor::MakeRule("G !collision_corridor", -800, 0));
   return rules;
 }
 
