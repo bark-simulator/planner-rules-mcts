@@ -78,9 +78,12 @@ std::shared_ptr<MvmctsState> MvmctsState::Execute(
     rewards[ai] = Reward::Zero(state_params_->REWARD_VECTOR_SIZE);
     if (agent && agent->GetExecutionStatus() == ExecutionStatus::VALID) {
       // calculate collision reward (always at priority 0)
-      auto evaluator_collision = EvaluatorCollisionEgoAgent(agent->GetAgentId());
-      ObservedWorld agent_observed_world = predicted_world->Observe({agent->GetAgentId()})[0];
-      bool collision_ego = boost::get<bool>(evaluator_collision.Evaluate(agent_observed_world));
+      auto evaluator_collision =
+          EvaluatorCollisionEgoAgent(agent->GetAgentId());
+      ObservedWorld agent_observed_world =
+          predicted_world->Observe({agent->GetAgentId()})[0];
+      bool collision_ego =
+          boost::get<bool>(evaluator_collision.Evaluate(agent_observed_world));
       rewards[ai](0) += collision_ego * state_params_->COLLISION_WEIGHT;
 
       rewards[ai] += GetActionCost(agent);
@@ -88,16 +91,23 @@ std::shared_ptr<MvmctsState> MvmctsState::Execute(
       rewards[ai] += PotentialReward(
           world_agent_id, agent->GetCurrentState(),
           observed_world_->GetAgent(world_agent_id)->GetCurrentState());
-      
-      if ((state_params_->USE_RULE_REWARD_FOR_EGO_ONLY) && (world_agent_id != observed_world_->GetEgoAgentId())) {} 
-      else {
+
+      if ((state_params_->USE_RULE_REWARD_FOR_EGO_ONLY) &&
+          (world_agent_id != observed_world_->GetEgoAgentId())) {
+      } else {
         rewards[ai] += next_state->EvaluateRules(agent);
       }
-      
-      
+
       if (agent->AtGoal()) {
         rewards[ai](state_params_->REWARD_VECTOR_SIZE - 1) +=
             state_params_->GOAL_REWARD;
+      }
+
+      // Check if agent has collided
+      if (collision_ego) {
+        // TODO: Maybe use a separate value for collisions?
+        agent->GetExecutionModel()->SetExecutionStatus(
+            ExecutionStatus::INVALID);
       }
     } else if (observed_world_->GetAgent(world_agent_id) && !agent) {
       // Agent got out of map during this time step
@@ -160,13 +170,6 @@ Reward MvmctsState::EvaluateRules(const AgentPtr& agent) {
     for (auto& rule : multi_agent_rule_state_.at(agent->GetAgentId())) {
       reward(rule.GetPriority()) +=
           rule.GetAutomaton()->Evaluate(label_map, rule);
-    }
-    // Check if agent has collided
-    if (label_map.at(Label("collision_ego"))) {
-      // TODO: Maybe use a separate value for collisions?
-      observed_world_->GetAgent(agent->GetAgentId())
-          ->GetExecutionModel()
-          ->SetExecutionStatus(ExecutionStatus::INVALID);
     }
   }
   return reward;
