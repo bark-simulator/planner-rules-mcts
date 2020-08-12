@@ -4,7 +4,6 @@
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
 #include "util.hpp"
-#include "bark/models/behavior/constant_velocity/constant_velocity.hpp"
 #include "bark/models/behavior/rule_based/lane_change_behavior.hpp"
 #include "bark/models/behavior/motion_primitives/macro_actions.hpp"
 #include "bark/models/behavior/motion_primitives/motion_primitives.hpp"
