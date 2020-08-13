@@ -123,7 +123,7 @@ BehaviorMvmcts<Stat>::BehaviorMvmcts(
     const LabelEvaluators& label_evaluators,
     const std::vector<std::shared_ptr<RuleMonitor>>& common_rules,
     const MultiAgentRuleMap& agent_rules)
-    : BehaviorModel(params),
+    : BehaviorModel(params, BehaviorStatus::VALID),
       common_rules_(common_rules),
       agent_rules_(agent_rules),
       prediction_settings_(prediction_settings),
@@ -153,7 +153,8 @@ BehaviorMvmcts<Stat>::BehaviorMvmcts(
 template <class Stat>
 dynamic::Trajectory BehaviorMvmcts<Stat>::Plan(
     float delta_time, const world::ObservedWorld& observed_world) {
-  UpdateBehaviorStatus(delta_time, observed_world.GetWorldTime());
+  // TODO: is this needed?
+  // UpdateBehaviorStatus(delta_time, observed_world.GetWorldTime());
   ObservedWorldPtr mcts_observed_world =
       std::dynamic_pointer_cast<ObservedWorld>(observed_world.Clone());
 
@@ -175,7 +176,7 @@ dynamic::Trajectory BehaviorMvmcts<Stat>::Plan(
   }
 
   mcts_observed_world->SetupPrediction(prediction_settings_);
-  
+
   // SETUP MCTS
   mvmcts::Mvmcts<MvmctsState, Stat, Stat, mvmcts::RandomHeuristic> mcts(
       mcts_parameters_);
