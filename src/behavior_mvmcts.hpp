@@ -153,6 +153,7 @@ BehaviorMvmcts<Stat>::BehaviorMvmcts(
 template <class Stat>
 dynamic::Trajectory BehaviorMvmcts<Stat>::Plan(
     float delta_time, const world::ObservedWorld& observed_world) {
+  UpdateBehaviorStatus(delta_time, observed_world.GetWorldTime());
   ObservedWorldPtr mcts_observed_world =
       std::dynamic_pointer_cast<ObservedWorld>(observed_world.Clone());
 
