@@ -14,6 +14,7 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
+#include <iostream>
 
 #include "bark/models/behavior/behavior_model.hpp"
 #include "bark/models/behavior/motion_primitives/macro_actions.hpp"
@@ -188,7 +189,12 @@ dynamic::Trajectory BehaviorMvmcts<Stat>::Plan(
   MakeRuleStates(new_agents);
   AddKnownAgents(new_agents);
   auto agent_ids = GetAgentIdMap(observed_world);
-  RemoveRuleStates(agent_ids);
+
+  std::vector<AgentIdx> agent_ids_in_observed_world;
+  for (auto const& aid : observed_world.GetValidAgents())
+    agent_ids_in_observed_world.push_back(aid.first);
+  RemoveRuleStates(agent_ids_in_observed_world); // todo: change interface to AgentId
+
   MvmctsState mcts_state(mcts_observed_world, multi_agent_rule_state_,
                                    &state_params_, agent_ids,
                                    state_params_.HORIZON, &label_evaluators_);
