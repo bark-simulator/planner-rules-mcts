@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
+#include "glog/logging.h"
 
 #include "bark/models/behavior/behavior_model.hpp"
 #include "bark/models/behavior/motion_primitives/motion_primitives.hpp"
@@ -207,9 +208,10 @@ Eigen::VectorXf MvmctsState::GetActionCost(
   const float a = (traj(traj_size - 1, dynamic::VEL_POSITION) -
                    traj(0, dynamic::VEL_POSITION)) /
                   dt;
-  action_cost +=
-      state_params_->ACCELERATION_WEIGHT * a * a * dt;  //  Acceleration
 
+  float acc_cost =
+      state_params_->ACCELERATION_WEIGHT * a * a * dt;  //  Acceleration
+  action_cost += acc_cost;
   const float theta_dot = (traj(traj_size - 1, dynamic::THETA_POSITION) -
                            traj(0, dynamic::THETA_POSITION)) /
                           dt;
@@ -219,8 +221,9 @@ Eigen::VectorXf MvmctsState::GetActionCost(
   action_cost += state_params_->RADIAL_ACCELERATION_WEIGHT * a_lat * a_lat * dt;
 
   //  Desired velocity
-  action_cost += state_params_->DESIRED_VELOCITY_WEIGHT *
-                 fabs(avg_vel - state_params_->DESIRED_VELOCITY) * dt;
+  float vel_cost = state_params_->DESIRED_VELOCITY_WEIGHT *
+                   fabs(traj(0, dynamic::VEL_POSITION) - state_params_->DESIRED_VELOCITY) * dt;
+  action_cost += vel_cost;
   //  Lane center deviation
   const auto& lane_corridor = agent->GetRoadCorridor()->GetCurrentLaneCorridor(
       agent->GetCurrentPosition());
@@ -232,6 +235,10 @@ Eigen::VectorXf MvmctsState::GetActionCost(
     action_cost +=
         state_params_->LANE_CENTER_WEIGHT * fabs(lane_center_dev) * dt;
   }
+  VLOG(3) << "acc " << a << "acc costs: " << acc_cost;
+  VLOG(3) << "vel " << traj(0, dynamic::VEL_POSITION)
+          << "vel costs: " << vel_cost;
+
   reward(value_pos) = action_cost;
   return reward;
 }
