@@ -6,7 +6,7 @@ def planner_mv_mcts_dependencies():
     _maybe(
         git_repository,
         name = "bark_project",
-        commit = "04f71312439d228d7494f57f353083b8780bd06e",
+        commit = "be5b600b3c183ebb204119de7fb42bf66478c585",
         remote = "git@github.com:bark-simulator/bark.git",
     )
 

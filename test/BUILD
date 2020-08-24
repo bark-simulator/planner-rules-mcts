@@ -43,18 +43,18 @@ cc_test(
     ],
 )
 
-cc_test(
-    name = "grid_world_threshold_test",
-    srcs = [
-        "grid_world_threshold_test.cpp",
-    ],
-    copts = ["-Iexternal/gtest/include"],
-    deps = [
-        "//gridworld:grid_world_state",
-        "//gridworld:state_file_writer",
-        "//gridworld:test_runner",
-        "@com_github_google_glog//:glog",
-        "@gtest//:gtest_main",
-        "@momamcts_project//mvmcts",
-    ],
-)
+#cc_test(
+#    name = "grid_world_threshold_test",
+#    srcs = [
+#        "grid_world_threshold_test.cpp",
+#    ],
+#    copts = ["-Iexternal/gtest/include"],
+#    deps = [
+#        "//gridworld:grid_world_state",
+#        "//gridworld:state_file_writer",
+#        "//gridworld:test_runner",
+#        "@com_github_google_glog//:glog",
+#        "@gtest//:gtest_main",
+#        "@momamcts_project//mvmcts",
+#    ],
+#)
