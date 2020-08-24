@@ -7,7 +7,7 @@ cc_test(
     deps = [
         "//src:planner_mvmcts",
         "@bark_project//bark/models/behavior",
-        "@bark_project//bark/models/behavior/constant_velocity",
+        "@bark_project//bark/models/behavior/constant_acceleration",
         "@bark_project//bark/models/behavior/motion_primitives",
         "@bark_project//bark/world",
         "@bark_project//bark/world/evaluation:evaluator_collision_ego_agent",
@@ -20,7 +20,7 @@ cc_test(
     ],
 )
 
-cc_binary(
+cc_test(
     name = "multi_agent_test",
     srcs = [
         "multi_agent_test.cpp",
@@ -29,7 +29,7 @@ cc_binary(
     deps = [
         "//src:planner_mvmcts",
         "@bark_project//bark/models/behavior",
-        "@bark_project//bark/models/behavior/constant_velocity",
+        "@bark_project//bark/models/behavior/constant_acceleration",
         "@bark_project//bark/models/behavior/motion_primitives",
         "@bark_project//bark/world",
         "@bark_project//bark/world/evaluation:evaluator_collision_ego_agent",

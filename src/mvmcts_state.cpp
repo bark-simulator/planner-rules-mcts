@@ -18,6 +18,7 @@
 #include "bark/world/evaluation/evaluator_collision_ego_agent.hpp"
 #include "bark/world/evaluation/evaluator_drivable_area.hpp"
 #include "bark/world/evaluation/ltl/label/label.h"
+#include "bark/world/evaluation/ltl/label/evaluation_map.hpp"
 #include "bark/world/objects/agent.hpp"
 #include "bark/world/observed_world.hpp"
 
@@ -30,7 +31,7 @@ using bark::world::ObservedWorld;
 using bark::world::ObservedWorldPtr;
 using bark::world::evaluation::EvaluatorCollisionEgoAgent;
 using bark::world::evaluation::EvaluatorDrivableArea;
-using bark::world::evaluation::LabelMap;
+using bark::world::evaluation::EvaluationMap;
 using dynamic::StateDefinition;
 using ltl::Label;
 
@@ -102,7 +103,7 @@ std::shared_ptr<MvmctsState> MvmctsState::Execute(
       if ((state_params_->USE_RULE_REWARD_FOR_EGO_ONLY) &&
           (world_agent_id != observed_world_->GetEgoAgentId())) {
       } else {
-        rewards[ai] += next_state->EvaluateRules(agent);
+        rewards[ai] += next_state->EvaluateRules(agent_observed_world);
       }
 
       if (agent->AtGoal()) {
@@ -160,23 +161,14 @@ std::vector<Reward> MvmctsState::GetTerminalReward() const {
   }
   return rewards;
 }
-Reward MvmctsState::EvaluateRules(const AgentPtr& agent) {
+Reward MvmctsState::EvaluateRules(const ObservedWorld& agent_observed_world) {
   Reward reward = Reward::Zero(state_params_->REWARD_VECTOR_SIZE);
-  // Create observed world from agent perspective
-  ObservedWorld agent_observed_world =
-      observed_world_->Observe({agent->GetAgentId()})[0];
-
-  // Obtain labels
-  LabelMap label_map;
-  for (const auto& l : *label_evaluators_) {
-    auto labels = l->Evaluate(agent_observed_world);
-    label_map.insert(labels.begin(), labels.end());
-  }
-
-  if (agent->GetExecutionStatus() == ExecutionStatus::VALID) {
-    for (auto& rule : multi_agent_rule_state_.at(agent->GetAgentId())) {
+  auto ego = agent_observed_world.GetEgoAgent();
+  if (ego->GetExecutionStatus() == ExecutionStatus::VALID) {
+    EvaluationMap label_map(&agent_observed_world, *label_evaluators_);
+    for (auto& rule : multi_agent_rule_state_.at(ego->GetAgentId())) {
       reward(rule.GetPriority()) +=
-          rule.GetAutomaton()->Evaluate(label_map, rule);
+          rule.GetAutomaton()->Evaluate(&label_map, rule);
     }
   }
   return reward;
@@ -189,7 +181,10 @@ JointReward MvmctsState::EvaluateRules() {
   AgentId agent_id;
   for (size_t ai = 0; ai < agent_ids.size(); ++ai) {
     agent_id = agent_ids[ai];
-    rewards[ai] = EvaluateRules(agent_map.at(agent_id));
+    // Create observed world from agent perspective
+    ObservedWorld agent_observed_world =
+        observed_world_->Observe({agent_id})[0];
+    rewards[ai] = EvaluateRules(agent_observed_world);
   }
   return rewards;
 }

@@ -26,7 +26,7 @@ def planner_mv_mcts_dependencies():
     _maybe(
         git_repository,
         name = "rule_monitor_project",
-        commit = "73a435b779b13ac54a3f5d22e977161b11a3a96a",
+        commit = "1420e633e9e9f16217660c272ee5797de5412580",
         remote = "git@github.com:bark-simulator/rule-monitoring.git",
     )
 

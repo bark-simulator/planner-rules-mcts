@@ -68,7 +68,7 @@ ostream &TestRunner::Result::WriteHeader(ostream &os) {
   return os;
 }
 void TestRunner::PrintLabels() {
-  for (const auto &label : latest_test_env_->state->GetAgentLabels(0)) {
+  for (const auto &label : latest_test_env_->state->GetAgentLabels(0).GetValues()) {
     VLOG(1) << label.first.GetLabelStr() << " : " << label.second;
   }
 }

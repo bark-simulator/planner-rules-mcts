@@ -69,19 +69,19 @@ typedef struct AgentState {
 
 typedef std::pair<AgentState, std::vector<AgentState>> World;
 
-template <typename T>
-inline std::ostream& operator<<(std::ostream& os, std::vector<T> const& d) {
-  os << "[";
-  for (typename std::vector<T>::const_iterator ii = d.begin(); ii != d.end();
-       ++ii) {
-    os << *ii;
-    if (ii >= d.end() - 1) {
-      break;
-    }
-    os << ", ";
-  }
-  os << "]";
-  return os;
-}
+//template <typename T>
+//inline std::ostream& operator<<(std::ostream& os, std::vector<T> const& d) {
+//  os << "[";
+//  for (typename std::vector<T>::const_iterator ii = d.begin(); ii != d.end();
+//       ++ii) {
+//    os << *ii;
+//    if (ii >= d.end() - 1) {
+//      break;
+//    }
+//    os << ", ";
+//  }
+//  os << "]";
+//  return os;
+//}
 
 #endif  // GRIDWORLD_COMMON_HPP_

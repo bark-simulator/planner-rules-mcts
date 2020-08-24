@@ -5,7 +5,6 @@
 
 #include "bark/commons/params/setter_params.hpp"
 #include "bark/geometry/commons.hpp"
-#include "bark/models/behavior/constant_velocity/constant_velocity.hpp"
 #include "bark/models/behavior/motion_primitives/continuous_actions.hpp"
 #include "bark/models/dynamic/single_track.hpp"
 #include "bark/world/evaluation/evaluator_collision_ego_agent.hpp"

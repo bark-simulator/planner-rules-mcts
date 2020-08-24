@@ -69,7 +69,7 @@ class MvmctsState : public StateInterface<MvmctsState> {
   const ObservedWorldPtr &GetObservedWorld() const;
 
  private:
-  Reward EvaluateRules(const AgentPtr &agent);
+  Reward EvaluateRules(const ObservedWorld& agent_observed_world);
 
   Reward PotentialReward(AgentId agent_id, const State &new_state,
                          const State &current_state) const;

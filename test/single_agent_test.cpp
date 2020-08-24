@@ -4,7 +4,7 @@
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
 #include "bark/commons/params/setter_params.hpp"
-#include "bark/models/behavior/constant_velocity/constant_velocity.hpp"
+#include "bark/models/behavior/constant_acceleration/constant_acceleration.hpp"
 #include "bark/models/behavior/motion_primitives/continuous_actions.hpp"
 #include "bark/models/dynamic/single_track.hpp"
 #include "bark/world/evaluation/evaluator_collision_ego_agent.hpp"
@@ -98,7 +98,7 @@ TEST(single_agent_mvmcts_state, execute) {
   std::dynamic_pointer_cast<BehaviorMPContinuousActions>(ego_prediction_model)
       ->AddMotionPrimitive(u3);
   BehaviorModelPtr others_prediction_model(
-      new BehaviorConstantVelocity(params));
+      new BehaviorConstantAcceleration(params));
   PredictionSettings prediction_settings(ego_prediction_model,
                                          others_prediction_model);
 
@@ -207,7 +207,7 @@ class SingleAgentSuite : public ::testing::Test {
     std::dynamic_pointer_cast<BehaviorMPContinuousActions>(ego_prediction_model)
         ->AddMotionPrimitive(u5);
     BehaviorModelPtr others_prediction_model(
-        new BehaviorConstantVelocity(params));
+        new BehaviorConstantAcceleration(params));
     prediction_settings =
         PredictionSettings(ego_prediction_model, others_prediction_model);
     behavior = BehaviorModelPtr(
