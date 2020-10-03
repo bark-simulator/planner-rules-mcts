@@ -32,7 +32,7 @@ class GridWorldState : public mvmcts::StateInterface<GridWorldState> {
   GridWorldState(
       RuleStateMap rule_state_map,
       std::vector<std::shared_ptr<EvaluatorLabelBase<World>>> label_evaluator,
-      const GridWorldStateParameter &parameters);
+      const GridWorldStateParameter& parameters);
 
   GridWorldState(
       std::vector<AgentState> agent_states, const bool terminal,
@@ -44,13 +44,13 @@ class GridWorldState : public mvmcts::StateInterface<GridWorldState> {
 
   std::shared_ptr<GridWorldState> Clone() const;
 
-  std::shared_ptr<GridWorldState> Execute(const JointAction &joint_action,
-                                          std::vector<Reward> &rewards) const;
+  std::shared_ptr<GridWorldState> Execute(const JointAction& joint_action,
+                                          std::vector<Reward>& rewards) const;
 
   std::vector<Reward> GetTerminalReward() const;
 
   template <typename ActionType = Actions>
-  ActionType GetLastAction(const AgentIdx &agent_idx) const;
+  ActionType GetLastAction(const AgentIdx& agent_idx) const;
 
   ActionIdx GetNumActions(AgentIdx agent_idx) const;
 
@@ -62,23 +62,23 @@ class GridWorldState : public mvmcts::StateInterface<GridWorldState> {
 
   int GetEgoPos() const;
 
-  const std::vector<AgentState> &GetAgentStates() const;
+  const std::vector<AgentState>& GetAgentStates() const;
 
-  const RuleStateMap &GetRuleStateMap() const;
+  const RuleStateMap& GetRuleStateMap() const;
 
   void ResetDepth();
 
   std::string PrintState() const;
 
-  const GridWorldStateParameter &GetParameters() const;
+  const GridWorldStateParameter& GetParameters() const;
 
   EvaluationMap GetAgentLabels(AgentIdx agent_idx) const;
 
  private:
-  std::vector<AgentState> Step(const JointAction &joint_action) const;
+  std::vector<AgentState> Step(const JointAction& joint_action) const;
   Reward GetActionCost(ActionIdx action, AgentIdx agent_idx) const;
-  Reward GetShapingReward(const AgentState &agent_state) const;
-  void SetCollisionPositions(std::vector<AgentState> *agent_states) const;
+  Reward GetShapingReward(const AgentState& agent_state) const;
+  void SetCollisionPositions(std::vector<AgentState>* agent_states) const;
 
   std::vector<AgentState> agent_states_;
   bool terminal_;

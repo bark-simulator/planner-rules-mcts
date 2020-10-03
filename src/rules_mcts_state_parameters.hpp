@@ -26,7 +26,8 @@ class RulesMctsStateParameters {
       const float desired_velocity_weight, const float lane_center_weight,
       const unsigned int reward_vector_size, const float prediction_time_span,
       const float desired_velocity, const unsigned int horizon,
-      const float discount_factor, const float goal_reward, const bool use_rule_reward_for_ego_only);
+      const float discount_factor, const float goal_reward,
+      const bool use_rule_reward_for_ego_only);
   explicit RulesMctsStateParameters(const commons::ParamsPtr& params);
   const float COLLISION_WEIGHT;
   const float OUT_OF_MAP_WEIGHT;

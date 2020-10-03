@@ -29,25 +29,24 @@ namespace models {
 namespace behavior {
 
 using namespace mvmcts;
-using ltl::RuleState;
 using bark::world::AgentPtr;
-using bark::world::objects::AgentId;
 using bark::world::ObservedWorld;
 using bark::world::ObservedWorldPtr;
-using dynamic::State;
 using bark::world::evaluation::BaseLabelFunction;
+using bark::world::objects::AgentId;
+using dynamic::State;
+using ltl::RuleState;
 
 typedef std::vector<std::shared_ptr<BaseLabelFunction>> LabelEvaluators;
-typedef std::unordered_map<AgentId, std::vector<RuleState>>
-    MultiAgentRuleState;
+typedef std::unordered_map<AgentId, std::vector<RuleState>> MultiAgentRuleState;
 
 class MvmctsState : public StateInterface<MvmctsState> {
  public:
-  MvmctsState(const bark::world::ObservedWorldPtr &observed_world,
-                        const MultiAgentRuleState &multi_agent_rule_state,
-                        const RulesMctsStateParameters *params,
-                        const std::vector<AgentIdx> &agent_idx,
-                        unsigned int horizon, const LabelEvaluators* label_evaluators);
+  MvmctsState(const bark::world::ObservedWorldPtr& observed_world,
+              const MultiAgentRuleState& multi_agent_rule_state,
+              const RulesMctsStateParameters* params,
+              const std::vector<AgentIdx>& agent_idx, unsigned int horizon,
+              const LabelEvaluators* label_evaluators);
 
   std::shared_ptr<MvmctsState> Clone() const;
 
@@ -66,22 +65,22 @@ class MvmctsState : public StateInterface<MvmctsState> {
 
   JointReward EvaluateRules();
 
-  const MultiAgentRuleState &GetMultiAgentRuleState() const;
+  const MultiAgentRuleState& GetMultiAgentRuleState() const;
 
-  const ObservedWorldPtr &GetObservedWorld() const;
+  const ObservedWorldPtr& GetObservedWorld() const;
 
  private:
-  Reward EvaluateRules(const AgentPtr &agent);
+  Reward EvaluateRules(const AgentPtr& agent);
 
-  Reward PotentialReward(AgentId agent_id, const State &new_state,
-                         const State &current_state) const;
-  Reward GetActionCost(const std::shared_ptr<const world::Agent> &agent) const;
+  Reward PotentialReward(AgentId agent_id, const State& new_state,
+                         const State& current_state) const;
+  Reward GetActionCost(const std::shared_ptr<const world::Agent>& agent) const;
   inline float Potential(AgentId agent_id, const State& state) const;
   bool CheckTerminal() const;
 
   MultiAgentRuleState multi_agent_rule_state_;
   const std::vector<AgentIdx> agent_idx_;
-  const RulesMctsStateParameters *state_params_;
+  const RulesMctsStateParameters* state_params_;
   const unsigned int horizon_;
   const ObservedWorldPtr observed_world_;
   bool is_terminal_state_;

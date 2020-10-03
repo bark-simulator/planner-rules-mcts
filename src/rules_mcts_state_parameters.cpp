@@ -9,12 +9,13 @@
 #include "bark/models/dynamic/dynamic_model.hpp"
 
 bark::models::behavior::RulesMctsStateParameters::RulesMctsStateParameters(
-    const float collision_weight, const float out_of_map_weight, const float potential_weight,
-    const float acceleration_weight, const float radial_acceleration_weight,
-    const float desired_velocity_weight, const float lane_center_weight,
-    const unsigned int reward_vector_size, const float prediction_time_span,
-    const float desired_velocity, const unsigned int horizon,
-    const float discount_factor, const float goal_reward, const bool use_rule_reward_for_ego_only)
+    const float collision_weight, const float out_of_map_weight,
+    const float potential_weight, const float acceleration_weight,
+    const float radial_acceleration_weight, const float desired_velocity_weight,
+    const float lane_center_weight, const unsigned int reward_vector_size,
+    const float prediction_time_span, const float desired_velocity,
+    const unsigned int horizon, const float discount_factor,
+    const float goal_reward, const bool use_rule_reward_for_ego_only)
     : COLLISION_WEIGHT(collision_weight),
       OUT_OF_MAP_WEIGHT(out_of_map_weight),
       POTENTIAL_WEIGHT(potential_weight),
@@ -41,9 +42,9 @@ bark::models::behavior::RulesMctsStateParameters::RulesMctsStateParameters(
       POTENTIAL_WEIGHT(
           params->GetReal("BehaviorRulesMcts::StateParameters::PotentialWeight",
                           "Weight of the goal potential function", 32.0)),
-      ACCELERATION_WEIGHT(
-          params->GetReal("BehaviorRulesMcts::StateParameters::AccelerationWeight",
-                          "Weight for longitudinal accelerations", 0.0)),
+      ACCELERATION_WEIGHT(params->GetReal(
+          "BehaviorRulesMcts::StateParameters::AccelerationWeight",
+          "Weight for longitudinal accelerations", 0.0)),
       RADIAL_ACCELERATION_WEIGHT(params->GetReal(
           "BehaviorRulesMcts::StateParameters::RadialAccelerationWeight",
           "Weight for radial acceleration", 0.0)),
@@ -53,11 +54,12 @@ bark::models::behavior::RulesMctsStateParameters::RulesMctsStateParameters(
       LANE_CENTER_WEIGHT(params->GetReal(
           "BehaviorRulesMcts::StateParameters::LaneCenterDeviationWeight",
           "Weight for deviating from the lane center", 0.0)),
-      REWARD_VECTOR_SIZE(static_cast<unsigned int>(params->GetInt(
-          "BehaviorRulesMcts::RewardVectorSize", "Size of the reward vector", 1))),
-      PREDICTION_TIME_SPAN(
-          params->GetReal("BehaviorRulesMcts::StateParameters::PredictionTimeSpan",
-                          "Time between two consecutive states", 0.3)),
+      REWARD_VECTOR_SIZE(static_cast<unsigned int>(
+          params->GetInt("BehaviorRulesMcts::RewardVectorSize",
+                         "Size of the reward vector", 1))),
+      PREDICTION_TIME_SPAN(params->GetReal(
+          "BehaviorRulesMcts::StateParameters::PredictionTimeSpan",
+          "Time between two consecutive states", 0.3)),
       DESIRED_VELOCITY(
           params->GetReal("BehaviorRulesMcts::StateParameters::DesiredVelocity",
                           "Desired driving speed", 10.0)),
@@ -72,4 +74,5 @@ bark::models::behavior::RulesMctsStateParameters::RulesMctsStateParameters(
           "Reward received when reaching the agent's goal.", 0.0)),
       USE_RULE_REWARD_FOR_EGO_ONLY(params->GetBool(
           "BehaviorRulesMcts::StateParameters::UseRuleRewardForEgoOnly",
-          "Rewards from Rule evaluations are only used for ego vehicle.", false))  {}
+          "Rewards from Rule evaluations are only used for ego vehicle.",
+          false)) {}

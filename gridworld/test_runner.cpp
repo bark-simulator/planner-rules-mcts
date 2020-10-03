@@ -59,29 +59,29 @@ Eigen::VectorXi TestRunner::GetStateVector() const {
   return state;
 }
 
-ostream &operator<<(ostream &os, const TestRunner::Result &result) {
+ostream& operator<<(ostream& os, const TestRunner::Result& result) {
   os << result.pos << "\t" << result.value << "\t"
      << TestRunner::Result::BoolToString(result.collision) << "\t"
      << TestRunner::Result::BoolToString(result.violation);
   return os;
 }
-ostream &TestRunner::Result::WriteHeader(ostream &os) {
+ostream& TestRunner::Result::WriteHeader(ostream& os) {
   os << "Traveled distance\tBase reward\tCollision\tRule violation";
   return os;
 }
 void TestRunner::PrintLabels() {
-  for (const auto &label : latest_test_env_->state->GetAgentLabels(0)) {
+  for (const auto& label : latest_test_env_->state->GetAgentLabels(0)) {
     VLOG(1) << label.first.GetLabelStr() << " : " << label.second;
   }
 }
 void TestRunner::PrintRuleStates() {
-  for (const auto &rs : latest_test_env_->state->GetRuleStateMap()[0]) {
+  for (const auto& rs : latest_test_env_->state->GetRuleStateMap()[0]) {
     VLOG(1) << rs.second;
   }
 }
-const std::shared_ptr<BaseTestEnv> &TestRunner::GetLatestTestEnv() const {
+const std::shared_ptr<BaseTestEnv>& TestRunner::GetLatestTestEnv() const {
   return latest_test_env_;
 }
-void TestRunner::SetQValFname(const std::string &q_val_fname) {
+void TestRunner::SetQValFname(const std::string& q_val_fname) {
   q_val_fname_ = q_val_fname;
 }

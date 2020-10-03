@@ -8,8 +8,8 @@
 #include "bark/models/behavior/constant_acceleration/constant_acceleration.hpp"
 #include "bark/models/behavior/motion_primitives/continuous_actions.hpp"
 #include "bark/models/dynamic/single_track.hpp"
-#include "bark/world/evaluation/evaluator_collision_ego_agent.hpp"
 #include "bark/world/evaluation/evaluator_collision_agents.hpp"
+#include "bark/world/evaluation/evaluator_collision_ego_agent.hpp"
 #include "bark/world/evaluation/evaluator_drivable_area.hpp"
 #include "bark/world/evaluation/evaluator_goal_reached.hpp"
 #include "bark/world/evaluation/ltl/label_functions/generic_ego_label_function.hpp"
@@ -36,8 +36,8 @@ using bark::models::dynamic::Input;
 using bark::models::dynamic::SingleTrackModel;
 using bark::models::dynamic::Trajectory;
 using bark::world::ObservedWorldPtr;
-using bark::world::evaluation::EvaluatorCollisionEgoAgent;
 using bark::world::evaluation::EvaluatorCollisionAgents;
+using bark::world::evaluation::EvaluatorCollisionEgoAgent;
 using bark::world::evaluation::EvaluatorDrivableArea;
 using bark::world::evaluation::EvaluatorGoalReached;
 using bark::world::evaluation::GenericEgoLabelFunction;
@@ -99,7 +99,8 @@ TEST(multi_agent_test, collision) {
   }
   State init_state3(static_cast<int>(StateDefinition::MIN_STATE_SIZE));
   init_state3 << 0.0, 14.1, -1.75, 0.0, 3.0;
-  observed_world->GetAgents().at(3)->SetStateInputHistory({{init_state3, Action(DiscreteAction(0))}});
+  observed_world->GetAgents().at(3)->SetStateInputHistory(
+      {{init_state3, Action(DiscreteAction(0))}});
 
   observed_world->SetupPrediction(prediction_settings);
 
@@ -107,7 +108,8 @@ TEST(multi_agent_test, collision) {
   LabelEvaluators labels;
   labels.emplace_back(
       new GenericEgoLabelFunction<EvaluatorCollisionEgoAgent>("collision_ego"));
-  MvmctsState mcts_state(observed_world, {{1, {}}, {2, {}}, {3, {}}}, &state_params, {1, 2, 3}, 20, &labels);
+  MvmctsState mcts_state(observed_world, {{1, {}}, {2, {}}, {3, {}}},
+                         &state_params, {1, 2, 3}, 20, &labels);
 
   // Initially we should have 3 actions for agents 2 and 3
   EXPECT_EQ(mcts_state.GetNumActions(2), 3);
@@ -119,7 +121,8 @@ TEST(multi_agent_test, collision) {
 
   // Check if collision has occurred
   auto collision_checker = EvaluatorCollisionAgents();
-  EXPECT_TRUE(boost::get<bool>(collision_checker.Evaluate(*mcts_state2->GetObservedWorld())));
+  EXPECT_TRUE(boost::get<bool>(
+      collision_checker.Evaluate(*mcts_state2->GetObservedWorld())));
 
   // After the collision, agents 2 and 3 should only have one action anymore.
   EXPECT_EQ(mcts_state2->GetNumActions(1), 1);
@@ -130,8 +133,10 @@ TEST(multi_agent_test, collision) {
   EXPECT_EQ(mcts_state3->GetNumActions(2), 1);
   auto world2 = mcts_state2->GetObservedWorld();
   auto world3 = mcts_state3->GetObservedWorld();
-  EXPECT_TRUE(world3->GetAgent(2)->GetCurrentPosition() == world2->GetAgent(2)->GetCurrentPosition());
-  EXPECT_TRUE(world3->GetAgent(3)->GetCurrentPosition() == world2->GetAgent(3)->GetCurrentPosition());
+  EXPECT_TRUE(world3->GetAgent(2)->GetCurrentPosition() ==
+              world2->GetAgent(2)->GetCurrentPosition());
+  EXPECT_TRUE(world3->GetAgent(3)->GetCurrentPosition() ==
+              world2->GetAgent(3)->GetCurrentPosition());
 }
 
 int main(int argc, char** argv) {

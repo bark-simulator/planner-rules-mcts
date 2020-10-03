@@ -10,13 +10,13 @@
 
 #include <cxxabi.h>
 #include <algorithm>
+#include <iostream>
 #include <limits>
 #include <memory>
 #include <set>
 #include <unordered_map>
 #include <utility>
 #include <vector>
-#include <iostream>
 
 #include "bark/models/behavior/behavior_model.hpp"
 #include "bark/models/behavior/motion_primitives/macro_actions.hpp"
@@ -97,7 +97,8 @@ class BehaviorRulesMcts : public bark::models::behavior::BehaviorModel {
       const world::ObservedWorld& observed_world) const;
   void MakeRuleStates(const std::vector<int>& new_agent_ids);
   void AddKnownAgents(const std::vector<int>& agent_ids);
-  ValueLinePairVector DfsTree(MvmctsNode root, const ValueLinePair& prefix, size_t value_idx);
+  ValueLinePairVector DfsTree(MvmctsNode root, const ValueLinePair& prefix,
+                              size_t value_idx);
   void RemoveRuleStates(std::vector<AgentIdx> current_agents);
 
   std::vector<std::shared_ptr<RuleMonitor>> common_rules_;
@@ -161,7 +162,8 @@ dynamic::Trajectory BehaviorRulesMcts<Stat>::Plan(
   ObservedWorldPtr mcts_observed_world =
       std::dynamic_pointer_cast<ObservedWorld>(observed_world.Clone());
 
-  AgentMap nearby_agents = observed_world.GetNearestAgents(observed_world.CurrentEgoPosition(), 3);
+  AgentMap nearby_agents =
+      observed_world.GetNearestAgents(observed_world.CurrentEgoPosition(), 3);
   // for (const auto& agent : nearby_agents) {
   //   LOG(INFO) << "agent " << agent.first << " is nearby";
   // }
@@ -171,10 +173,12 @@ dynamic::Trajectory BehaviorRulesMcts<Stat>::Plan(
   prediction_settings_.specific_prediction_agents_.clear();
   for (const auto& agent : observed_world.GetValidOtherAgents()) {
     if (nearby_agents.count(agent.first) == 0) {
-      // LOG(INFO) << "adding agent " << agent.first << " specific_prediction_agents_ ... not interacting";
+      // LOG(INFO) << "adding agent " << agent.first << "
+      // specific_prediction_agents_ ... not interacting";
       prediction_settings_.specific_prediction_agents_.insert(agent.first);
     } else {
-      // LOG(INFO) << "not adding agent " << agent.first << " specific_prediction_agents_, as it is nearby ... interacting";
+      // LOG(INFO) << "not adding agent " << agent.first << "
+      // specific_prediction_agents_, as it is nearby ... interacting";
     }
   }
 
@@ -195,11 +199,12 @@ dynamic::Trajectory BehaviorRulesMcts<Stat>::Plan(
   std::vector<AgentIdx> agent_ids_in_observed_world;
   for (auto const& aid : observed_world.GetValidAgents())
     agent_ids_in_observed_world.push_back(aid.first);
-  RemoveRuleStates(agent_ids_in_observed_world); // todo: change interface to AgentId
+  RemoveRuleStates(
+      agent_ids_in_observed_world);  // todo: change interface to AgentId
 
   MvmctsState mcts_state(mcts_observed_world, multi_agent_rule_state_,
-                                   &state_params_, agent_ids,
-                                   state_params_.HORIZON, &label_evaluators_);
+                         &state_params_, agent_ids, state_params_.HORIZON,
+                         &label_evaluators_);
   LOG_IF(FATAL, mcts_state.IsTerminal())
       << "Current state is terminal! Aborting!";
 
@@ -413,8 +418,7 @@ void BehaviorRulesMcts<Stat>::AddKnownAgents(
   known_agents_.insert(agent_ids.begin(), agent_ids.end());
 }
 template <class Stat>
-const LabelEvaluators& BehaviorRulesMcts<Stat>::GetLabelEvaluators()
-    const {
+const LabelEvaluators& BehaviorRulesMcts<Stat>::GetLabelEvaluators() const {
   return label_evaluators_;
 }
 template <class Stat>
@@ -432,9 +436,8 @@ ValueLinePairVector BehaviorRulesMcts<Stat>::GetTree(size_t value_idx) {
   return lines;
 }
 template <class Stat>
-ValueLinePairVector BehaviorRulesMcts<Stat>::DfsTree(MvmctsNode root,
-                                                  const ValueLinePair& prefix,
-                                                  size_t value_idx) {
+ValueLinePairVector BehaviorRulesMcts<Stat>::DfsTree(
+    MvmctsNode root, const ValueLinePair& prefix, size_t value_idx) {
   ValueLinePair new_prefix(prefix);
   auto ego_agent = root->GetState()->GetObservedWorld()->GetEgoAgent();
   if (ego_agent) {

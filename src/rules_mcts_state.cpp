@@ -223,8 +223,10 @@ Eigen::VectorXf MvmctsState::GetActionCost(
   action_cost += state_params_->RADIAL_ACCELERATION_WEIGHT * a_lat * a_lat * dt;
 
   //  Desired velocity
-  float vel_cost = state_params_->DESIRED_VELOCITY_WEIGHT *
-                   fabs(traj(0, dynamic::VEL_POSITION) - state_params_->DESIRED_VELOCITY) * dt;
+  float vel_cost =
+      state_params_->DESIRED_VELOCITY_WEIGHT *
+      fabs(traj(0, dynamic::VEL_POSITION) - state_params_->DESIRED_VELOCITY) *
+      dt;
   action_cost += vel_cost;
   //  Lane center deviation
   const auto& lane_corridor = agent->GetRoadCorridor()->GetCurrentLaneCorridor(

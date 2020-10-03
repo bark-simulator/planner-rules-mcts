@@ -11,11 +11,12 @@ from bark.core.models.dynamic import *
 from bark.core.world.prediction import PredictionSettings
 from bark.runtime.commons import ParameterServer
 
+
 def pickle_unpickle(object):
-    with open('temp.pickle','wb') as f:
-        pickle.dump(object,f)
+    with open('temp.pickle', 'wb') as f:
+        pickle.dump(object, f)
     object = None
-    with open( 'temp.pickle', "rb" ) as f:
+    with open('temp.pickle', "rb") as f:
         object = pickle.load(f)
     return object
 
@@ -27,7 +28,8 @@ class PickleTests(unittest.TestCase):
         params["BehaviorRulesMcts"]["Rules"]["common"]["weight"] = -700.0
         params["BehaviorRulesMcts"]["Rules"]["common"]["priority"] = 0
 
-        behavior = BehaviorRulesMctsUct(params, PredictionSettings(BehaviorMPMacroActions(params), None, None, []), [], [], {})
+        behavior = BehaviorRulesMctsUct(params, PredictionSettings(
+            BehaviorMPMacroActions(params), None, None, []), [], [], {})
 
         behavior_after = pickle_unpickle(behavior)
 

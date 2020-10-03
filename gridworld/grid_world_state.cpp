@@ -15,7 +15,7 @@
 GridWorldState::GridWorldState(
     RuleStateMap rule_state_map,
     std::vector<std::shared_ptr<EvaluatorLabelBase<World>>> label_evaluator,
-    const GridWorldStateParameter &parameters)
+    const GridWorldStateParameter& parameters)
     : agent_states_(parameters.num_other_agents + 1),
       terminal_(false),
       rule_state_map_(std::move(rule_state_map)),
@@ -23,7 +23,7 @@ GridWorldState::GridWorldState(
       depth_(0),
       parameters_(parameters),
       terminal_agents_(parameters.num_other_agents + 1, false) {
-  for (auto &state : agent_states_) {
+  for (auto& state : agent_states_) {
     state = AgentState();
   }
 }
@@ -43,7 +43,7 @@ GridWorldState::GridWorldState(
       terminal_agents_(std::move(terminal_agents)) {}
 
 std::shared_ptr<GridWorldState> GridWorldState::Execute(
-    const JointAction &joint_action, std::vector<Reward> &rewards) const {
+    const JointAction& joint_action, std::vector<Reward>& rewards) const {
   EvaluationMap labels;
   RuleStateMap next_automata(rule_state_map_);
   World next_world;
@@ -66,14 +66,14 @@ std::shared_ptr<GridWorldState> GridWorldState::Execute(
     // Create perspective from current agent
     next_world = World(next_agent_states[agent_idx], next_other_agents);
 
-    for (const auto &le : label_evaluator_) {
+    for (const auto& le : label_evaluator_) {
       auto new_labels = le->evaluate(next_world);
       labels.insert(new_labels.begin(), new_labels.end());
     }
     rewards[agent_idx] = Reward::Zero(parameters_.reward_vec_size);
 
     // Automata transit
-    for (auto &aut : (next_automata[agent_idx])) {
+    for (auto& aut : (next_automata[agent_idx])) {
       rewards[agent_idx](aut.second.GetPriority()) +=
           aut.second.GetAutomaton()->Evaluate(labels, aut.second);
     }
@@ -89,13 +89,13 @@ std::shared_ptr<GridWorldState> GridWorldState::Execute(
       parameters_, depth_ + 1, agent_terminal);
 }
 std::vector<AgentState> GridWorldState::Step(
-    const JointAction &joint_action) const {
+    const JointAction& joint_action) const {
   std::vector<AgentState> next_agent_states(agent_states_.size());
   for (size_t i = 0; i < this->agent_states_.size(); ++i) {
     if (this->terminal_agents_[i]) {
       next_agent_states[i] = this->agent_states_[i];
     } else {
-      const auto &old_state = this->agent_states_[i];
+      const auto& old_state = this->agent_states_[i];
       int new_x =
           old_state.x_pos + this->parameters_.action_map[joint_action[i]];
       int new_lane = old_state.lane;
@@ -130,7 +130,7 @@ Reward GridWorldState::GetActionCost(ActionIdx action,
       parameters_.acceleration_weight;
   return reward;
 }
-Reward GridWorldState::GetShapingReward(const AgentState &agent_state) const {
+Reward GridWorldState::GetShapingReward(const AgentState& agent_state) const {
   Reward reward = Reward::Zero(parameters_.reward_vec_size);
   // Potential for goal distance
   reward(reward.rows() - 1) +=
@@ -143,7 +143,7 @@ std::vector<Reward> GridWorldState::GetTerminalReward() const {
                               Reward::Zero(parameters_.reward_vec_size));
   for (size_t agent_idx = 0; agent_idx < rewards.size(); ++agent_idx) {
     // Automata transit
-    for (const auto &aut : (rule_state_map_[agent_idx])) {
+    for (const auto& aut : (rule_state_map_[agent_idx])) {
       rewards[agent_idx](aut.second.GetPriority()) +=
           aut.second.GetAutomaton()->FinalTransit(aut.second);
     }
@@ -176,23 +176,23 @@ bool GridWorldState::EgoGoalReached() const {
          parameters_.ego_goal_reached_position;
 }
 void GridWorldState::ResetDepth() { depth_ = 0; }
-const std::vector<AgentState> &GridWorldState::GetAgentStates() const {
+const std::vector<AgentState>& GridWorldState::GetAgentStates() const {
   return agent_states_;
 }
 int GridWorldState::GetEgoPos() const {
   return agent_states_[ego_agent_idx].x_pos;
 }
 template <typename ActionType>
-ActionType GridWorldState::GetLastAction(const AgentIdx &agent_idx) const {
+ActionType GridWorldState::GetLastAction(const AgentIdx& agent_idx) const {
   return static_cast<ActionType>(agent_states_[agent_idx].last_action);
 }
 std::shared_ptr<GridWorldState> GridWorldState::Clone() const {
   return std::make_shared<GridWorldState>(*this);
 }
-const GridWorldStateParameter &GridWorldState::GetParameters() const {
+const GridWorldStateParameter& GridWorldState::GetParameters() const {
   return parameters_;
 }
-const RuleStateMap &GridWorldState::GetRuleStateMap() const {
+const RuleStateMap& GridWorldState::GetRuleStateMap() const {
   return rule_state_map_;
 }
 EvaluationMap GridWorldState::GetAgentLabels(AgentIdx agent_idx) const {
@@ -202,14 +202,14 @@ EvaluationMap GridWorldState::GetAgentLabels(AgentIdx agent_idx) const {
   // Create perspective from current agent
   World next_world(agent_states_[agent_idx], next_other_agents);
 
-  for (const auto &le : label_evaluator_) {
+  for (const auto& le : label_evaluator_) {
     auto new_labels = le->evaluate(next_world);
     labels.insert(new_labels.begin(), new_labels.end());
   }
   return labels;
 }
 void GridWorldState::SetCollisionPositions(
-    std::vector<AgentState> *agent_states) const {
+    std::vector<AgentState>* agent_states) const {
   for (auto it_begin = agent_states->begin(); it_begin != agent_states->end();
        ++it_begin) {
     for (auto it = it_begin + 1; it != agent_states->end(); ++it) {
