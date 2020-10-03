@@ -1,4 +1,6 @@
-// Copyright (c) 2019 fortiss GmbH
+// Copyright (c) 2020 fortiss GmbH
+//
+// Authors: Klemens Esterle, Luis Gressenbuch
 //
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
@@ -164,7 +166,7 @@ dynamic::Trajectory BehaviorMvmcts<Stat>::Plan(
   //   LOG(INFO) << "agent " << agent.first << " is nearby";
   // }
   // auto params = std::make_shared<bark::commons::SetterParams>();
-  // BehaviorModelPtr beh_model_const(new BehaviorConstantVelocity(params));
+  // BehaviorModelPtr beh_model_const(new BehaviorConstantAcceleration(params));
   // prediction_settings_.specific_prediction_model_ = beh_model_const;
   prediction_settings_.specific_prediction_agents_.clear();
   for (const auto& agent : observed_world.GetValidOtherAgents()) {

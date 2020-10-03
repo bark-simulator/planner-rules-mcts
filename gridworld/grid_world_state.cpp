@@ -1,4 +1,6 @@
-// Copyright (c) 2020 Klemens Esterle, Luis Gressenbuch, Julian Bernhard
+// Copyright (c) 2020 fortiss GmbH
+//
+// Authors: Klemens Esterle, Luis Gressenbuch, Julian Bernhard
 //
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
