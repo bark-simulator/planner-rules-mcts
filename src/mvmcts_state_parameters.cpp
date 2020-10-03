@@ -33,43 +33,43 @@ bark::models::behavior::MvmctsStateParameters::MvmctsStateParameters(
 bark::models::behavior::MvmctsStateParameters::MvmctsStateParameters(
     const commons::ParamsPtr& params)
     : COLLISION_WEIGHT(
-          params->GetReal("BehaviorMvmcts::StateParameters::CollisionWeight",
+          params->GetReal("BehaviorRulesMcts::StateParameters::CollisionWeight",
                           "Penalty for collision", 0)),
       OUT_OF_MAP_WEIGHT(
-          params->GetReal("BehaviorMvmcts::StateParameters::OutOfMapWeight",
+          params->GetReal("BehaviorRulesMcts::StateParameters::OutOfMapWeight",
                           "Penalty for leaving the map", -800)),
       POTENTIAL_WEIGHT(
-          params->GetReal("BehaviorMvmcts::StateParameters::PotentialWeight",
+          params->GetReal("BehaviorRulesMcts::StateParameters::PotentialWeight",
                           "Weight of the goal potential function", 32.0)),
       ACCELERATION_WEIGHT(
-          params->GetReal("BehaviorMvmcts::StateParameters::AccelerationWeight",
+          params->GetReal("BehaviorRulesMcts::StateParameters::AccelerationWeight",
                           "Weight for longitudinal accelerations", 0.0)),
       RADIAL_ACCELERATION_WEIGHT(params->GetReal(
-          "BehaviorMvmcts::StateParameters::RadialAccelerationWeight",
+          "BehaviorRulesMcts::StateParameters::RadialAccelerationWeight",
           "Weight for radial acceleration", 0.0)),
       DESIRED_VELOCITY_WEIGHT(params->GetReal(
-          "BehaviorMvmcts::StateParameters::DesiredVelocityWeight",
+          "BehaviorRulesMcts::StateParameters::DesiredVelocityWeight",
           "Weight for deviating from the desired velocity", -5.0)),
       LANE_CENTER_WEIGHT(params->GetReal(
-          "BehaviorMvmcts::StateParameters::LaneCenterDeviationWeight",
+          "BehaviorRulesMcts::StateParameters::LaneCenterDeviationWeight",
           "Weight for deviating from the lane center", 0.0)),
       REWARD_VECTOR_SIZE(static_cast<unsigned int>(params->GetInt(
-          "BehaviorMvmcts::RewardVectorSize", "Size of the reward vector", 1))),
+          "BehaviorRulesMcts::RewardVectorSize", "Size of the reward vector", 1))),
       PREDICTION_TIME_SPAN(
-          params->GetReal("BehaviorMvmcts::StateParameters::PredictionTimeSpan",
+          params->GetReal("BehaviorRulesMcts::StateParameters::PredictionTimeSpan",
                           "Time between two consecutive states", 0.3)),
       DESIRED_VELOCITY(
-          params->GetReal("BehaviorMvmcts::StateParameters::DesiredVelocity",
+          params->GetReal("BehaviorRulesMcts::StateParameters::DesiredVelocity",
                           "Desired driving speed", 10.0)),
       HORIZON(static_cast<unsigned int>(
-          params->GetInt("BehaviorMvmcts::StateParameters::Horizon",
+          params->GetInt("BehaviorRulesMcts::StateParameters::Horizon",
                          "Number of steps until termination", 30))),
-      DISCOUNT_FACTOR(params->GetReal("BehaviorMvmcts::DiscountFactor",
+      DISCOUNT_FACTOR(params->GetReal("BehaviorRulesMcts::DiscountFactor",
                                       "Discount factor used in MDP problem",
                                       0.9)),
       GOAL_REWARD(params->GetReal(
-          "BehaviorMvmcts::StateParameters::GoalReward",
+          "BehaviorRulesMcts::StateParameters::GoalReward",
           "Reward received when reaching the agent's goal.", 0.0)),
       USE_RULE_REWARD_FOR_EGO_ONLY(params->GetBool(
-          "BehaviorMvmcts::StateParameters::UseRuleRewardForEgoOnly",
+          "BehaviorRulesMcts::StateParameters::UseRuleRewardForEgoOnly",
           "Rewards from Rule evaluations are only used for ego vehicle.", false))  {}

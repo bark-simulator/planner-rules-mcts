@@ -76,10 +76,10 @@ MultiAgentRuleState make_rule_states(
 TEST(single_agent_mvmcts_state, execute) {
   // Setup prediction models for ego agent and other agents
   ParamsPtr params(new SetterParams());
-  params->SetReal("BehaviorMvmcts::StateParameters::PotentialWeight", 0.0);
-  params->SetReal("BehaviorMvmcts::StateParameters::DesiredVelocityWeight",
+  params->SetReal("BehaviorRulesMcts::StateParameters::PotentialWeight", 0.0);
+  params->SetReal("BehaviorRulesMcts::StateParameters::DesiredVelocityWeight",
                   0.0);
-  params->SetBool("BehaviorMvmcts::MultiAgent", false);
+  params->SetBool("BehaviorRulesMcts::MultiAgent", false);
   DynamicModelPtr dyn_model(new SingleTrackModel(params));
   BehaviorModelPtr ego_prediction_model(
       new BehaviorMPContinuousActions(params));
@@ -183,9 +183,9 @@ class SingleAgentSuite : public ::testing::Test {
                                      Point2d(2.5, 2.5), Point2d(2.5, -2.5),
                                      Point2d(-2.5, -2.5)}) {
     // Testing single agent behavior
-    params->SetBool("BehaviorMvmcts::MultiAgent", false);
-    params->SetInt("BehaviorMvmcts::MaxNumIterations", 1000);
-    params->SetReal("BehaviorMvmcts::StateParameters::GoalReward", 100);
+    params->SetBool("BehaviorRulesMcts::MultiAgent", false);
+    params->SetInt("BehaviorRulesMcts::MaxNumIterations", 1000);
+    params->SetReal("BehaviorRulesMcts::StateParameters::GoalReward", 100);
     BehaviorModelPtr ego_prediction_model(
         new BehaviorMPContinuousActions(params));
     Input u1(2);

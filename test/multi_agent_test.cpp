@@ -51,10 +51,10 @@ using ltl::RuleMonitor;
 TEST(multi_agent_test, collision) {
   // Setup prediction models for ego agent and other agents
   ParamsPtr params(new SetterParams());
-  params->SetReal("BehaviorMvmcts::StateParameters::PotentialWeight", 0.0);
-  params->SetReal("BehaviorMvmcts::StateParameters::DesiredVelocityWeight",
+  params->SetReal("BehaviorRulesMcts::StateParameters::PotentialWeight", 0.0);
+  params->SetReal("BehaviorRulesMcts::StateParameters::DesiredVelocityWeight",
                   0.0);
-  params->SetBool("BehaviorMvmcts::MultiAgent", true);
+  params->SetBool("BehaviorRulesMcts::MultiAgent", true);
   DynamicModelPtr dyn_model(new SingleTrackModel(params));
   BehaviorModelPtr ego_prediction_model(
       new BehaviorMPContinuousActions(params));

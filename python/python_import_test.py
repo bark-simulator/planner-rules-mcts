@@ -10,4 +10,4 @@ print(sys.path)
 
 import time
 # time.sleep(20)
-from planner_rules_mcts import BehaviorMvmcts
+from planner_rules_mcts import BehaviorRulesMcts
