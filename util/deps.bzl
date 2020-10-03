@@ -7,7 +7,7 @@ def planner_rules_mcts_dependencies():
         git_repository,
         name = "bark_project",
         commit = "af43e6488a7d05ac7b3e2928766595810b0cc836",
-        remote = "git@github.com:bark-simulator/bark.git",
+        remote = "https://github.com/bark-simulator/bark",
     )
 
     # _maybe(
@@ -27,7 +27,7 @@ def planner_rules_mcts_dependencies():
         git_repository,
         name = "rule_monitor_project",
         commit = "73a435b779b13ac54a3f5d22e977161b11a3a96a",
-        remote = "git@github.com:bark-simulator/rule-monitoring.git",
+        remote = "https://github.com/bark-simulator/rule-monitoring",
     )
 
     _maybe(
