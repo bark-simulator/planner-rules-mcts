@@ -24,7 +24,7 @@ cc_binary(
         ":planner_mvmcts",
         "@rule_monitor_project//python/bindings:rule_monitor",
         "@bark_project//bark/models/behavior",
-        "@bark_project//bark/models/behavior/constant_velocity",
+        "@bark_project//bark/models/behavior/constant_acceleration",
         "@bark_project//bark/models/behavior/motion_primitives",
         "@bark_project//bark/models/behavior/rule_based:lane_change_behavior",
         "@bark_project//bark/world",
