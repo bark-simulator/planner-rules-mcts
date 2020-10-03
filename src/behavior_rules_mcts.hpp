@@ -5,8 +5,8 @@
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
-#ifndef SRC_BEHAVIOR_MCTS_MULTI_AGENT_HPP_
-#define SRC_BEHAVIOR_MCTS_MULTI_AGENT_HPP_
+#ifndef MODULES_MODELS_BEHAVIOR_PLANNER_RULES_MCTS_BEHAVIOR_RULES_MCTS_HPP_
+#define MODULES_MODELS_BEHAVIOR_PLANNER_RULES_MCTS_BEHAVIOR_RULES_MCTS_HPP_
 
 #include <cxxabi.h>
 #include <algorithm>
@@ -505,4 +505,4 @@ void BehaviorRulesMcts<Stat>::RemoveRuleStates(
 }  // namespace models
 }  // namespace bark
 
-#endif  // SRC_BEHAVIOR_MCTS_MULTI_AGENT_HPP_
+#endif  // MODULES_MODELS_BEHAVIOR_PLANNER_RULES_MCTS_BEHAVIOR_RULES_MCTS_HPP_

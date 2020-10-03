@@ -5,8 +5,8 @@
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
-#ifndef SRC_MVMCTS_STATE_MULTI_AGENT_HPP_
-#define SRC_MVMCTS_STATE_MULTI_AGENT_HPP_
+#ifndef MODULES_MODELS_BEHAVIOR_PLANNER_RULES_MCTS_RULES_MCTS_STATE_HPP_
+#define MODULES_MODELS_BEHAVIOR_PLANNER_RULES_MCTS_RULES_MCTS_STATE_HPP_
 
 #include <iostream>
 
@@ -90,4 +90,4 @@ class MvmctsState : public StateInterface<MvmctsState> {
 }  // namespace models
 }  // namespace bark
 
-#endif  // SRC_MVMCTS_STATE_MULTI_AGENT_HPP_
+#endif  // MODULES_MODELS_BEHAVIOR_PLANNER_RULES_MCTS_RULES_MCTS_STATE_HPP_

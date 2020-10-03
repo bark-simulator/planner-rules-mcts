@@ -5,8 +5,8 @@
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
-#ifndef MODULES_MODELS_BEHAVIOR_PLANNER_MCTS_MVMCTS_STATE_PARAMETERS_HPP_
-#define MODULES_MODELS_BEHAVIOR_PLANNER_MCTS_MVMCTS_STATE_PARAMETERS_HPP_
+#ifndef MODULES_MODELS_BEHAVIOR_PLANNER_RULES_MCTS_RULES_MCTS_STATE_PARAMETERS_HPP_
+#define MODULES_MODELS_BEHAVIOR_PLANNER_RULES_MCTS_RULES_MCTS_STATE_PARAMETERS_HPP_
 
 #include "bark/commons/params/setter_params.hpp"
 #include "bark/world/observed_world.hpp"
@@ -49,4 +49,4 @@ class RulesMctsStateParameters {
 }  // namespace models
 }  // namespace bark
 
-#endif  // MODULES_MODELS_BEHAVIOR_PLANNER_MCTS_MVMCTS_STATE_PARAMETERS_HPP_
+#endif  // MODULES_MODELS_BEHAVIOR_PLANNER_RULES_MCTS_RULES_MCTS_STATE_PARAMETERS_HPP_
