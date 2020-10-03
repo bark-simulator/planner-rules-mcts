@@ -16,7 +16,7 @@
 #include "bark/world/observed_world.hpp"
 #include "ltl/rule_state.h"
 #include "mvmcts/state.h"
-#include "mvmcts_state_parameters.hpp"
+#include "rules_mcts_state_parameters.hpp"
 
 namespace bark {
 
@@ -45,7 +45,7 @@ class MvmctsState : public StateInterface<MvmctsState> {
  public:
   MvmctsState(const bark::world::ObservedWorldPtr &observed_world,
                         const MultiAgentRuleState &multi_agent_rule_state,
-                        const MvmctsStateParameters *params,
+                        const RulesMctsStateParameters *params,
                         const std::vector<AgentIdx> &agent_idx,
                         unsigned int horizon, const LabelEvaluators* label_evaluators);
 
@@ -81,7 +81,7 @@ class MvmctsState : public StateInterface<MvmctsState> {
 
   MultiAgentRuleState multi_agent_rule_state_;
   const std::vector<AgentIdx> agent_idx_;
-  const MvmctsStateParameters *state_params_;
+  const RulesMctsStateParameters *state_params_;
   const unsigned int horizon_;
   const ObservedWorldPtr observed_world_;
   bool is_terminal_state_;

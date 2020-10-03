@@ -20,7 +20,7 @@
 #include "ltl/rule_monitor.h"
 #include "mvmcts/mvmcts.h"
 #include "src/behavior_rules_mcts.hpp"
-#include "src/mvmcts_state.hpp"
+#include "src/rules_mcts_state.hpp"
 #include "src/util.hpp"
 
 using namespace bark::models::behavior;
@@ -103,7 +103,7 @@ TEST(multi_agent_test, collision) {
 
   observed_world->SetupPrediction(prediction_settings);
 
-  MvmctsStateParameters state_params(params);
+  RulesMctsStateParameters state_params(params);
   LabelEvaluators labels;
   labels.emplace_back(
       new GenericEgoLabelFunction<EvaluatorCollisionEgoAgent>("collision_ego"));

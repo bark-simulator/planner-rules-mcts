@@ -20,7 +20,7 @@
 #include "ltl/rule_monitor.h"
 #include "mvmcts/mvmcts.h"
 #include "src/behavior_rules_mcts.hpp"
-#include "src/mvmcts_state.hpp"
+#include "src/rules_mcts_state.hpp"
 #include "src/util.hpp"
 
 using namespace bark::models::behavior;
@@ -127,7 +127,7 @@ TEST(single_agent_mvmcts_state, execute) {
   observed_world->SetupPrediction(prediction_settings);
 
   auto label_evaluators = make_labels();
-  MvmctsStateParameters state_params(params);
+  RulesMctsStateParameters state_params(params);
   MvmctsState mcts_state(observed_world, make_rule_states(make_rules()),
                          &state_params, {1}, 20, &label_evaluators);
 

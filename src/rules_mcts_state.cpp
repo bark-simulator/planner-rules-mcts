@@ -5,7 +5,7 @@
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
-#include "src/mvmcts_state.hpp"
+#include "src/rules_mcts_state.hpp"
 
 #include <memory>
 #include <string>
@@ -38,7 +38,7 @@ using ltl::Label;
 
 MvmctsState::MvmctsState(const bark::world::ObservedWorldPtr& observed_world,
                          const MultiAgentRuleState& multi_agent_rule_state,
-                         const MvmctsStateParameters* params,
+                         const RulesMctsStateParameters* params,
                          const std::vector<AgentIdx>& agent_idx,
                          unsigned int horizon,
                          const LabelEvaluators* label_evaluators)

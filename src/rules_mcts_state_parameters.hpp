@@ -17,9 +17,9 @@ namespace behavior {
 
 using bark::commons::Params;
 
-class MvmctsStateParameters {
+class RulesMctsStateParameters {
  public:
-  MvmctsStateParameters(
+  RulesMctsStateParameters(
       const float collision_weight, const float out_of_map_weight,
       const float potential_weight, const float acceleration_weight,
       const float radial_acceleration_weight,
@@ -27,7 +27,7 @@ class MvmctsStateParameters {
       const unsigned int reward_vector_size, const float prediction_time_span,
       const float desired_velocity, const unsigned int horizon,
       const float discount_factor, const float goal_reward, const bool use_rule_reward_for_ego_only);
-  explicit MvmctsStateParameters(const commons::ParamsPtr& params);
+  explicit RulesMctsStateParameters(const commons::ParamsPtr& params);
   const float COLLISION_WEIGHT;
   const float OUT_OF_MAP_WEIGHT;
   const float POTENTIAL_WEIGHT;

@@ -31,7 +31,7 @@
 #include "mvmcts/mvmcts_parameters.h"
 #include "mvmcts/statistics/thres_greedy_statistic.h"
 #include "mvmcts/statistics/thres_uct_statistic.h"
-#include "src/mvmcts_state.hpp"
+#include "src/rules_mcts_state.hpp"
 #include "src/util.hpp"
 
 namespace bark {
@@ -111,7 +111,7 @@ class BehaviorRulesMcts : public bark::models::behavior::BehaviorModel {
   LabelEvaluators label_evaluators_;
   size_t reward_vec_size_;
   MvmctsParameters mcts_parameters_;
-  MvmctsStateParameters state_params_;
+  RulesMctsStateParameters state_params_;
   std::set<AgentId> known_agents_;
   MvmctsNode root_;
   const bool multi_agent_;

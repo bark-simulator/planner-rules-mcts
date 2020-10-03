@@ -11,9 +11,9 @@ cc_library(
 )
 
 cc_library(
-    name = "mvmcts_state_parameters",
-    srcs = ["mvmcts_state_parameters.cpp"],
-    hdrs = ["mvmcts_state_parameters.hpp"],
+    name = "rules_mcts_state_parameters",
+    srcs = ["rules_mcts_state_parameters.cpp"],
+    hdrs = ["rules_mcts_state_parameters.hpp"],
     deps = [
         "@bark_project//bark/commons/params",
         "@bark_project//bark/world:include",
@@ -23,16 +23,16 @@ cc_library(
 cc_library(
     name = "planner_rules_mcts",
     srcs = [
-        "mvmcts_state.cpp",
+        "rules_mcts_state.cpp",
     ],
     hdrs = [
         "behavior_rules_mcts.hpp",
-        "mvmcts_state.hpp",
+        "rules_mcts_state.hpp",
     ],
     visibility = ["//visibility:public"],
     deps = [
         ":util",
-        ":mvmcts_state_parameters",
+        ":rules_mcts_state_parameters",
         "@bark_project//bark:include",
         "@bark_project//bark/world/evaluation/ltl/label_functions:base_label_function",
         "@bark_project//bark/models/behavior/motion_primitives:motion_primitives",

@@ -9,7 +9,7 @@
 #include "bark/python_wrapper/polymorphic_conversion.hpp"
 #include "mvmcts/random_generator.h"
 #include "src/behavior_rules_mcts.hpp"
-#include "src/mvmcts_state.hpp"
+#include "src/rules_mcts_state.hpp"
 
 namespace py = pybind11;
 using bark::commons::Params;
@@ -22,7 +22,7 @@ using bark::models::behavior::MvmctsState;
 using bark::models::behavior::MultiAgentRuleMap;
 using bark::models::behavior::MultiAgentRuleState;
 using bark::models::behavior::MultiAgentRuleState;
-using bark::models::behavior::MvmctsStateParameters;
+using bark::models::behavior::RulesMctsStateParameters;
 using bark::models::behavior::MakeMctsParameters;
 using bark::world::PredictionSettings;
 using bark::models::behavior::LabelEvaluators;
@@ -116,7 +116,7 @@ void python_planner_rules_mcts(py::module m) {
     py::class_ <MvmctsState, std::shared_ptr <MvmctsState>> (m, "MvmctsState")
         .def(py::init<const bark::world::ObservedWorldPtr &,
                       const MultiAgentRuleState &,
-                      const MvmctsStateParameters *,
+                      const RulesMctsStateParameters *,
                       const std::vector<AgentIdx> &,
                       unsigned int,
                       const LabelEvaluators*>())
@@ -133,7 +133,7 @@ void python_planner_rules_mcts(py::module m) {
                  return "bark.behavior.MvmctsState";
              });
 
-    py::class_ < MvmctsStateParameters, std::shared_ptr < MvmctsStateParameters >> (m, "MvmctsStateParameters")
+    py::class_ < RulesMctsStateParameters, std::shared_ptr < RulesMctsStateParameters >> (m, "RulesMctsStateParameters")
         .def(py::init<const bark::commons::ParamsPtr &>());
 
 }

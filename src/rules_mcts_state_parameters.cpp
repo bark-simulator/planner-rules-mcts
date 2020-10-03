@@ -5,10 +5,10 @@
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
-#include "mvmcts_state_parameters.hpp"
+#include "rules_mcts_state_parameters.hpp"
 #include "bark/models/dynamic/dynamic_model.hpp"
 
-bark::models::behavior::MvmctsStateParameters::MvmctsStateParameters(
+bark::models::behavior::RulesMctsStateParameters::RulesMctsStateParameters(
     const float collision_weight, const float out_of_map_weight, const float potential_weight,
     const float acceleration_weight, const float radial_acceleration_weight,
     const float desired_velocity_weight, const float lane_center_weight,
@@ -30,7 +30,7 @@ bark::models::behavior::MvmctsStateParameters::MvmctsStateParameters(
       GOAL_REWARD(goal_reward),
       USE_RULE_REWARD_FOR_EGO_ONLY(use_rule_reward_for_ego_only) {}
 
-bark::models::behavior::MvmctsStateParameters::MvmctsStateParameters(
+bark::models::behavior::RulesMctsStateParameters::RulesMctsStateParameters(
     const commons::ParamsPtr& params)
     : COLLISION_WEIGHT(
           params->GetReal("BehaviorRulesMcts::StateParameters::CollisionWeight",
