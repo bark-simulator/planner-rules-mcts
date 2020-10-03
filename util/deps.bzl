@@ -19,8 +19,8 @@ def planner_rules_mcts_dependencies():
     _maybe(
         git_repository,
         name = "lexmamcts_project",
-        commit = "fd502db6071336d6273bfc2ab54c97ba198c00a4",
-        remote = "git@github.com:klemense1/lexmamcts.git",
+        commit = "540d62c5cfe06aa7313ab2da5b7ea7ae9606ad9c",
+        remote = "https://github.com/klemense1/lexmamcts",
     )
 
     _maybe(
