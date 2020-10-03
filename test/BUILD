@@ -55,6 +55,6 @@ cc_test(
         "//gridworld:test_runner",
         "@com_github_google_glog//:glog",
         "@gtest//:gtest_main",
-        "@momamcts_project//mvmcts",
+        "@lexmamcts_project//mvmcts",
     ],
 )

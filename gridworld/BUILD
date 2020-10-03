@@ -9,8 +9,8 @@ cc_library(
         "@boost//:math",
         "@boost//:multiprecision",
         "@com_github_google_glog//:glog",
-        "@momamcts_project//evaluation",
-        "@momamcts_project//mvmcts",
+        "@lexmamcts_project//evaluation",
+        "@lexmamcts_project//mvmcts",
     ],
 )
 
@@ -28,7 +28,7 @@ cc_library(
         "//gridworld:grid_world_state",
         "@com_github_eigen_eigen//:eigen",
         "@com_github_google_glog//:glog",
-        "@momamcts_project//mvmcts",
+        "@lexmamcts_project//mvmcts",
     ],
 )
 
@@ -38,7 +38,7 @@ cc_library(
     hdrs = ["common.hpp"],
     visibility = ["//visibility:public"],
     deps = [
-        "@momamcts_project//mvmcts",
+        "@lexmamcts_project//mvmcts",
     ],
 )
 
@@ -66,7 +66,7 @@ cc_library(
         ":common",
         "//gridworld/label_evaluator:label_evaluators",
         "@com_github_google_glog//:glog",
-        "@momamcts_project//mvmcts",
+        "@lexmamcts_project//mvmcts",
         "@rule_monitor_project//ltl:rule_monitor",
     ],
 )
