@@ -19,7 +19,7 @@
 #include "gtest/gtest.h"
 #include "ltl/rule_monitor.h"
 #include "mvmcts/mvmcts.h"
-#include "src/behavior_mvmcts.hpp"
+#include "src/behavior_rules_mcts.hpp"
 #include "src/mvmcts_state.hpp"
 #include "src/util.hpp"
 
@@ -223,7 +223,7 @@ class SingleAgentSuite : public ::testing::Test {
 
 using testing::Types;
 
-typedef Types<BehaviorMvmctsUct, BehaviorMvmctsGreedy> MyTypes;
+typedef Types<BehaviorRulesMctsUct, BehaviorRulesMctsGreedy> MyTypes;
 TYPED_TEST_SUITE(SingleAgentSuite, MyTypes);
 
 TYPED_TEST(SingleAgentSuite, no_agent_in_front_accelerate) {

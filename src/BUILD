@@ -21,12 +21,12 @@ cc_library(
 )
 
 cc_library(
-    name = "planner_mvmcts",
+    name = "planner_rules_mcts",
     srcs = [
         "mvmcts_state.cpp",
     ],
     hdrs = [
-        "behavior_mvmcts.hpp",
+        "behavior_rules_mcts.hpp",
         "mvmcts_state.hpp",
     ],
     visibility = ["//visibility:public"],

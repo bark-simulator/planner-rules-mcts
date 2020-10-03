@@ -5,7 +5,7 @@ cc_test(
     ],
     copts = ["-Iexternal/gtest/include"],
     deps = [
-        "//src:planner_mvmcts",
+        "//src:planner_rules_mcts",
         "@bark_project//bark/models/behavior",
         "@bark_project//bark/models/behavior/constant_acceleration",
         "@bark_project//bark/models/behavior/motion_primitives",
@@ -27,7 +27,7 @@ cc_binary(
     ],
     copts = ["-Iexternal/gtest/include"],
     deps = [
-        "//src:planner_mvmcts",
+        "//src:planner_rules_mcts",
         "@bark_project//bark/models/behavior",
         "@bark_project//bark/models/behavior/constant_acceleration",
         "@bark_project//bark/models/behavior/motion_primitives",

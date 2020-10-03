@@ -12,6 +12,6 @@
 
 namespace py = pybind11;
 
-void python_planner_mvmcts(py::module m);
+void python_planner_rules_mcts(py::module m);
 
 #endif   // PYTHON_PYTHON_PLANNER_UCT_HPP_

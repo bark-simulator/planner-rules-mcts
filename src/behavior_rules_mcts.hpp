@@ -117,8 +117,8 @@ class BehaviorMvmcts : public bark::models::behavior::BehaviorModel {
   const bool multi_agent_;
 };
 
-typedef BehaviorMvmcts<mvmcts::ThresUCTStatistic> BehaviorMvmctsUct;
-typedef BehaviorMvmcts<mvmcts::ThresGreedyStatistic> BehaviorMvmctsGreedy;
+typedef BehaviorMvmcts<mvmcts::ThresUCTStatistic> BehaviorRulesMctsUct;
+typedef BehaviorMvmcts<mvmcts::ThresGreedyStatistic> BehaviorRulesMctsGreedy;
 
 template <class Stat>
 BehaviorMvmcts<Stat>::BehaviorMvmcts(

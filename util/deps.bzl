@@ -1,12 +1,12 @@
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 
-def planner_mv_mcts_dependencies():
+def planner_rules_mcts_dependencies():
 
     _maybe(
         git_repository,
         name = "bark_project",
-        commit = "058fe759964e2b05ae8b865426aa968a69c0f0dc",
+        commit = "af43e6488a7d05ac7b3e2928766595810b0cc836",
         remote = "git@github.com:bark-simulator/bark.git",
     )
 

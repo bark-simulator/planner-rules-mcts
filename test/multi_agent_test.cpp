@@ -19,7 +19,7 @@
 #include "gtest/gtest.h"
 #include "ltl/rule_monitor.h"
 #include "mvmcts/mvmcts.h"
-#include "src/behavior_mvmcts.hpp"
+#include "src/behavior_rules_mcts.hpp"
 #include "src/mvmcts_state.hpp"
 #include "src/util.hpp"
 
