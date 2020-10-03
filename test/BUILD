@@ -1,20 +1,60 @@
-#cc_binary(
-#    name = "single_agent_test",
-#    srcs = [
-#        "single_agent_test.cc",
-#    ],
-#    copts = ["-Iexternal/gtest/include"],
-#    deps = [
-#        "//modules/models/behavior",
-#        "//modules/models/behavior/constant_velocity",
-#        "//modules/models/behavior/motion_primitives",
-#        "//modules/models/behavior/planner_mcts:planner_mvmcts_single_agent",
-#        "//modules/world/tests:make_test_world",
-#        "//modules/world",
-#        "//modules/world/evaluation:evaluator_collision_ego_agent",
-#        "//modules/world/evaluation:evaluator_goal_reached",
-#        "//modules/world/evaluation/labels:label_evaluation",
-#        "//modules/world/goal_definition",
-#        "@gtest//:main",
-#    ],
-#)
+cc_test(
+    name = "single_agent_test",
+    srcs = [
+        "single_agent_test.cpp",
+    ],
+    copts = ["-Iexternal/gtest/include"],
+    deps = [
+        "//src:planner_rules_mcts",
+        "@bark_project//bark/models/behavior",
+        "@bark_project//bark/models/behavior/constant_acceleration",
+        "@bark_project//bark/models/behavior/motion_primitives",
+        "@bark_project//bark/world",
+        "@bark_project//bark/world/evaluation:evaluator_collision_ego_agent",
+        "@bark_project//bark/world/evaluation:evaluator_drivable_area",
+        "@bark_project//bark/world/evaluation:evaluator_goal_reached",
+        "@bark_project//bark/world/evaluation/ltl/label_functions:label_function",
+        "@bark_project//bark/world/goal_definition",
+        "@bark_project//bark/world/tests:make_test_world",
+        "@gtest//:gtest_main",
+    ],
+)
+
+cc_binary(
+    name = "multi_agent_test",
+    srcs = [
+        "multi_agent_test.cpp",
+    ],
+    copts = ["-Iexternal/gtest/include"],
+    deps = [
+        "//src:planner_rules_mcts",
+        "@bark_project//bark/models/behavior",
+        "@bark_project//bark/models/behavior/constant_acceleration",
+        "@bark_project//bark/models/behavior/motion_primitives",
+        "@bark_project//bark/world",
+        "@bark_project//bark/world/evaluation:evaluator_collision_ego_agent",
+        "@bark_project//bark/world/evaluation:evaluator_collision_agents",
+        "@bark_project//bark/world/evaluation:evaluator_drivable_area",
+        "@bark_project//bark/world/evaluation:evaluator_goal_reached",
+        "@bark_project//bark/world/evaluation/ltl/label_functions:label_function",
+        "@bark_project//bark/world/goal_definition",
+        "@bark_project//bark/world/tests:make_test_world",
+        "@gtest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "grid_world_threshold_test",
+    srcs = [
+        "grid_world_threshold_test.cpp",
+    ],
+    copts = ["-Iexternal/gtest/include"],
+    deps = [
+        "//gridworld:grid_world_state",
+        "//gridworld:state_file_writer",
+        "//gridworld:test_runner",
+        "@com_github_google_glog//:glog",
+        "@gtest//:gtest_main",
+        "@lexmamcts_project//mvmcts",
+    ],
+)

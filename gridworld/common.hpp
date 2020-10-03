@@ -1,4 +1,6 @@
-// Copyright (c) 2020 Klemens Esterle, Luis Gressenbuch
+// Copyright (c) 2020 fortiss GmbH
+//
+// Authors: Klemens Esterle, Luis Gressenbuch
 //
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
@@ -10,9 +12,9 @@
 #include <utility>
 #include <vector>
 
-#include "mcts/state.h"
+#include "mvmcts/state.h"
 
-using mcts::ActionIdx;
+using mvmcts::ActionIdx;
 
 enum class Actions { WAIT = 0, FORWARD = 1, BACKWARD = -1, NUM = 4 };
 
@@ -68,5 +70,20 @@ typedef struct AgentState {
 } AgentState;
 
 typedef std::pair<AgentState, std::vector<AgentState>> World;
+
+template <typename T>
+inline std::ostream& operator<<(std::ostream& os, std::vector<T> const& d) {
+  os << "[";
+  for (typename std::vector<T>::const_iterator ii = d.begin(); ii != d.end();
+       ++ii) {
+    os << *ii;
+    if (ii >= d.end() - 1) {
+      break;
+    }
+    os << ", ";
+  }
+  os << "]";
+  return os;
+}
 
 #endif  // GRIDWORLD_COMMON_HPP_

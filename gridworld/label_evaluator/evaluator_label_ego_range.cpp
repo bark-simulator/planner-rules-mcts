@@ -1,4 +1,6 @@
-// Copyright (c) 2020 Klemens Esterle, Luis Gressenbuch
+// Copyright (c) 2020 fortiss GmbH
+//
+// Authors: Klemens Esterle, Luis Gressenbuch
 //
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
@@ -8,7 +10,7 @@
 EvaluatorLabelEgoRange::EvaluatorLabelEgoRange(const std::string& label_str,
                                                int start, int end)
     : EvaluatorLabelBase(label_str), start_(start), end_(end) {}
-std::vector<std::pair<ltl::Label, bool>> EvaluatorLabelEgoRange::evaluate(
+std::vector<std::pair<Label, bool>> EvaluatorLabelEgoRange::evaluate(
     const World& state) const {
   return {{get_label(),
            (state.first.x_pos >= start_ && state.first.x_pos <= end_)}};

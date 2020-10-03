@@ -4,6 +4,6 @@ cc_binary(
     copts = ["-Iexternal/gtest/include"],
     deps = [
         "//gridworld/label_evaluator:label_evaluators",
-        "@gtest//:main",
+        "@gtest//:gtest_main",
     ],
 )

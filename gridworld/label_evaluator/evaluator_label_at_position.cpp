@@ -1,4 +1,6 @@
-// Copyright (c) 2020 Klemens Esterle, Luis Gressenbuch
+// Copyright (c) 2020 fortiss GmbH
+//
+// Authors: Klemens Esterle, Luis Gressenbuch
 //
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
@@ -11,7 +13,7 @@
 EvaluatorLabelAtPosition::EvaluatorLabelAtPosition(const std::string &label_str,
                                                    const int position)
     : EvaluatorLabelBase(label_str), position_(position) {}
-std::vector<std::pair<ltl::Label, bool>> EvaluatorLabelAtPosition::evaluate(
+std::vector<std::pair<Label, bool>> EvaluatorLabelAtPosition::evaluate(
     const World &state) const {
   return {{get_label(),
            // Were left, now right of position_
