@@ -37,7 +37,7 @@ class BaseTestEnv {
       const GridWorldStateParameter &params);
 
   virtual JointAction Search(size_t num_iterations) = 0;
-  virtual std::map<unsigned long, Eigen::VectorXf> GetEgoQval() = 0;
+  virtual std::map<unsigned long, Eigen::VectorXd> GetEgoQval() = 0;
 
   const JointAction &GetJt() const;
   const std::deque<JointAction> &GetActionHistory() const;

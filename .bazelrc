@@ -4,4 +4,4 @@ test --test_output=errors --action_env="GTEST_COLOR=1"
 common --color=yes
 
 
-build --define planner_rules_mcts=true --define ltl_rules=true --cxxopt='-std=c++14'
+build --define planner_rules_mcts=true --define ltl_rules=true --cxxopt='-std=c++17'

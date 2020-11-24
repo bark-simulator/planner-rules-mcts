@@ -9,13 +9,13 @@
 #include "bark/models/dynamic/dynamic_model.hpp"
 
 bark::models::behavior::RulesMctsStateParameters::RulesMctsStateParameters(
-    const float collision_weight, const float out_of_map_weight,
-    const float potential_weight, const float acceleration_weight,
-    const float radial_acceleration_weight, const float desired_velocity_weight,
-    const float lane_center_weight, const unsigned int reward_vector_size,
-    const float prediction_time_span, const float desired_velocity,
-    const unsigned int horizon, const float discount_factor,
-    const float goal_reward, const bool use_rule_reward_for_ego_only)
+    const double collision_weight, const double out_of_map_weight,
+    const double potential_weight, const double acceleration_weight,
+    const double radial_acceleration_weight, const double desired_velocity_weight,
+    const double lane_center_weight, const unsigned int reward_vector_size,
+    const double prediction_time_span, const double desired_velocity,
+    const unsigned int horizon, const double discount_factor,
+    const double goal_reward, const bool use_rule_reward_for_ego_only)
     : COLLISION_WEIGHT(collision_weight),
       OUT_OF_MAP_WEIGHT(out_of_map_weight),
       POTENTIAL_WEIGHT(potential_weight),

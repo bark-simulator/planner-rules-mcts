@@ -83,7 +83,7 @@ TEST(single_agent_mvmcts_state, execute) {
   DynamicModelPtr dyn_model(new SingleTrackModel(params));
   BehaviorModelPtr ego_prediction_model(
       new BehaviorMPContinuousActions(params));
-  float ego_velocity = 5.0, rel_distance = 7.0, velocity_difference = 0.0,
+  double ego_velocity = 5.0, rel_distance = 7.0, velocity_difference = 0.0,
         prediction_time_span = 0.3f;
   Input u1(2);
   u1 << 0, 0;
@@ -229,7 +229,7 @@ TYPED_TEST_SUITE(SingleAgentSuite, MyTypes);
 TYPED_TEST(SingleAgentSuite, no_agent_in_front_accelerate) {
   // Test if planner accelerates if there is no agent in front
 
-  float ego_velocity = 5.0, rel_distance = 7.0, velocity_difference = 0.0,
+  double ego_velocity = 5.0, rel_distance = 7.0, velocity_difference = 0.0,
         prediction_time_span = 0.2f;
   std::shared_ptr<Polygon> goal_polygon(std::dynamic_pointer_cast<Polygon>(
       this->polygon.Translate(Point2d(10, -1.75))));
@@ -249,7 +249,7 @@ TYPED_TEST(SingleAgentSuite, no_agent_in_front_accelerate) {
 }
 
 TYPED_TEST(SingleAgentSuite, agent_in_front_must_brake) {
-  float ego_velocity = 5.0, rel_distance = 2.0, velocity_difference = 2.0,
+  double ego_velocity = 5.0, rel_distance = 2.0, velocity_difference = 2.0,
         prediction_time_span = 0.2f;
   std::shared_ptr<Polygon> goal_polygon(std::dynamic_pointer_cast<Polygon>(
       this->polygon.Translate(Point2d(10, -1.75))));
@@ -272,7 +272,7 @@ TYPED_TEST(SingleAgentSuite, agent_in_front_reach_goal) {
   // Test if the planner reaches the goal at some point when agent is slower
   // and in front
 
-  float ego_velocity = 5.0, rel_distance = 2.0, velocity_difference = 2.0,
+  double ego_velocity = 5.0, rel_distance = 2.0, velocity_difference = 2.0,
         prediction_time_span = 0.2f;
 
   std::shared_ptr<Polygon> goal_polygon(std::dynamic_pointer_cast<Polygon>(
@@ -308,7 +308,7 @@ TYPED_TEST(SingleAgentSuite, change_lane) {
   // Test if the planner reaches the goal at some point when agent is slower
   //  and in front
 
-  float ego_velocity = 5.0, rel_distance = 2.0, velocity_difference = 2.0,
+  double ego_velocity = 5.0, rel_distance = 2.0, velocity_difference = 2.0,
         prediction_time_span = 0.2f;
 
   std::shared_ptr<Polygon> goal_polygon(std::dynamic_pointer_cast<Polygon>(
@@ -316,7 +316,7 @@ TYPED_TEST(SingleAgentSuite, change_lane) {
   // < move the goal polygon into the driving corridor to the side of the ego
   //  vehicle
   auto goal_definition_ptr = std::make_shared<GoalDefinitionStateLimits>(
-      *goal_polygon, std::make_pair<float, float>(-0.2f, 0.2f));
+      *goal_polygon, std::make_pair<double, double>(-0.2f, 0.2f));
 
   auto world = make_test_world(0, rel_distance, ego_velocity,
                                velocity_difference, goal_definition_ptr);

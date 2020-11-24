@@ -75,7 +75,7 @@ class MvmctsState : public StateInterface<MvmctsState> {
   Reward PotentialReward(AgentId agent_id, const State& new_state,
                          const State& current_state) const;
   Reward GetActionCost(const std::shared_ptr<const world::Agent>& agent) const;
-  inline float Potential(AgentId agent_id, const State& state) const;
+  inline double Potential(AgentId agent_id, const State& state) const;
   bool CheckTerminal() const;
 
   MultiAgentRuleState multi_agent_rule_state_;
