@@ -10,6 +10,7 @@ cc_library(
         "//src:planner_rules_mcts",
         "@bark_project//bark/python_wrapper:common",
         "@com_github_eigen_eigen//:eigen",
+        "@com_github_glog_glog//:glog"
     ],
 )
 
