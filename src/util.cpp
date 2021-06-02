@@ -50,27 +50,27 @@ mvmcts::MvmctsParameters MakeMctsParameters(const commons::ParamsPtr& params) {
 
   mcts_p.uct_statistic.EXPLORATION_CONSTANT =
       StdToEigen(
-          params->GetListdouble("BehaviorRulesMcts::UCTExplorationConstant",
+          params->GetListFloat("BehaviorRulesMcts::UCTExplorationConstant",
                                "Exploration constant of UCT",
                                std::vector<double>(reward_vec_size, 1.42f)))
           .cast<double>();
   assert(mcts_p.uct_statistic.EXPLORATION_CONSTANT.size() == reward_vec_size);
   std::vector<double> default_lower_bound(reward_vec_size, -1.0);
   default_lower_bound[reward_vec_size - 1] = -1000.0;
-  auto lower_bound = params->GetListdouble(
+  auto lower_bound = params->GetListFloat(
       "BehaviorRulesMcts::ReturnLowerBound",
       "Lower return bound used for normalization in UCT Statistic",
       default_lower_bound);
   assert(lower_bound.size() == reward_vec_size);
   mcts_p.uct_statistic.LOWER_BOUND = StdToEigen(lower_bound);
 
-  mcts_p.uct_statistic.UPPER_BOUND = StdToEigen(params->GetListdouble(
+  mcts_p.uct_statistic.UPPER_BOUND = StdToEigen(params->GetListFloat(
       "BehaviorRulesMcts::ReturnUpperBound",
       "Upper return bound used for normalization in UCT Statistic",
       std::vector<double>(reward_vec_size, 0.0)));
   assert(mcts_p.uct_statistic.UPPER_BOUND.size() == reward_vec_size);
 
-  mcts_p.thres_uct_statistic_.THRESHOLD = StdToEigen(params->GetListdouble(
+  mcts_p.thres_uct_statistic_.THRESHOLD = StdToEigen(params->GetListFloat(
       "BehaviorRulesMcts::Threshold",
       "Thresholds for improving lower level goals",
       std::vector<double>(mcts_p.REWARD_VEC_SIZE,
