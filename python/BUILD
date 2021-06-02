@@ -9,7 +9,6 @@ pybind_extension(
             "python_planner_rules_mcts.hpp"],
     linkstatic = 1,
     deps = [
-        ":planner_rules_mcts",
         "@rule_monitor_project//python/bindings:rule_monitor",
         "@bark_project//bark/models/behavior",
         "@bark_project//bark/models/behavior/constant_acceleration",
