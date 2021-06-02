@@ -71,7 +71,6 @@ TYPED_TEST(GridWorldSuite, livelock) {
 }
 
 int main(int argc, char** argv) {
-  google::InitGoogleLogging(argv[0]);
   ::testing::InitGoogleTest(&argc, argv);
   FLAGS_v = 1;
   FLAGS_alsologtostderr = true;
