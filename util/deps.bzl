@@ -6,8 +6,15 @@ def planner_rules_mcts_dependencies():
     _maybe(
         git_repository,
         name = "bark_project",
-        commit = "af43e6488a7d05ac7b3e2928766595810b0cc836",
+        commit = "580a27b3fc13199d835b15bdda0299e84265fc25",
         remote = "https://github.com/bark-simulator/bark",
+    )
+
+    _maybe(
+        git_repository,
+        name = "pybind11_bazel",
+        commit="c4a29062b77bf42836d995f6ce802f642cffb939",
+        remote = "https://github.com/bark-simulator/pybind11_bazel"
     )
 
     # _maybe(
@@ -31,39 +38,6 @@ def planner_rules_mcts_dependencies():
     )
 
     _maybe(
-        native.new_local_repository,
-        name = "python_linux",
-        path = "./python/venv/",
-        build_file_content = """
-cc_library(
-    name = "python-lib",
-    srcs = glob(["lib/libpython3.*", "libs/python3.lib", "libs/python36.lib"]),
-    hdrs = glob(["include/**/*.h", "include/*.h"]),
-    includes = ["include/python3.6m", "include", "include/python3.7m", "include/python3.5m"],
-    visibility = ["//visibility:public"],
-)
-    """,
-    )
-
-    _maybe(
-        http_archive,
-        name = "pybind11",
-        strip_prefix = "pybind11-2.3.0",
-        urls = ["https://github.com/pybind/pybind11/archive/v2.3.0.zip"],
-        build_file_content = """
-cc_library(
-    name = "pybind11",
-    hdrs = glob([
-    "include/**/**/*.h",
-    ]),
-    linkopts = ["-pthread"],
-    visibility = ["//visibility:public"],
-    strip_include_prefix = "include/"
-)
-    """,
-    )
-
-    _maybe(
         git_repository,
         name = "com_github_gflags_gflags",
         commit = "addd749114fab4f24b7ea1e0f2f837584389e52c",
@@ -72,7 +46,7 @@ cc_library(
 
     _maybe(
         git_repository,
-        name = "com_github_google_glog",
+        name = "com_github_glog_glog",
         commit = "3ba8976592274bc1f907c402ce22558011d6fc5e",
         remote = "https://github.com/google/glog",
     )

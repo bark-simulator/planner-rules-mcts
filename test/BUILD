@@ -53,7 +53,7 @@ cc_test(
         "//gridworld:grid_world_state",
         "//gridworld:state_file_writer",
         "//gridworld:test_runner",
-        "@com_github_google_glog//:glog",
+        "@com_github_glog_glog//:glog",
         "@gtest//:gtest_main",
         "@lexmamcts_project//mvmcts",
     ],

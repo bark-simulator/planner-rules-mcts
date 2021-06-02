@@ -1,24 +1,12 @@
 package(default_visibility = ["//visibility:public"])
-
-cc_library(
-    name = "planner_rules_mcts",
-    srcs = ["python_planner_rules_mcts.cpp"],
-    hdrs = ["python_planner_rules_mcts.hpp"],
-    visibility = ["//visibility:public"],
-    deps = [
-        "//src:planner_rules_mcts",
-        "@bark_project//bark/python_wrapper:common",
-        "@com_github_eigen_eigen//:eigen",
-        "@pybind11",
-        "@python_linux//:python-lib",
-    ],
-)
+load("@pybind11_bazel//:build_defs.bzl", "pybind_extension")
 
 # the following rules are only for testing purposes
-cc_binary(
-    name = "planner_rules_mcts.so",
-    srcs = ["python_test_module.cpp"],
-    linkshared = 1,
+pybind_extension(
+    name = "planner_rules_mcts",
+    srcs = ["python_test_module.cpp",
+            "python_planner_rules_mcts.cpp",
+            "python_planner_rules_mcts.hpp"],
     linkstatic = 1,
     deps = [
         ":planner_rules_mcts",
