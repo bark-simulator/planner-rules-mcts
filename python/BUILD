@@ -22,7 +22,7 @@ pybind_extension(
     linkstatic = 1,
     deps = [
         ":planner_rules_mcts",
-        "@rule_monitor_project//python/bindings:rule_monitor",
+        "@rule_monitor_project//python/bindings:rule_monitor.so",
         "@bark_project//bark/models/behavior",
         "@bark_project//bark/models/behavior/constant_acceleration",
         "@bark_project//bark/models/behavior/motion_primitives",
