@@ -50,6 +50,7 @@ def planner_rules_mcts_dependencies():
         commit = "3ba8976592274bc1f907c402ce22558011d6fc5e",
         remote = "https://github.com/google/glog",
     )
+
     _maybe(
     git_repository,
     name = "gtest",
@@ -83,6 +84,21 @@ cc_library(
         remote = "https://github.com/nelhage/rules_boost",
     )
 
+    _maybe(
+      new_git_repository,
+      name = "com_github_spline",
+      commit = "619c634ef5f6f2df1508c767f979eb4b7bf9c66a",
+      remote = "https://github.com/ttk592/spline",
+      build_file_content = """
+cc_library(
+    name = 'spline',
+    srcs = [],
+    includes = ['.'],
+    hdrs = ["src/spline.h"],
+    visibility = ['//visibility:public'],
+)
+    """
+    )
 def _maybe(repo_rule, name, **kwargs):
     if name not in native.existing_rules():
         repo_rule(name = name, **kwargs)
