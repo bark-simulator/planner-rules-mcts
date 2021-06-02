@@ -1,14 +1,26 @@
 package(default_visibility = ["//visibility:public"])
 load("@pybind11_bazel//:build_defs.bzl", "pybind_extension")
 
+cc_library(
+    name = "planner_rules_mcts",
+    srcs = ["python_planner_rules_mcts.cpp"],
+    hdrs = ["python_planner_rules_mcts.hpp"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src:planner_rules_mcts",
+        "@bark_project//bark/python_wrapper:common",
+        "@com_github_eigen_eigen//:eigen",
+    ],
+)
+
 # the following rules are only for testing purposes
 pybind_extension(
     name = "planner_rules_mcts",
     srcs = ["python_test_module.cpp",
-            "python_planner_rules_mcts.cpp",
-            "python_planner_rules_mcts.hpp"],
+            "python_planner_rules_mcts.cpp"],
     linkstatic = 1,
     deps = [
+        ":planner_rules_mcts",
         "@rule_monitor_project//python/bindings:rule_monitor",
         "@bark_project//bark/models/behavior",
         "@bark_project//bark/models/behavior/constant_acceleration",
