@@ -201,29 +201,29 @@ const MultiAgentRuleState& MvmctsState::GetMultiAgentRuleState() const {
 
 Eigen::VectorXf MvmctsState::GetActionCost(
     const std::shared_ptr<const world::Agent>& agent) const {
-  float action_cost = 0.0f;
+  double action_cost = 0.0f;
   Eigen::VectorXf reward = Reward::Zero(state_params_->REWARD_VECTOR_SIZE);
   const size_t value_pos = state_params_->REWARD_VECTOR_SIZE - 1;
   auto traj = agent->GetBehaviorModel()->GetLastTrajectory();
   const size_t traj_size = traj.rows();
-  const float dt = state_params_->PREDICTION_TIME_SPAN;
-  const float a = (traj(traj_size - 1, dynamic::VEL_POSITION) -
+  const double dt = state_params_->PREDICTION_TIME_SPAN;
+  const double a = (traj(traj_size - 1, dynamic::VEL_POSITION) -
                    traj(0, dynamic::VEL_POSITION)) /
                   dt;
 
-  float acc_cost =
+  double acc_cost =
       state_params_->ACCELERATION_WEIGHT * a * a * dt;  //  Acceleration
   action_cost += acc_cost;
-  const float theta_dot = (traj(traj_size - 1, dynamic::THETA_POSITION) -
+  const double theta_dot = (traj(traj_size - 1, dynamic::THETA_POSITION) -
                            traj(0, dynamic::THETA_POSITION)) /
                           dt;
-  const float avg_vel = 0.5f * a * dt + traj(0, dynamic::VEL_POSITION);
-  const float a_lat = theta_dot * avg_vel;  //  Radial acceleration
+  const double avg_vel = 0.5f * a * dt + traj(0, dynamic::VEL_POSITION);
+  const double a_lat = theta_dot * avg_vel;  //  Radial acceleration
 
   action_cost += state_params_->RADIAL_ACCELERATION_WEIGHT * a_lat * a_lat * dt;
 
   //  Desired velocity
-  float vel_cost =
+  double vel_cost =
       state_params_->DESIRED_VELOCITY_WEIGHT *
       fabs(traj(0, dynamic::VEL_POSITION) - state_params_->DESIRED_VELOCITY) *
       dt;
@@ -232,7 +232,7 @@ Eigen::VectorXf MvmctsState::GetActionCost(
   const auto& lane_corridor = agent->GetRoadCorridor()->GetCurrentLaneCorridor(
       agent->GetCurrentPosition());
   if (lane_corridor) {
-    const float lane_center_dev =
+    const double lane_center_dev =
         commons::transformation::FrenetPosition(agent->GetCurrentPosition(),
                                                 lane_corridor->GetCenterLine())
             .lat;
@@ -255,9 +255,9 @@ Reward MvmctsState::PotentialReward(AgentId agent_id, const State& new_state,
       Potential(agent_id, current_state);
   return reward;
 }
-inline float MvmctsState::Potential(
+inline double MvmctsState::Potential(
     AgentId agent_id, const bark::models::dynamic::State& state) const {
-  const float dv = std::abs(state(dynamic::StateDefinition::VEL_POSITION) -
+  const double dv = std::abs(state(dynamic::StateDefinition::VEL_POSITION) -
                             state_params_->DESIRED_VELOCITY);
   return -state_params_->POTENTIAL_WEIGHT *
          state_params_->PREDICTION_TIME_SPAN * dv;

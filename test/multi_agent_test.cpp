@@ -58,10 +58,10 @@ TEST(multi_agent_test, collision) {
   DynamicModelPtr dyn_model(new SingleTrackModel(params));
   BehaviorModelPtr ego_prediction_model(
       new BehaviorMPContinuousActions(params));
-  float prediction_time_span = 0.3f;
-  float velocity_difference = -3.0;
-  float rel_distance = 7.0;
-  float ego_velocity = 0.0;
+  double prediction_time_span = 0.3f;
+  double velocity_difference = -3.0;
+  double rel_distance = 7.0;
+  double ego_velocity = 0.0;
   Input u1(2);
   u1 << 0, 0;
   Input u2(2);

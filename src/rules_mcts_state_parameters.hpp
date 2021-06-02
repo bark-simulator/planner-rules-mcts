@@ -20,28 +20,28 @@ using bark::commons::Params;
 class RulesMctsStateParameters {
  public:
   RulesMctsStateParameters(
-      const float collision_weight, const float out_of_map_weight,
-      const float potential_weight, const float acceleration_weight,
-      const float radial_acceleration_weight,
-      const float desired_velocity_weight, const float lane_center_weight,
-      const unsigned int reward_vector_size, const float prediction_time_span,
-      const float desired_velocity, const unsigned int horizon,
-      const float discount_factor, const float goal_reward,
+      const double collision_weight, const double out_of_map_weight,
+      const double potential_weight, const double acceleration_weight,
+      const double radial_acceleration_weight,
+      const double desired_velocity_weight, const double lane_center_weight,
+      const unsigned int reward_vector_size, const double prediction_time_span,
+      const double desired_velocity, const unsigned int horizon,
+      const double discount_factor, const double goal_reward,
       const bool use_rule_reward_for_ego_only);
   explicit RulesMctsStateParameters(const commons::ParamsPtr& params);
-  const float COLLISION_WEIGHT;
-  const float OUT_OF_MAP_WEIGHT;
-  const float POTENTIAL_WEIGHT;
-  const float ACCELERATION_WEIGHT;
-  const float RADIAL_ACCELERATION_WEIGHT;
-  const float DESIRED_VELOCITY_WEIGHT;
-  const float LANE_CENTER_WEIGHT;
+  const double COLLISION_WEIGHT;
+  const double OUT_OF_MAP_WEIGHT;
+  const double POTENTIAL_WEIGHT;
+  const double ACCELERATION_WEIGHT;
+  const double RADIAL_ACCELERATION_WEIGHT;
+  const double DESIRED_VELOCITY_WEIGHT;
+  const double LANE_CENTER_WEIGHT;
   const unsigned int REWARD_VECTOR_SIZE;
-  const float PREDICTION_TIME_SPAN;
-  const float DESIRED_VELOCITY;
+  const double PREDICTION_TIME_SPAN;
+  const double DESIRED_VELOCITY;
   const unsigned int HORIZON;
-  const float DISCOUNT_FACTOR;
-  const float GOAL_REWARD;
+  const double DISCOUNT_FACTOR;
+  const double GOAL_REWARD;
   const bool USE_RULE_REWARD_FOR_EGO_ONLY;
 };
 

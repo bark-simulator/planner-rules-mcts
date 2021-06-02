@@ -31,7 +31,7 @@ class TestRunner {
     friend ostream& operator<<(ostream& os, const Result& result);
     static ostream& WriteHeader(ostream& os);
     int pos;
-    float value;
+    double value;
     bool collision;
     bool violation;
 
