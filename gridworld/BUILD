@@ -8,7 +8,7 @@ cc_library(
         "//gridworld:grid_world_state",
         "@boost//:math",
         "@boost//:multiprecision",
-        "@com_github_google_glog//:glog",
+        "@com_github_glog_glog//:glog",
         "@lexmamcts_project//evaluation",
         "@lexmamcts_project//mvmcts",
     ],
@@ -27,7 +27,7 @@ cc_library(
     deps = [
         "//gridworld:grid_world_state",
         "@com_github_eigen_eigen//:eigen",
-        "@com_github_google_glog//:glog",
+        "@com_github_glog_glog//:glog",
         "@lexmamcts_project//mvmcts",
     ],
 )
@@ -65,7 +65,7 @@ cc_library(
     deps = [
         ":common",
         "//gridworld/label_evaluator:label_evaluators",
-        "@com_github_google_glog//:glog",
+        "@com_github_glog_glog//:glog",
         "@lexmamcts_project//mvmcts",
         "@rule_monitor_project//ltl:rule_monitor",
     ],

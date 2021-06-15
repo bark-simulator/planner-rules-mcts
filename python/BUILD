@@ -1,6 +1,7 @@
 package(default_visibility = ["//visibility:public"])
+load("@pybind11_bazel//:build_defs.bzl", "pybind_extension", "pybind_library")
 
-cc_library(
+pybind_library(
     name = "planner_rules_mcts",
     srcs = ["python_planner_rules_mcts.cpp"],
     hdrs = ["python_planner_rules_mcts.hpp"],
@@ -9,17 +10,13 @@ cc_library(
         "//src:planner_rules_mcts",
         "@bark_project//bark/python_wrapper:common",
         "@com_github_eigen_eigen//:eigen",
-        "@pybind11",
-        "@python_linux//:python-lib",
     ],
 )
 
 # the following rules are only for testing purposes
-cc_binary(
-    name = "planner_rules_mcts.so",
+pybind_extension(
+    name = "test_planner_rules_mcts",
     srcs = ["python_test_module.cpp"],
-    linkshared = 1,
-    linkstatic = 1,
     deps = [
         ":planner_rules_mcts",
         "@rule_monitor_project//python/bindings:rule_monitor",
@@ -44,7 +41,7 @@ cc_binary(
 py_test(
   name = "pickle_unpickle_test",
   srcs = ["pickle_unpickle_test.py"],
-  data = [':planner_rules_mcts.so'],
+  data = [':test_planner_rules_mcts.so'],
   imports = ['../../python/'],
   deps = ["@bark_project//bark/runtime/commons"]
 )
