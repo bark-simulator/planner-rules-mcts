@@ -18,7 +18,7 @@ namespace models {
 namespace behavior {
 
 mvmcts::MvmctsParameters MakeMctsParameters(const commons::ParamsPtr& params);
-Eigen::VectorXf StdToEigen(const std::vector<float>& v);
+Eigen::VectorXd StdToEigen(const std::vector<double>& v);
 
 }  // namespace behavior
 }  // namespace models

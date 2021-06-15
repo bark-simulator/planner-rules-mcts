@@ -38,7 +38,7 @@ cc_library(
         "@bark_project//bark/models/behavior/motion_primitives:motion_primitives",
         "@bark_project//bark/world/evaluation:evaluator_drivable_area",
         "@bark_project//bark/world/evaluation:evaluator_collision_ego_agent",
-        "@com_github_google_glog//:glog",
+        "@com_github_glog_glog//:glog",
         "@rule_monitor_project//ltl:rule_monitor",
         "@lexmamcts_project//mvmcts",
     ],

@@ -52,10 +52,10 @@ mvmcts::MvmctsParameters MakeMctsParameters(const commons::ParamsPtr& params) {
       StdToEigen(
           params->GetListFloat("BehaviorRulesMcts::UCTExplorationConstant",
                                "Exploration constant of UCT",
-                               std::vector<float>(reward_vec_size, 1.42f)))
+                               std::vector<double>(reward_vec_size, 1.42f)))
           .cast<double>();
   assert(mcts_p.uct_statistic.EXPLORATION_CONSTANT.size() == reward_vec_size);
-  std::vector<float> default_lower_bound(reward_vec_size, -1.0);
+  std::vector<double> default_lower_bound(reward_vec_size, -1.0);
   default_lower_bound[reward_vec_size - 1] = -1000.0;
   auto lower_bound = params->GetListFloat(
       "BehaviorRulesMcts::ReturnLowerBound",
@@ -67,14 +67,14 @@ mvmcts::MvmctsParameters MakeMctsParameters(const commons::ParamsPtr& params) {
   mcts_p.uct_statistic.UPPER_BOUND = StdToEigen(params->GetListFloat(
       "BehaviorRulesMcts::ReturnUpperBound",
       "Upper return bound used for normalization in UCT Statistic",
-      std::vector<float>(reward_vec_size, 0.0)));
+      std::vector<double>(reward_vec_size, 0.0)));
   assert(mcts_p.uct_statistic.UPPER_BOUND.size() == reward_vec_size);
 
   mcts_p.thres_uct_statistic_.THRESHOLD = StdToEigen(params->GetListFloat(
       "BehaviorRulesMcts::Threshold",
       "Thresholds for improving lower level goals",
-      std::vector<float>(mcts_p.REWARD_VEC_SIZE,
-                         std::numeric_limits<float>::max())));
+      std::vector<double>(mcts_p.REWARD_VEC_SIZE,
+                         std::numeric_limits<double>::max())));
   assert(mcts_p.thres_uct_statistic_.THRESHOLD.size() == reward_vec_size);
 
   mcts_p.thres_uct_statistic_.EPSILON =
@@ -88,8 +88,8 @@ mvmcts::MvmctsParameters MakeMctsParameters(const commons::ParamsPtr& params) {
   return mcts_p;
 }
 
-Eigen::VectorXf StdToEigen(const std::vector<float>& v) {
-  Eigen::VectorXf e = Eigen::VectorXf::Zero(v.size());
+Eigen::VectorXd StdToEigen(const std::vector<double>& v) {
+  Eigen::VectorXd e = Eigen::VectorXd::Zero(v.size());
   for (size_t i = 0; i < v.size(); ++i) {
     e(i) = v[i];
   }

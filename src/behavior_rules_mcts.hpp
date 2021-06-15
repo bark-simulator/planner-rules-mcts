@@ -71,7 +71,7 @@ class BehaviorRulesMcts : public bark::models::behavior::BehaviorModel {
 
   ~BehaviorRulesMcts() = default;
 
-  Trajectory Plan(float delta_time,
+  Trajectory Plan(double delta_time,
                   const world::ObservedWorld& observed_world) override;
 
   std::shared_ptr<BehaviorModel> Clone() const override;
@@ -156,7 +156,7 @@ BehaviorRulesMcts<Stat>::BehaviorRulesMcts(
 
 template <class Stat>
 dynamic::Trajectory BehaviorRulesMcts<Stat>::Plan(
-    float delta_time, const world::ObservedWorld& observed_world) {
+    double delta_time, const world::ObservedWorld& observed_world) {
   // TODO: is this needed?
   // UpdateBehaviorStatus(delta_time, observed_world.GetWorldTime());
   ObservedWorldPtr mcts_observed_world =

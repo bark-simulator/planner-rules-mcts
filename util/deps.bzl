@@ -6,7 +6,7 @@ def planner_rules_mcts_dependencies():
     _maybe(
         git_repository,
         name = "bark_project",
-        commit = "af43e6488a7d05ac7b3e2928766595810b0cc836",
+        commit = "9649bc11b304d42b62293352c8a4052789d553a2",
         remote = "https://github.com/bark-simulator/bark",
     )
 
@@ -19,30 +19,15 @@ def planner_rules_mcts_dependencies():
     _maybe(
         git_repository,
         name = "lexmamcts_project",
-        commit = "540d62c5cfe06aa7313ab2da5b7ea7ae9606ad9c",
+        commit = "24ab42ca3dd67c15d8e86955d5d807b86ad3860d",
         remote = "https://github.com/klemense1/lexmamcts",
     )
 
     _maybe(
         git_repository,
         name = "rule_monitor_project",
-        commit = "73a435b779b13ac54a3f5d22e977161b11a3a96a",
+        commit = "187c125a18979214d638ca771dd86e7934932b94",
         remote = "https://github.com/bark-simulator/rule-monitoring",
-    )
-
-    _maybe(
-        native.new_local_repository,
-        name = "python_linux",
-        path = "./python/venv/",
-        build_file_content = """
-cc_library(
-    name = "python-lib",
-    srcs = glob(["lib/libpython3.*", "libs/python3.lib", "libs/python36.lib"]),
-    hdrs = glob(["include/**/*.h", "include/*.h"]),
-    includes = ["include/python3.6m", "include", "include/python3.7m", "include/python3.5m"],
-    visibility = ["//visibility:public"],
-)
-    """,
     )
 
     _maybe(
@@ -64,23 +49,17 @@ cc_library(
     )
 
     _maybe(
-        git_repository,
-        name = "com_github_gflags_gflags",
-        commit = "addd749114fab4f24b7ea1e0f2f837584389e52c",
-        remote = "https://github.com/gflags/gflags",
+      git_repository,
+      name = "com_github_glog_glog",
+      commit = "c5dcae830670bfaea9573fa7b700e862833d14ff",
+      remote = "https://github.com/google/glog"
     )
 
     _maybe(
         git_repository,
-        name = "com_github_google_glog",
-        commit = "3ba8976592274bc1f907c402ce22558011d6fc5e",
-        remote = "https://github.com/google/glog",
-    )
-    _maybe(
-    git_repository,
-    name = "gtest",
-    commit = "703bd9caab50b139428cea1aaff9974ebee5742e",
-    remote = "https://github.com/google/googletest"
+        name = "gtest",
+        commit = "703bd9caab50b139428cea1aaff9974ebee5742e",
+        remote = "https://github.com/google/googletest"
     )
 
     _maybe(

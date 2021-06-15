@@ -19,9 +19,9 @@ struct GridWorldStateParameter {
   int terminal_depth_;
   int merging_point;
 
-  float speed_deviation_weight;
-  float acceleration_weight;
-  float potential_weight;
+  double speed_deviation_weight;
+  double acceleration_weight;
+  double potential_weight;
 
   size_t reward_vec_size;
 

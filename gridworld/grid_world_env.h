@@ -34,7 +34,7 @@ class CrossingTestEnv : public BaseTestEnv {
     VLOG(1) << "Best action: " << this->GetJt();
     return this->GetJt();
   }
-  std::map<unsigned long, Eigen::VectorXf> GetEgoQval() override {
+  std::map<unsigned long, Eigen::VectorXd> GetEgoQval() override {
     return mcts.GetRoot()->GetEgoIntNode().GetExpectedRewards();
   }
   Mvmcts<GridWorldState, Stats, Stats, Heuristic> mcts;

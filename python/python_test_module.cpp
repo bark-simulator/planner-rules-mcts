@@ -9,6 +9,6 @@
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(planner_rules_mcts, m) {
+PYBIND11_MODULE(test_planner_rules_mcts, m) {
   python_planner_rules_mcts(m);
 }
